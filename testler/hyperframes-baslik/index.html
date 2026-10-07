@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<title>Deneme — kelime kelime başlık</title>
+<script src="vendor/gsap.min.js"></script>
+<style>
+/* yazı tipleri (OFL; fonts/ altında lisanslarıyla) — latin + latin-ext (Türkçe harfler) */
+@font-face{font-family:"Inter";font-weight:400;src:url(fonts/inter-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Inter";font-weight:400;src:url(fonts/inter-latin-ext-400-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Inter";font-weight:500;src:url(fonts/inter-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Inter";font-weight:500;src:url(fonts/inter-latin-ext-500-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Cormorant Garamond";font-weight:500;font-style:normal;src:url(fonts/cormorant-garamond-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Cormorant Garamond";font-weight:500;font-style:normal;src:url(fonts/cormorant-garamond-latin-ext-500-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Cormorant Garamond";font-weight:500;font-style:italic;src:url(fonts/cormorant-garamond-latin-500-italic.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Cormorant Garamond";font-weight:500;font-style:italic;src:url(fonts/cormorant-garamond-latin-ext-500-italic.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+
+*{box-sizing:border-box}
+html,body{margin:0;background:#07080C}
+#root{position:relative;width:100%;height:100%;overflow:hidden;background:#07080C;color:#F4F1EA;-webkit-font-smoothing:antialiased}
+.clip{position:absolute;inset:0}
+#zemin{background:radial-gradient(1100px 700px at 50% 46%,#1A1C2A 0%,rgba(26,28,42,0) 70%),#07080C}
+#sahne{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px}
+#baslik{margin:0;font:500 128px/1.05 "Cormorant Garamond",serif;letter-spacing:-.01em;text-align:center}
+#baslik em{font-style:italic;color:#E9C9A8}
+/* kelimeler maskenin içinden yükselir */
+.k{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .04em .14em;margin:0 -.04em -.14em}
+.ki{display:inline-block}
+#alt{font:400 30px/1 "Inter",sans-serif;letter-spacing:.32em;text-transform:uppercase;color:#9A9BA8;opacity:0}
+#cizgi{width:0;height:1px;background:#E9C9A8;opacity:.7}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="deneme" data-start="0" data-duration="5" data-width="1920" data-height="1080" data-fps="30">
+  <div id="zemin" class="clip" data-start="0" data-duration="5"></div>
+  <section id="sahne" class="clip" data-start="0" data-duration="5">
+    <h1 id="baslik"><span class="k"><span class="ki">Güzel</span></span> <span class="k"><span class="ki">şeyler</span></span> <span class="k"><span class="ki"><em>kelime</em></span></span> <span class="k"><span class="ki"><em>kelime</em></span></span> <span class="k"><span class="ki">başlar</span></span></h1>
+    <div id="cizgi"></div>
+    <div id="alt">HyperFrames · deneme</div>
+  </section>
+  <audio id="hisirti" src="ses/hisirti.wav" data-start="0.25" data-duration="0.7" data-track-index="1" data-volume="0.35"></audio>
+  <audio id="cin" src="ses/cin.wav" data-start="1.55" data-duration="1.6" data-track-index="2" data-volume="0.5"></audio>
+</div>
+<script>
+  const tl = gsap.timeline({ paused: true });
+  // kelime kelime giriş: 0,4 sn'den başlayıp 0,22 sn arayla
+  tl.fromTo("#baslik .ki", { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: "power3.out", stagger: 0.22 }, 0.4);
+  // son kelime yerine oturunca çizgi açılır, çan çalar (1,55 sn)
+  tl.to("#cizgi", { width: 420, duration: 0.8, ease: "power2.inOut" }, 1.55);
+  tl.fromTo("#alt", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 1.9);
+  // kapanış: her şey yumuşakça kararır
+  tl.to("#sahne", { opacity: 0, duration: 0.6, ease: "power1.in" }, 4.35);
+  window.__timelines["deneme"] = tl;
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+# bağımlılıklar, ortamlar, modeller, derlenmiş araçlar (sistem/kur.sh yeniden kurar)
+node_modules/
+.venv/
+.uv/
+ortamlar/
+modeller/
+arac/
+
+# medya ve üretimler: kişisel, büyük — sürümlenmez
+projeler/
+testler/veri/
+testler/.gecici/
+*.mp4
+*.mov
+*.m4v
+*.wav
+*.aif
+*.aiff
+*.m4a
+*.mp3
+*.heic
+
+# satıcı içeriği: lisansı yeniden dağıtıma izin vermiyor ya da belirsiz → kurulumda sabit sürümden üretilir
+# (sistem/kur.sh: satici.py ile remotion-best-practices; gsap.min.js node_modules'tan kopyalanır)
+sistem/claude/skills/remotion-best-practices/
+varliklar/js/
+testler/hyperframes-baslik/vendor/
+
+# oturum ara çıktıları (ham ajan sonuçları, eski iş akışı argümanları); kalıcı olanlar: beceri-tanimlari.json, yavas-cekim/
+sistem/devam/ham/
+sistem/devam/*-args.json
+sistem/devam/arastirma-remotion-davinci.js
+
+# araç çıktıları
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+.claude/settings.local.json
+.claude/agent-memory/
+
+# Bu stüdyoda CLAUDE.md ve .claude/ (iş akışları, proje ayarları) sistemin çekirdeğidir: kullanıcının genel
+# ~/.gitignore_global kuralına YALNIZ bu depoda istisna.
+!CLAUDE.md
+!.claude/
+!.claude/workflows/
+!.claude/settings.json

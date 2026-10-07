@@ -1,0 +1,77 @@
+# Dersler
+
+Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders ilgili beceriye taşınır (taşındıysa
+"→ beceri" notu). En yeni üstte.
+
+## 2026-10-05 — uçtan uca sınama (deniz kenarı Reels, 15 sn)
+- Boru hattı baştan sona çalıştı; 3 bağımsız denetçi GEÇTİ. Süre ~3,7 saat (13 ajan), çoğu ölçüm ve 1 düzeltme turu.
+- **HyperFrames `-q delivery` 1080x1920'de H.264 seviye 5.0 verir** → dikey teslim kapısı (≤ 4.2) KALDIRIR. Doğrudan
+  teslimde `-q standard` (VMAF 95,89 → 95,88, fark yok); delivery yalnız usta + `teslim.py kodla` yolunda. → kompozisyon.md, iş akışı.
+- **`medya ustala` davullu müzikte hedefe ulaşamıyordu** (−16,1 / −14): kazanç her turda baştan hesaplanıyor, sınırlayıcının
+  yuttuğu geri konmuyordu; kazanç 0'da da AAC yeniden kodlanıyordu. Düzeltildi (yinelemeli + kopya yolu), sınama var.
+- **`medya senkron` çizimdeki sesin kaymasını görmüyordu:** kesimler vuruşta olsa da ses kaymışsa "vurusta" derdi.
+  Artık müzik WAV'ına çapraz ilintiyle hiza ölçülüyor (kapsayıcı düzeyi kayma dahil); 40 ms kayma → kayik.
+- **HyperFrames 4K ProRes ağır çekimi kare başı ~33 MB PNG'ye açıyor** → disk doldu (ENOSPC), vekil klip gerekti.
+  Ağır çekimi teslim boyutunda üret (gelistirme.md: `yavaslat --kirp/--olcek`).
+- **Reels güvenli alanı kadraj seçiminde baştan düşünülmeli:** B çekiminin öznesi alt %35'te (arayüzün altında) kaldı.
+- **Sessiz yedeğe düşme:** cv2 silinmişti, `sahneler` haftalarca fark edilmeden ffmpeg yedeğiyle çalışabilirdi →
+  "birincil sağlayıcı kurulu" sınaması eklendi.
+
+## 2026-10-05 — stüdyonun kuruluşu
+- **İş akışı devamı (resumeFromRunId) sıraya bağlı:** önbellek, ilk değişen ya da bitmemiş ajan çağrısına kadar
+  geçerli; ondan sonraki her çağrı (önceden bitmiş olsa bile) yeniden koşar. Araştırmadan bir görevi çıkarınca
+  bitmiş "boşluk" araştırması baştan koştu. Bağımsız işleri ayrı küçük iş akışlarına böl; yarıda kalan beceride
+  `yazildi: true`, üretimde `atla` kullan. → CLAUDE.md.
+- **Apple Neural Engine derleyicisi takılabilir:** `ANECompilerService` 18 saat %100 CPU'da kaldı; `medya analiz`
+  ve Apple ağır çekimi model yüklerken (`_ANEDaemonConnection loadModel`) hiç hata vermeden sonsuza dek bekledi
+  (`sample <pid>` yığını gösterdi). ffmpeg'in VideoToolbox kodlama/çözmesi etkilenmedi. Çözüm kullanıcıda:
+  `sudo killall ANECompilerService`. Önlem: `apple_calistir` bekçisi (takılıysa başlamaz, süre aşımında öldürür),
+  ağır çekimde Neural Engine'den bağımsız RIFE yedeği; Apple ML sınamaları bu durumda nedeniyle atlanır.
+- **Ağır çekim ölçümü 2 (yalnız ara kareler, ham çözülerek):** gerçek kamerada RIFE v4.6 > Apple > minterpolate
+  (el kamerası 37,7 / 36,4 / 32,6 dB; kaydırmada en kötü %5 kare 28,8 / 26,2 — Apple'da bozuk kareler); yalnız 540p
+  çizgi filmde Apple önde; sakin çekimde fark yok. → yavaslat varsayılanı ≤2000 px'te RIFE, 4K'da Apple (hız, disk).
+- **Bitirme sırası (bağımsız denetimden):** görüntü düzeltmeleri → ses kusuru onarımı → `ustala` →
+  `meta-temizle` EN SON → `denetle`. `ustala`nın yeniden paketlemesi GPS (udta/loci) etiketini korur;
+  `meta-temizle` hem siler hem moov'u başa alır (faststart). → teslim-denetimi.
+- **Tek karelik flaş/siyah kare silinmez, önceki karenin kopyasıyla değiştirilir:** silmek sonraki her kesimi
+  1 kare kaydırır (müzik senkronu bozulur). → kurgu-zanaati, teslim-denetimi.
+- **Kesimdeki tık sınırlayıcıya bırakılmaz:** +1,2 dB kazançta sınırlayıcı tıkı yalnız ~4,7 dB bastırır, tık
+  duyulur ve çevresinde kazanç çukuru açılır. `ustala`dan önce onar (yeniden üret ya da 0,5 ms'yi ara değerle);
+  ses dikişi yoksa çapraz geçiş işe yaramaz. → ses-tasarimi.
+- **Türkçe büyük harf:** HyperFrames (Chrome 152) `text-transform: uppercase` `lang="en"` iken "istanbul" →
+  "ISTANBUL" (yanlış), `lang="tr"` iken "İSTANBUL". → CLAUDE.md, hareket-tasarimi.
+- **Denetim iş akışı kendi araçlarımızın hatalarını buldu** (kusurlu fikstürde 3 mercek, bütün dikilmiş kusurları
+  bağımsız buldu): `ffmpeg -ss t` ekrandaki kareyi değil t'den SONRAKİ ilk kareyi verir → `kare_al` karenin
+  başlangıcına arar; temas sayfası etiketi karenin sol üstünü örtüyordu → etiket alttaki şeride; `denetle`
+  faststart eksikliğini yazıp geçiriyordu → web/sosyal/youtube'da kaldırır. Sınamalar eklendi.
+- **DeepFilterNet:** sınırsız bastırma gürültüyü en çok azaltır ama konuşmayı bozar (Whisper 12/15 → 10/15);
+  12 dB sınır hem gürültüyü (SI-SDR 1,8 → 10,1 dB) hem anlaşılırlığı (13/15) iyileştirdi. `-D` olmadan çıktı 30 ms gecikir.
+- **HyperFrames gerçek çekimi JPEG ara karelerle çıkarır:** aynı CRF 12'de VMAF 95,0 (PNG ile 96,6, ffmpeg doğrudan
+  96,8). Son çizimde `--video-frame-format png`. → CLAUDE.md, kurgu-zanaati.
+- **Apple süper çözünürlük durağan görüntüde işe yaramadı** (yalnız 4x; gölgeler koyulaştı; PSNR bikübikten
+  kötü); süper çözünürlük çıktısı alfa yazmaz (PNG'de 0 alfa → beyaz patlama). Araçtan çıkarıldı.
+- **ffmpeg `psnr` süzgeci kareleri kaydırır** (farklı zaman damgalı akışlarda `setpts=N/…` ile bile). Ağır çekim
+  karşılaştırmasında bu yüzden ilk çıkan "Apple en kötü karede çok daha iyi" sonucu YANLIŞTI; kareler doğrudan
+  çözülünce Apple ML ≈ minterpolate çıktı. Karşılaştırmayı kareleri ham çözerek yap. → yavaslat, testler.
+- **Kancanın kabuk ayrıştırması tırnağa duyarlı olmalı.** İlk sürüm çok satırlı komutta alt satırdaki yasak
+  komutu kaçırıyor, tırnaklı heredoc içindeki metni de komut sanıyordu. Kendi komutumuz engellenince fark edildi;
+  sınamalar eklendi (46).
+- **Satıcı becerileri kurallarla çelişebilir:** HyperFrames `media-use` HeyGen hesabı ister; `music-to-video`
+  sabit tempo ızgarası kurar; yönlendirici beceri `usage`/`feedback` çalıştırır. Kurmadan önce becerinin
+  dış istek/hesap adımlarını oku. → skillOverrides, kanca.
+- **AVFoundation `naturalSize` piksel en-boy oranını uygular** (2048×1080 göründü, tampon 1920×1080): boyutu ilk
+  çözülen kareden al.
+- **PySceneDetect AdaptiveDetector varsayılanı (3,0)** düşük kontrastlı bir kesimi kaçırdı; 2,0 bütün kesimleri buldu.
+- **`alimiter` varsayılanı sesi ~4 ms geciktirir** → `latency=1`. Ölçüm: örnek düzeyinde çapraz ilinti.
+- **Kayıtlı iş akışları:** kullanıcı düzeyindeki `~/.claude/workflows/` oturum içinde yüklenmedi; proje
+  düzeyindeki `.claude/workflows/` yüklendi. Başka klasörden `scriptPath` ile çağır.
+- Kayıpsız deneme videoları diski hızla doldurur (2,3 GB): denemeleri geçici klasörde yap ve hemen sil.
+
+## 2026-10-04 — ilk montaj denemesi (kapatıldı)
+- **"Sesler kaymış":** kesimler kendi yazdığımız sabit BPM ızgarasına (76,005 BPM) dizildi; canlı çalınan yumuşak
+  şarkıda tempo kaydığı için ızgara 10 sn'lik pencerelerde −390…+300 ms saptı. Çözüm: ritim komitesi + güven
+  kapısı (`medya muzik`) ve kesim sonrası ölçüm (`medya senkron`). → kurgu-zanaati, medya-studyo, CLAUDE.md.
+- **İstenmeyen yazı:** "daha iyi yap" isteğine başlık/bölüm adı/kapanış yazısıyla cevap verildi; kullanıcı
+  sıralama, geçiş, yakınlaştırma, ağır çekim gibi zanaat istiyordu. Yazı yalnız istenirse. → bütün beceriler.
+- HyperFrames varsayılan kalitesi (CRF 16) 4:48'lik grenli videoyu 2,5 GB yaptı; `--video-bitrate 8M` ile 275 MB.
+- ffmpeg döngüde `-nostdin` olmadan `while read` satırlarını yer; zsh değişkeni sözcüklere bölmez.

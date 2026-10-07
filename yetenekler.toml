@@ -1,0 +1,323 @@
+# Yetenek kayıt defteri — stüdyonun "hangi iş hangi araçla yapılır" tek kaynağı.
+#
+# Beceriler ve ajanlar ARACI değil YETENEĞİ çağırır (`medya <komut>`). Daha iyi bir araç çıktığında:
+#   1) [[saglayici]] ekle (lisans, ticari kullanım, boyut, kurulum, kontrol komutu)
+#   2) medya/komutlar/<modül>.py içine uyarlayıcı ekle
+#   3) yeteneğin `saglayici` alanını değiştir (eskisi `yedek`e geçer), `medya test <yetenek>` ile sına.
+# Ücretli/bulut sağlayıcılar `etkin = false` durur; kullanıcının açık onayı olmadan açılmaz.
+#
+# Alanlar: tur = ikili | python-arac (uv tool, yalıtılmış) | python-paket (.venv) | node | uygulama (GUI; kullanıcı kurar)
+#          | bulut-ucretli
+#          ticari = evet | hayir | kosullu | ?
+
+# ---------------------------------------------------------------- yetenekler
+[[yetenek]]
+ad = "incele"
+alan = "inceleme"
+komut = "medya incele"
+aciklama = "dosya künyesi: fps (CFR/VFR), döndürme, HDR, ses, GPS + uyarılar"
+saglayici = "ffprobe"
+
+[[yetenek]]
+ad = "kontak"
+alan = "inceleme"
+komut = "medya kontak"
+aciklama = "zaman damgalı kare ızgarası (görsel kontrol)"
+saglayici = "ffmpeg"
+
+[[yetenek]]
+ad = "sahneler"
+alan = "inceleme"
+komut = "medya sahneler"
+aciklama = "çekim sınırları"
+saglayici = "pyscenedetect"
+yedek = ["ffmpeg"]
+
+[[yetenek]]
+ad = "ses-turu"
+alan = "inceleme"
+komut = "medya ses-turu"
+aciklama = "ses yalnız müzik mi, çekim sesi karışık mı (sıralamadan önce)"
+saglayici = "ffmpeg"
+
+[[yetenek]]
+ad = "ustala"
+alan = "ses"
+komut = "medya ustala"
+aciklama = "LUFS + gerçek tepe hedefine getirme (görüntü kopyalanır)"
+saglayici = "ffmpeg"
+
+[[yetenek]]
+ad = "senkron"
+alan = "denetim"
+komut = "medya senkron"
+aciklama = "kesimlerin vuruşa uzaklığı (ms) + görsel"
+saglayici = "ffmpeg"
+
+[[yetenek]]
+ad = "denetle"
+alan = "denetim"
+komut = "medya denetle"
+aciklama = "teslim öncesi kalite denetimi (siyah/donma/flaş, ses, senkron, A/V, GPS)"
+saglayici = "ffmpeg"
+
+[[yetenek]]
+ad = "sdr"
+alan = "donusturme"
+komut = "medya sdr"
+aciklama = "HDR (HLG/PQ) → SDR bt709 ton eşleme"
+saglayici = "ffmpeg"
+
+[[yetenek]]
+ad = "cfr"
+alan = "donusturme"
+komut = "medya cfr"
+aciklama = "değişken → sabit kare hızı"
+saglayici = "ffmpeg"
+
+[[yetenek]]
+ad = "meta-temizle"
+alan = "donusturme"
+komut = "medya meta-temizle"
+aciklama = "konum/GPS ve kişisel üst veriyi silme"
+saglayici = "ffmpeg"
+
+[[yetenek]]
+ad = "kompozisyon"
+alan = "uretim"
+komut = "hyperframes render"
+aciklama = "HTML + GSAP ile kare-doğru video/hareketli grafik çizimi"
+saglayici = "hyperframes"
+
+[[yetenek]]
+ad = "kompozisyon-react"
+alan = "uretim"
+komut = "remotion render"
+aciklama = "React (TSX) ile kare-doğru video/animasyon — YALNIZ lisans kapısı geçerse (kişisel / ≤3 kişi / yalnız dosya teslimi); değilse kompozisyon (HyperFrames)"
+saglayici = "remotion"
+
+[[yetenek]]
+ad = "muzik"
+alan = "ses"
+komut = "medya muzik"
+aciklama = "vuruş/ölçü başı/bölüm + GÜVEN (komite: Beat This! ×3 + Essentia + librosa; ölçülerek kapılı)"
+saglayici = "ses-ortami"
+
+[[yetenek]]
+ad = "yaziya-dok"
+alan = "ses"
+komut = "medya yaziya-dok"
+aciklama = "konuşma → kelime zamanlı metin + SRT (Whisper large-v3-turbo, MLX, Türkçe sınandı)"
+saglayici = "ses-ortami"
+
+[[yetenek]]
+ad = "ayir"
+alan = "ses"
+komut = "medya ayir"
+aciklama = "ses katmanları: vokal, davul, bas, diğer (Demucs v4 htdemucs)"
+saglayici = "ses-ortami"
+
+[[yetenek]]
+ad = "analiz"
+alan = "inceleme"
+komut = "medya analiz"
+aciklama = "kare kare: estetik, yüz + yakalama kalitesi, insan, ilgi alanı, etiket, kare farkı (Apple Vision)"
+saglayici = "medya-apple"
+
+[[yetenek]]
+ad = "ses-olay"
+alan = "inceleme"
+komut = "medya ses-olay"
+aciklama = "kahkaha, alkış, konuşma, şarkı, müzik… zaman aralıkları (Apple SoundAnalysis, 303 sınıf)"
+saglayici = "medya-apple"
+
+[[yetenek]]
+ad = "yavaslat"
+alan = "donusturme"
+komut = "medya yavaslat"
+aciklama = "ağır çekim: doğal (yüksek fps kaynak) / ≤2000 px'te RIFE v4.6, 4K'da Apple ML önce / ffmpeg minterpolate (asılan ya da başarısız olan sıradakine düşer)"
+saglayici = "rife"
+yedek = ["medya-apple", "ffmpeg"]
+
+[[yetenek]]
+ad = "arkaplan-sil"
+alan = "gorsel"
+komut = "medya arkaplan-sil"
+aciklama = "arka plan silme → şeffaf PNG (Apple Vision ön plan maskesi; indirme yok)"
+saglayici = "medya-apple"
+
+[[yetenek]]
+ad = "zamankodu"
+alan = "denetim"
+komut = "medya zamankodu"
+aciklama = "gözden geçirme taslağı: köşede dk:sn.kare (kullanıcı geri bildirimi için)"
+saglayici = "ffmpeg"
+
+[[yetenek]]
+ad = "temizle"
+alan = "sistem"
+komut = "medya temizle"
+aciklama = "disk bütçesi: uv/HyperFrames/test önbelleklerini raporla, --uygula ile temizle"
+saglayici = "ffmpeg"
+
+[[yetenek]]
+ad = "ses-temizle"
+alan = "ses"
+komut = "medya ses-temizle"
+aciklama = "konuşma gürültü azaltma (DeepFilterNet3; varsayılan 12 dB sınır — ölçümle seçildi; gecikme telafili)"
+saglayici = "deepfilternet"
+
+[[yetenek]]
+ad = "nle"
+alan = "teslim"
+komut = "medya nle"
+aciklama = "kurgu planını kurgu programına aktarma: .otio (DaVinci Resolve 18.5+, Kdenlive 25.04+), .edl (CMX 3600)"
+saglayici = "otio"
+
+# ---------------------------------------------------------------- sağlayıcılar
+[[saglayici]]
+ad = "ffmpeg"
+tur = "ikili"
+lisans = "GPL-3.0 (ffmpeg-static derlemesi)"
+ticari = "evet"
+kurulum = "npm install -D ffmpeg-static && ln -sf ../node_modules/ffmpeg-static/ffmpeg arac/ffmpeg"
+kontrol = "arac/ffmpeg -version"
+boyut_mb = 80
+not = "6.0: zscale, tonemap, vidstab, xfade, minterpolate, lut3d, nlmeans, loudnorm, videotoolbox var"
+
+[[saglayici]]
+ad = "ffprobe"
+tur = "ikili"
+lisans = "LGPL/GPL (ffmpeg)"
+ticari = "evet"
+kurulum = "npm install -D @ffprobe-installer/ffprobe && ln -sf ../node_modules/@ffprobe-installer/darwin-arm64/ffprobe arac/ffprobe"
+kontrol = "arac/ffprobe -version"
+boyut_mb = 70
+
+[[saglayici]]
+ad = "pyscenedetect"
+tur = "python-paket"
+lisans = "BSD-3-Clause"
+ticari = "evet"
+kurulum = "arac/uv sync --all-extras"
+kontrol = ".venv/bin/python -c 'import scenedetect, cv2'"
+boyut_mb = 120
+
+[[saglayici]]
+ad = "hyperframes"
+tur = "node"
+lisans = "Apache-2.0"
+ticari = "evet"
+kurulum = "npm install -D hyperframes gsap"
+kontrol = "node_modules/.bin/hyperframes --version"
+boyut_mb = 150
+not = "HeyGen. cloud/lambda/cloudrun/auth/publish/usage komutları yasak (kanca engeller); snapshot --describe false"
+
+[[saglayici]]
+ad = "ses-ortami"
+tur = "python-arac"
+lisans = "Beat This! MIT (kod+ağırlık) · Essentia AGPL-3.0 (yerel analiz aracı olarak) · librosa ISC · mir_eval MIT · Demucs MIT · mlx-whisper MIT (Whisper ağırlıkları MIT) · pedalboard GPL-3.0"
+ticari = "evet"
+kurulum = "arac/uv venv --python 3.12 ortamlar/ses && arac/uv pip install --python ortamlar/ses/bin/python --no-build torch torchaudio 'beat-this==1.1.0' soundfile 'librosa==1.0.0' 'mir_eval==0.8.2' matplotlib scipy 'demucs==4.1.0' 'mlx-whisper==0.4.3' 'essentia==2.1b6.dev1389' 'pedalboard==0.9.25'"
+kontrol = "ortamlar/ses/bin/python -c 'import beat_this, essentia, librosa, mir_eval, demucs, mlx_whisper'"
+boyut_mb = 1200
+not = "Modeller ilk kullanımda iner (modeller/): Beat This! ~3×77 MB, Whisper large-v3-turbo ~1,6 GB, htdemucs ~80 MB. Essentia AGPL: dağıtılan yazılıma gömme."
+
+[[saglayici]]
+ad = "medya-apple"
+tur = "ikili"
+lisans = "kendi kodumuz; Apple çerçeveleri macOS'un parçası (VideoToolbox, Vision, SoundAnalysis)"
+ticari = "evet"
+kurulum = "DEVELOPER_DIR=/Library/Developer/CommandLineTools swiftc -O -parse-as-library -swift-version 5 sistem/apple/medya-apple.swift -o arac/medya-apple"
+kontrol = "arac/medya-apple yetenek"
+boyut_mb = 1
+not = "İndirme yok; macOS 15.4+ (FRC), 15+ (Vision Swift API). Bu Mac: FRC, optik akış, hareket bulanıklığı, süper çözünürlük var; zamansal gürültü yok."
+
+[[saglayici]]
+ad = "exiftool"
+tur = "ikili"
+lisans = "Artistic-1.0-Perl ya da GPL-1.0+ (Perl betiği; sistem perl'i ile çalışır)"
+ticari = "evet"
+kurulum = "curl -fsSL -o /tmp/et.tgz 'https://sourceforge.net/projects/exiftool/files/Image-ExifTool-13.59.tar.gz/download' && [ \"$(shasum -a 256 /tmp/et.tgz | cut -d' ' -f1)\" = 668ea3acececb7235fbd0f4900e72d5f12c9b07e5c778fd36cb1e9b5828fd65a ] && mkdir -p arac/exiftool-dagitim && tar -xzf /tmp/et.tgz -C arac/exiftool-dagitim --strip-components 1 && ln -sf exiftool-dagitim/exiftool arac/exiftool && rm /tmp/et.tgz"
+kontrol = "arac/exiftool -ver"
+boyut_mb = 34
+not = "13.59 (2026-05-27), SHA-256 exiftool.org/checksums.txt ile doğrulandı. incele (çekim zamanı, cihaz, GPS, Live Photo eşleşmesi) ve meta-temizle (görselde yeniden kodlamasız) kullanır."
+
+[[saglayici]]
+ad = "deepfilternet"
+tur = "ikili"
+lisans = "MIT OR Apache-2.0 (kod ve DeepFilterNet3 ağırlıkları)"
+ticari = "evet"
+kurulum = "curl -fsSL -o arac/deep-filter 'https://github.com/Rikorose/DeepFilterNet/releases/download/v0.5.6/deep-filter-0.5.6-aarch64-apple-darwin' && [ \"$(shasum -a 256 arac/deep-filter | cut -d' ' -f1)\" = 4601e7f4e4c03e59a4c5b5000216ef3add3e808799cfccd95e14e83ea4611081 ] && chmod +x arac/deep-filter"
+kontrol = "arac/deep-filter --version"
+boyut_mb = 28
+not = "v0.5.6; SHA-256 ilk indirmede kaydedildi (yayında yayımlanmış sağlama toplamı yok). Ad-hoc imzalı. Her zaman -D (gecikme telafisi)."
+
+
+[[saglayici]]
+ad = "otio"
+tur = "python-paket"
+lisans = "Apache-2.0 (OpenTimelineIO 0.18.1, otio-cmx3600-adapter 1.0.0)"
+ticari = "evet"
+kurulum = "arac/uv sync --all-extras"
+kontrol = ".venv/bin/python -c 'import opentimelineio, otio_cmx3600_adapter'"
+boyut_mb = 8
+not = "ASWF zaman çizelgesi değiş tokuşu. Medya yolu düz mutlak yol (Resolve file:// reddetti). FCPXML uyarlayıcısı bilerek yok (erimeyi düşürdü, 29,97'de çöktü). Resolve/Kdenlive içe aktarması bu Mac'te sınanmadı (kurulu değil)."
+
+[[saglayici]]
+ad = "rife"
+tur = "ikili"
+lisans = "MIT (rife-ncnn-vulkan, nihui) · RIFE v4.6 ağırlıkları MIT (Practical-RIFE)"
+ticari = "evet"
+kurulum = "curl -fsSL -o /tmp/rife.zip https://github.com/nihui/rife-ncnn-vulkan/releases/download/20221029/rife-ncnn-vulkan-20221029-macos.zip && [ \"$(shasum -a 256 /tmp/rife.zip | cut -d' ' -f1)\" = 4a63a1f3c9c715773c57d2ee51df1b315ed20cd6c63103e45c483ecc4400b595 ] && mkdir -p arac/rife && unzip -o -q -j /tmp/rife.zip 'rife-ncnn-vulkan-20221029-macos/rife-ncnn-vulkan' 'rife-ncnn-vulkan-20221029-macos/LICENSE' -d arac/rife && unzip -o -q -j /tmp/rife.zip 'rife-ncnn-vulkan-20221029-macos/rife-v4.6/*' -d arac/rife/rife-v4.6 && chmod +x arac/rife/rife-ncnn-vulkan && rm /tmp/rife.zip"
+kontrol = "ls arac/rife/rife-ncnn-vulkan arac/rife/rife-v4.6/flownet.bin arac/rife/rife-v4.6/flownet.param"
+boyut_mb = 36
+not = "20221029 evrensel ikili (SHA-256 d11429c7…, zip 437 MB indirilir, 36 MB kalır). Vulkan→Metal (MoltenVK gömülü); Neural Engine kullanmaz — Apple FRC asılırsa yedek. Ölçüm: sistem/devam/yavas-cekim/."
+
+[[saglayici]]
+ad = "remotion"
+tur = "node"
+lisans = "Remotion License (kaynak-erişilebilir, özel): birey, ≤3 kişilik ekip/şirket, yalnız dosya teslim eden serbest çalışan ve kâr amacı gütmeyen için ücretsiz; 4+ kişilik işveren adına ya da müşteri kodu alırsa ücretli Company License"
+ticari = "kosullu"
+kurulum = "npm install --save-dev --save-exact --no-audit --no-fund remotion@4.0.533 @remotion/cli@4.0.533 @remotion/media@4.0.533 @remotion/transitions@4.0.533 @remotion/effects@4.0.533 @remotion/motion-blur@4.0.533 @remotion/fonts@4.0.533 @remotion/paths@4.0.533 @remotion/shapes@4.0.533 @remotion/noise@4.0.533 @remotion/layout-utils@4.0.533 @remotion/captions@4.0.533 @remotion/zod-types@4.0.533 @remotion/gsap@4.0.533 react@19.2.3 react-dom@19.2.3 zod@4.5.4"
+kontrol = "node_modules/.bin/remotion versions"
+boyut_mb = 235
+not = "Proje: medya proje yeni … --motor remotion (sablonlar/remotion: HyperFrames'in Chrome'u, bt709, angle). Lisans anahtarı, Studio'yu kendiliğinden açma, web-renderer/lambda/cloudrun/google-fonts YASAK (kanca engeller). 5.x'e lisans incelemesiz yükseltme yok. Beceri: remotion-best-practices (sabit commit)."
+
+# ---------------------------------------------------------------- kurgu programları (elle ince ayar; kullanıcı kurar)
+# Ajan bunları SÜREMEZ: medya nle ile .otio/.edl üretir, kullanıcı içe aktarır (araştırma 2026-10-05).
+[[saglayici]]
+ad = "kdenlive"
+tur = "uygulama"
+lisans = "GPL-3.0 (çıktı serbest)"
+ticari = "evet"
+kurulum = "curl -L -o ~/Downloads/kdenlive-26.08.1-arm64.dmg https://download.kde.org/stable/kdenlive/26.08/macOS/kdenlive-26.08.1-arm64.dmg && echo 'b606beaf42c0482a07c052bd2da384587b3aedcc948e7c885f954e195ff10bda  '$HOME/Downloads/kdenlive-26.08.1-arm64.dmg | shasum -a 256 -c && hdiutil attach -nobrowse -readonly -mountpoint ~/Downloads/kdenlive_dmg ~/Downloads/kdenlive-26.08.1-arm64.dmg && cp -R ~/Downloads/kdenlive_dmg/kdenlive.app /Applications/ && hdiutil detach ~/Downloads/kdenlive_dmg && rm ~/Downloads/kdenlive-26.08.1-arm64.dmg"
+kontrol = "ls /Applications/kdenlive.app"
+boyut_mb = 620
+etkin = false
+onay = "kullanıcı kararı (620 MB uygulama)"
+not = "26.08.1, KDE noterli. .otio'yu yerel açar/yazar (OTIO 0.18.1 içinde). Telemetri kitaplığı bulunmadı (ölçüldü). Hız/efekt/kadraj/ses düzeyi aktarılmaz."
+
+[[saglayici]]
+ad = "resolve-ucretsiz"
+tur = "uygulama"
+lisans = "Blackmagic EULA, ücretsiz sürüm (Blackmagic personeli: ticari işte kullanılabilir)"
+ticari = "evet"
+kurulum = "Kullanıcı kurar: Mac App Store 'DaVinci Resolve' (id 571213070; Apple ID gerekir) ya da blackmagicdesign.com (kayıt formu: kişisel bilgi — kullanıcının kararı). Sonra Tercihler > System > General: güncelleme denetimi, beta bildirimleri ve 'Send report when application quits unexpectedly' kapatılır."
+kontrol = "ls '/Applications/DaVinci Resolve/DaVinci Resolve.app'"
+boyut_mb = 2512
+etkin = false
+onay = "kullanıcı kararı (2,5 GB; App Store hesabı ya da kayıt formu)"
+not = "21.1.1. medya nle .otio dosyasını içe aktarır (File > Import > Timeline). Ajan YÖNETEMEZ: dışarıdan betik yalnız Studio'da, 21.1'de ücretsiz sürümden Python betikleri de kaldırıldı. Çıktı UHD ve ≤60 fps ile sınırlı."
+
+[[saglayici]]
+ad = "resolve-studio-mcp"
+tur = "uygulama"
+lisans = "Blackmagic EULA, ÜCRETLİ: DaVinci Resolve Studio 295 $ tek sefer (App Store sürümünde betik API'si yok)"
+ticari = "evet"
+kurulum = "Yalnız kullanıcı satın alırsa: Studio 21.1.1'i blackmagicdesign.com'dan kur → Tercihler > System > General > External scripting using: Local → File > Setup AI Assistants (Claude Code'a yerleşik MCP sunucusunu ekler) → Claude Code'u yeniden başlat, 'claude mcp list' ile doğrula."
+kontrol = "false"
+boyut_mb = 6692
+etkin = false
+onay = "ücretli yazılım (295 $) — kullanıcının açık kararı"
+not = "Resolve 21.1 (2026-09-08) yerleşik MCP: 'Claude Resolve'da kurgular' videolarındaki yol budur. Ücretsiz kural gereği kapalı. Alternatif: samuelgursky/davinci-resolve-mcp 4.8.28 (MIT; yine Studio ister). Kare analizi kareleri modele yollar (gizlilik kuralı)."
