@@ -27,6 +27,8 @@ varliklar/js/
 testler/hyperframes-baslik/vendor/
 
 # oturum ara çıktıları (ham ajan sonuçları, eski iş akışı argümanları); kalıcı olanlar: beceri-tanimlari.json, yavas-cekim/
+# baş ajan raporları: makineye özgü durum (disk, takas, uygulamalar) — yerelde kalır, herkese açık depoya girmez
+sistem/yonetim/
 sistem/devam/ham/
 sistem/devam/*-args.json
 sistem/devam/arastirma-remotion-davinci.js

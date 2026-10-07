@@ -11,6 +11,9 @@
 - `medya test`: hafif takım geçiyor; ağır üretici sınamaları `medya test --agir` (FLUX.2 + VoxCPM2, 2026-10-07 geçti).
 
 ## Kullanıcının kararını bekleyenler
+- **Baş ajanın ilk raporu (2026-10-08):** `sistem/yonetim/2026-10-08-oneriler.md` — O1, O2, O4–O7 doğrulandı (O3
+  yeniden yazılacak). Önerilen sıra O1 → O2 → O7 → O4 → O5 → O6. Onay: "O1 ve O7'yi uygula" →
+  `medya-guncelle {oneriler_json: 'sistem/yonetim/2026-10-08-oneriler.json', onaylanan: [...]}`.
 - Disk dar (~3–7 GB boş; takas oynatıyor): Mac'i yeniden başlatmak takası boşaltır. `~/.npm` önbelleği (1,8 GB,
   yeniden indirilebilir) silinsin mi?
 - Ücretsiz DaVinci Resolve (2,5 GB; App Store hesabı) — disk yetince; şimdilik Kdenlive.

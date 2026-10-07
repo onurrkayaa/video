@@ -24,13 +24,13 @@ saniyeler verilir.** Ses saattir: ölçülen ana WAV çalınır; katmanlar PCM'd
 | Katman | `medya ayir [--iki]` | — |
 | Kısma | `$PY $B/kisma.py [--kazanc dB]` | 3 sn pencerede konuşma − müzik ≥ 10 LU |
 | Efekt | `$PY $B/efekt.py` ya da lisanslı hazır ses | olay ±1 kare |
-| Dış ses | `medya seslendir metin.txt --cikti calisma/ses/dis-ses.wav [--kimlik calisma/ses/anlatici] [--tarif "…"]` (VoxCPM2; kendi sesin: `--referans kayit.wav --rizali`) | komutun kendi kapısı: CER ≤ %3, ECAPA benzerlik ≥ 0,5; konuşmayla ±2 LU |
+| Dış ses | `medya seslendir metin.txt --cikti calisma/ses/vo.wav --kimlik calisma/ses/anlatici` (kendi sesin: `--referans k.wav --rizali`) | komutun kapısı (CER, ECAPA); konuşmayla ±2 LU |
 | Tık | her sert ses kesimine 5–10 ms geçiş (`data-fade-in/out` ≥ 0.01); ek yeri yoksa `$PY $B/tik_onar.py` | `medya denetle` tık listesi boş |
 | Ustalık | `medya ustala --hedef -14` (sosyal) / `-16` (web, konuşma) `--tepe -1.5` | `medya denetle --hedef …` |
 
 ## Kurallar
 1. **Lisans defteri:** her ses dosyası `KARARLAR.md`'ye (kaynak, lisans, ticari mi, atıf). Belirsiz → kullanma; NC → iş için asla. Seçenekler, kaçınılacaklar: [kaynaklar](references/kaynaklar.md).
-2. **Kurulum:** TTS kurulu (VoxCPM2 4-bit, Apache-2.0; ses kimliği şart — tarifle ayrı üretilen cümleler başka ses olur, benzerlik 0,29 ölçüldü). Müzik üreteci kurulu değil; boyutu söyle, >2 GB onaysız kurma.
+2. **Kurulum:** TTS kurulu (VoxCPM2; projede tek `--kimlik` — ayrı tarifle her cümle başka ses olur). Müzik üreteci yok; >2 GB onaysız kurma.
 3. **Ölçülmüş varsayılanlar:** `ses-temizle` 12 dB (sınırsızda anlaşılırlık düştü), `-D` içinde; `arac/deep-filter`'ı doğrudan çağırma.
 4. **Yazı yok:** altyazı yalnız istenirse. **Vuruş iddiası** yalnız `medya muzik` güveni `yuksek` + `medya senkron` ile.
 5. **Gizlilik:** mahrem kayıtta döküm metnini açmadan sor; "yalnız sayısal mod"da betik sayılarıyla çalış.
@@ -53,7 +53,7 @@ saniyeler verilir.** Ses saattir: ölçülen ana WAV çalınır; katmanlar PCM'd
 - Doğrulanamaz: metalik yan ürün, müzik zevki, TTS doğallığı, efekt seviyesi → eşit düzeyli A/B + saniye listesi.
 
 ## Sık hatalar
-- Türkçe TTS: `medya seslendir` (VoxCPM2). Projede tek `--kimlik` kullan, her dış seste aynı ses; başkasının sesini klonlama (rıza). macOS `say` yalnız kişisel taslak.
+- Türkçe TTS: `medya seslendir`; başkasının sesini klonlama (rıza); macOS `say` yalnız kişisel taslak.
 - CER %5 kapısı ya da Türkçe normalleştirmesiz ölçüm ("9'da" = "dokuzda", İ/ı).
 - Döküm farkını kapı yapmak; güveni karşılaştır.
 - Kısma eşiği uydurmak; tıkı sınırlayıcıya ya da `adeclick`'e bırakmak (ölçüldü: olmuyor).
