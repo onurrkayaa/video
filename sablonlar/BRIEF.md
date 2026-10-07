@@ -15,7 +15,7 @@
 - Süre:
 - Ekranda yazı: YOK (kullanıcı istemedikçe yazı, başlık, alt yazı eklenmez)
 - Müzik / ses: <!-- kaynak ve lisans; telifli şarkı yalnız kişisel paylaşımda -->
-- Lisans bağlamı: <!-- kişisel | serbest (yalnız dosya teslimi) | iş, şirket ≤3 kişi | iş, şirket 4+ kişi → Remotion YOK (ücretli lisans), HyperFrames -->
+- Lisans bağlamı: kişisel / serbest (yalnız dosya teslimi) <!-- kullanıcı beyanı 2026-10-07; 4+ kişilik işveren adına ya da müşteri kodu alacaksa değiştir → Remotion YOK, HyperFrames -->
 
 ## Gizlilik
 - Görüntüler mahrem mi? <!-- evet ise: Claude kareleri açmadan "yalnız sayısal mod" ister mi? -->

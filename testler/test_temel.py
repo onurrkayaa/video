@@ -25,6 +25,15 @@ def veri():
 
 
 @pytest.fixture
+def agir():
+    """Üretici modeller (FLUX.2 ~9 GB, VoxCPM2 ~7 GB bellek): 16 GB'lık Mac'te takası GB'larca büyütür (2026-10-07'de
+    6 GB takas dosyası diski 1,4 GB'a düşürdü). Yalnız istenince: medya test --agir (MEDYA_AGIR_TEST=1)."""
+    import os
+    if os.environ.get("MEDYA_AGIR_TEST") != "1":
+        pytest.skip("ağır üretici model sınaması: medya test --agir")
+
+
+@pytest.fixture
 def apple_ml():
     """Neural Engine derleyicisi takılıysa (sistem sorunu) Apple ML sınamalarını açık nedenle atla — asılmasınlar."""
     from medya.ortak import ane_tikanikligi
@@ -195,9 +204,12 @@ def test_yavaslat_rife_yedegi(tmp_path):
     """RIFE yedeği (Neural Engine'den bağımsız): Apple ile aynı sözleşme — doğru sırada özgün kareler, kopyadan
     belirgin iyi ara kareler, doğru süre. 2026-10-05: Apple FRC Neural Engine takılınca asıldı; yedek bu."""
     import statistics as st
+    import shutil
     from medya.komutlar.yavaslat import RIFE, yavaslat
     if not RIFE.exists():
         pytest.skip("RIFE kurulu değil: medya kur rife")
+    if shutil.disk_usage(KOK).free / 1e9 < 5.5:          # RIFE ara kareleri disk tabanı altında bilerek reddedilir
+        pytest.skip("boş disk 5 GB tabanına yakın: RIFE bilerek çalışmaz (yedeğe düşer) — önce yer aç")
     r = yavaslat(str(VERI / "hareket30.mp4"), str(tmp_path / "y.mov"), 0.5, yontem="rife")
     assert r["yontem"] == "rife" and r["kat"] == 2 and abs(r["sure"] - 4.0) < 0.05
     y, ref = _kareler(tmp_path / "y.mov"), _kareler(VERI / "hareket60.mp4")
@@ -552,3 +564,53 @@ def test_ustala_davullu_hedefe_yaklasir_ve_hedefteyse_kopyalar(tmp_path):
     assert abs(r["sonra"]["lufs"] + 12.0) <= 0.5 and r["sonra"]["tepe_dbtp"] <= -1.45, r
     r2 = ustala(str(tmp_path / "y.wav"), str(tmp_path / "z.wav"), hedef=-12.0, tepe=-1.5)
     assert r2.get("kopya") and r2["gecti"]
+
+
+def test_turkce_normallestirme_ve_cer():
+    """Ortak Türkçe metin modülü (TTS kabulü): İ/ı büyük-küçük, sayılar yazıyla, kesme işareti, noktalama."""
+    from medya.turkce import karsilastir, normallestir, sayi_yaziya
+    assert normallestir("İZMİR'de 9'da %50 indirim, 1.500 TL; saat 10:30!") == \
+        "izmirde dokuzda yüzde elli indirim bin beş yüz tl saat on otuz"
+    assert sayi_yaziya(250) == "iki yüz elli" and sayi_yaziya(1000) == "bin" and sayi_yaziya(2026) == "iki bin yirmi altı"
+    assert karsilastir("Işıklı Çarşı'da 3 saat", "ışıklı çarşıda üç saat")["cer"] == 0.0
+    assert karsilastir("kayıt düğmesi", "kayıt dügmesi")["cer"] > 0
+
+
+def test_seslendir_cumle_bolme_ve_riza_kapisi():
+    from medya.komutlar.seslendir import cumlelere_bol, seslendir
+    from medya.ortak import MedyaHatasi
+    assert cumlelere_bol("Merhaba. Bugün güzel bir gün! Saat 10:30'da başlıyoruz.\n\nİkinci paragraf geliyor.") == [
+        ("Merhaba. Bugün güzel bir gün!", False), ("Saat 10:30'da başlıyoruz.", True), ("İkinci paragraf geliyor.", True)]
+    with pytest.raises(MedyaHatasi, match="rıza"):
+        seslendir("Deneme cümlesi.", "/tmp/x.wav", referans="/tmp/yok.wav")     # --rizali olmadan klon yok
+
+
+def test_seslendir_turkce_anlasilir_ve_tutarli(tmp_path, agir):
+    """Uçtan uca: kimlik üret → iki cümle → Whisper CER ve ECAPA benzerliği kapıdan geçer, zaman çizelgesi sıralı."""
+    from medya.komutlar.seslendir import MODEL, seslendir
+    from medya.ortak import probe
+    if not MODEL.exists():
+        pytest.skip("VoxCPM2 kurulu değil: medya kur voxcpm2")
+    r = seslendir("Bugün yeni özelliğimizi tanıtıyoruz. Kayıt düğmesine iki saniye basılı tutun.",
+                  str(tmp_path / "vo.wav"), deneme=1)
+    d = r["dogrulama"]
+    assert d["gecti"] and d["toplam_cer"] <= 0.03 and d["benzerlik_min"] >= 0.5, d
+    s = next(x for x in probe(tmp_path / "vo.wav")["streams"] if x["codec_type"] == "audio")
+    assert s["sample_rate"] == "48000" and s["channels"] == 1
+    z = r["cumleler"]
+    assert len(z) == 2 and 0 <= z[0]["bas"] < z[0]["son"] < z[1]["bas"] < z[1]["son"] <= r["sure"] + 0.01
+    assert (tmp_path / "vo-kimlik.wav").exists() and (tmp_path / "vo-kimlik.json").exists()
+
+
+def test_gorsel_uret_tohumla_ayni_ve_lisans_kaydi(tmp_path, agir):
+    """FLUX.2 klein: aynı istem + tohum = piksel piksel aynı görsel (ölçüldü); üretim kaydında lisans ve tohum."""
+    import numpy as np
+    from PIL import Image
+    from medya.komutlar.gorsel_uret import MODEL, gorsel_uret
+    if not MODEL.exists():
+        pytest.skip("FLUX.2 klein kurulu değil: medya kur flux2-klein")
+    a = gorsel_uret("A red bicycle leaning on a blue wall", str(tmp_path / "a.png"), boyut="256x256", adim=2, tohum=3)
+    gorsel_uret("A red bicycle leaning on a blue wall", str(tmp_path / "b.png"), boyut="256x256", adim=2, tohum=3)
+    x, y = (np.asarray(Image.open(tmp_path / f).convert("RGB"), dtype=np.int16) for f in ("a.png", "b.png"))
+    assert x.shape == (256, 256, 3) and x.std() > 10 and int(np.abs(x - y).max()) == 0
+    assert "Apache-2.0" in a[0]["lisans"] and a[0]["tohum"] == 3

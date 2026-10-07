@@ -174,6 +174,20 @@ komut = "medya nle"
 aciklama = "kurgu planını kurgu programına aktarma: .otio (DaVinci Resolve 18.5+, Kdenlive 25.04+), .edl (CMX 3600)"
 saglayici = "otio"
 
+[[yetenek]]
+ad = "seslendir"
+alan = "ses"
+komut = "medya seslendir"
+aciklama = "metinden dış ses (Türkçe dahil 30 dil): tutarlı ses kimliği + Whisper CER ve ECAPA benzerlik doğrulaması"
+saglayici = "voxcpm2"
+
+[[yetenek]]
+ad = "gorsel-uret"
+alan = "gorsel"
+komut = "medya gorsel-uret"
+aciklama = "metinden görsel ve referanslı düzenleme (ürünü yeni sahneye koyma, arka plan/ışık değiştirme)"
+saglayici = "flux2-klein"
+
 # ---------------------------------------------------------------- sağlayıcılar
 [[saglayici]]
 ad = "ffmpeg"
@@ -216,9 +230,9 @@ not = "HeyGen. cloud/lambda/cloudrun/auth/publish/usage komutları yasak (kanca 
 [[saglayici]]
 ad = "ses-ortami"
 tur = "python-arac"
-lisans = "Beat This! MIT (kod+ağırlık) · Essentia AGPL-3.0 (yerel analiz aracı olarak) · librosa ISC · mir_eval MIT · Demucs MIT · mlx-whisper MIT (Whisper ağırlıkları MIT) · pedalboard GPL-3.0"
+lisans = "Beat This! MIT (kod+ağırlık) · Essentia AGPL-3.0 (yerel analiz aracı olarak) · librosa ISC · mir_eval MIT · Demucs MIT · mlx-whisper MIT (Whisper ağırlıkları MIT) · pedalboard GPL-3.0 · speechbrain Apache-2.0"
 ticari = "evet"
-kurulum = "arac/uv venv --python 3.12 ortamlar/ses && arac/uv pip install --python ortamlar/ses/bin/python --no-build torch torchaudio 'beat-this==1.1.0' soundfile 'librosa==1.0.0' 'mir_eval==0.8.2' matplotlib scipy 'demucs==4.1.0' 'mlx-whisper==0.4.3' 'essentia==2.1b6.dev1389' 'pedalboard==0.9.25'"
+kurulum = "arac/uv venv --python 3.12 ortamlar/ses && arac/uv pip install --python ortamlar/ses/bin/python --no-build torch torchaudio 'beat-this==1.1.0' soundfile 'librosa==1.0.0' 'mir_eval==0.8.2' matplotlib scipy 'demucs==4.1.0' 'mlx-whisper==0.4.3' 'essentia==2.1b6.dev1389' 'pedalboard==0.9.25' 'speechbrain==1.1.1'"
 kontrol = "ortamlar/ses/bin/python -c 'import beat_this, essentia, librosa, mir_eval, demucs, mlx_whisper'"
 boyut_mb = 1200
 not = "Modeller ilk kullanımda iner (modeller/): Beat This! ~3×77 MB, Whisper large-v3-turbo ~1,6 GB, htdemucs ~80 MB. Essentia AGPL: dağıtılan yazılıma gömme."
@@ -294,8 +308,8 @@ ticari = "evet"
 kurulum = "curl -L -o ~/Downloads/kdenlive-26.08.1-arm64.dmg https://download.kde.org/stable/kdenlive/26.08/macOS/kdenlive-26.08.1-arm64.dmg && echo 'b606beaf42c0482a07c052bd2da384587b3aedcc948e7c885f954e195ff10bda  '$HOME/Downloads/kdenlive-26.08.1-arm64.dmg | shasum -a 256 -c && hdiutil attach -nobrowse -readonly -mountpoint ~/Downloads/kdenlive_dmg ~/Downloads/kdenlive-26.08.1-arm64.dmg && cp -R ~/Downloads/kdenlive_dmg/kdenlive.app /Applications/ && hdiutil detach ~/Downloads/kdenlive_dmg && rm ~/Downloads/kdenlive-26.08.1-arm64.dmg"
 kontrol = "ls /Applications/kdenlive.app"
 boyut_mb = 620
-etkin = false
-onay = "kullanıcı kararı (620 MB uygulama)"
+etkin = true
+onay = "kullanıcı onayladı ve kuruldu (2026-10-07)"
 not = "26.08.1, KDE noterli. .otio'yu yerel açar/yazar (OTIO 0.18.1 içinde). Telemetri kitaplığı bulunmadı (ölçüldü). Hız/efekt/kadraj/ses düzeyi aktarılmaz."
 
 [[saglayici]]
@@ -321,3 +335,23 @@ boyut_mb = 6692
 etkin = false
 onay = "ücretli yazılım (295 $) — kullanıcının açık kararı"
 not = "Resolve 21.1 (2026-09-08) yerleşik MCP: 'Claude Resolve'da kurgular' videolarındaki yol budur. Ücretsiz kural gereği kapalı. Alternatif: samuelgursky/davinci-resolve-mcp 4.8.28 (MIT; yine Studio ister). Kare analizi kareleri modele yollar (gizlilik kuralı)."
+
+[[saglayici]]
+ad = "flux2-klein"
+tur = "python-arac"
+lisans = "FLUX.2 [klein] 4B ağırlıkları Apache-2.0 (Qwen3-4B metin kodlayıcı dahil; mflux-community Q4 yeniden yüklemesi de apache-2.0) · mflux MIT"
+ticari = "evet"
+kurulum = "arac/uv tool install --python 3.13 'mflux==0.21.0' && .uv/tools/mflux/bin/python -c \"from huggingface_hub import snapshot_download as s; s('mflux-community/flux2-klein-4b-mflux-q4', revision='794cd159538149ad9830848508c31f0ea7088e58')\""
+kontrol = "ls arac/mflux-generate-flux2 modeller/hf/hub/models--mflux-community--flux2-klein-4b-mflux-q4/snapshots/794cd159538149ad9830848508c31f0ea7088e58/transformer/0.safetensors"
+boyut_mb = 5700
+not = "mflux ortamı ~1,1 GB (opencv<5 ister → ayrı uv aracı) + model 4,62 GB. Ölçüm: 1024² 4 adım ~84 sn, bellek tepesi 8,8 GB; düzenleme ~176 sn; aynı tohum = aynı görsel. FLUX.2 [klein] 9B ve [dev] ticari DEĞİL (kullanılmaz). Alternatif: Z-Image-Turbo Q4 (5,9 GB, daha iyi fotogerçekçilik/yazı; diskte tek model)."
+
+[[saglayici]]
+ad = "voxcpm2"
+tur = "python-arac"
+lisans = "VoxCPM2 kod ve ağırlık Apache-2.0 (OpenBMB; mlx-community 4-bit de apache-2.0) · mlx-audio MIT · doğrulama: SpeechBrain ECAPA Apache-2.0"
+ticari = "evet"
+kurulum = "arac/uv tool install --python 3.12 --prerelease=allow 'mlx-audio[tts]==0.5.8' && .uv/tools/mlx-audio/bin/python -c \"from huggingface_hub import snapshot_download as s; s('mlx-community/VoxCPM2-4bit', revision='dc9e5c187858da5f4a13dc4c247e297339216381')\" && ortamlar/ses/bin/python -c \"from huggingface_hub import snapshot_download as s; s('speechbrain/spkrec-ecapa-voxceleb', revision='0f99f2d0ebe89ac095bcc5903c4dd8f72b367286')\""
+kontrol = "ls .uv/tools/mlx-audio/bin/python modeller/hf/hub/models--mlx-community--VoxCPM2-4bit/snapshots/dc9e5c187858da5f4a13dc4c247e297339216381/config.json"
+boyut_mb = 2900
+not = "4-bit 2,3 GB + mlx-audio ortamı 0,5 GB + ECAPA 89 MB. Ölçüm (5 Türkçe cümle): Whisper CER %0,0; aynı tarifle ayrı üretim konuşmacı benzerliği 0,29 → kimlikten 0,73–0,76. 8-bit (3,2 GB) gerek görülmedi. Gerektirir: ses-ortami (Whisper + speechbrain)."

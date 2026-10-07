@@ -3,6 +3,19 @@
 Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders ilgili beceriye taşınır (taşındıysa
 "→ beceri" notu). En yeni üstte.
 
+## 2026-10-07 — üretici modeller (FLUX.2 klein, VoxCPM2) ve depo
+- **Bellek tepesi diski de yer:** FLUX.2 (8,8 GB) ve VoxCPM2 (7 GB) art arda çalışınca macOS takası 6 GB'a çıktı; takas
+  dosyaları diskten yer aldı, boş disk 6,9 → 1,4 GB. Yeniden başlatınca geri gelir. Önlem: `disk_bekcisi` (görsel
+  üretimi 3 GB, seslendirme 2,5 GB altında çalışmaz), ağır sınamalar yalnız `medya test --agir`; ağır ML'yi sırayla
+  çalıştır, çizimle aynı anda değil. → CLAUDE.md disk notu.
+- **VoxCPM2 aynı tarifle her çağrıda başka ses üretir** (konuşmacı benzerliği 0,29). Ses kimliği bir kez üretilip bütün
+  cümleler ondan türetilince 0,73–0,76 (ECAPA). Anlaşılırlık iki yolda da CER %0. → `medya seslendir`, ses-tasarimi.
+- **HF çevrimdışı kip:** sabit commit'le indirilen modelde `refs/main` yazılmaz; `HF_HUB_OFFLINE=1` ile repo adı
+  çözülmez. Komutlar modeli yerel anlık görüntü yoluyla çağırır (sabit sürüm + çevrimdışı). SpeechBrain'de
+  `overrides={"pretrained_path": yerel}` gerekir, yoksa ağdan arar.
+- **Herkese açık depo:** lisanssız satıcı içeriği (Remotion becerileri: depoda lisans yok) ve GSAP dağıtılmaz; kurulumda
+  sabit commit'ten üretilir (`satici.py`). Commit kimliği GitHub noreply (e-posta herkese açık olmasın).
+
 ## 2026-10-05 — uçtan uca sınama (deniz kenarı Reels, 15 sn)
 - Boru hattı baştan sona çalıştı; 3 bağımsız denetçi GEÇTİ. Süre ~3,7 saat (13 ajan), çoğu ölçüm ve 1 düzeltme turu.
 - **HyperFrames `-q delivery` 1080x1920'de H.264 seviye 5.0 verir** → dikey teslim kapısı (≤ 4.2) KALDIRIR. Doğrudan

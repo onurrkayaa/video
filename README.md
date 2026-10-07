@@ -14,6 +14,11 @@ Claude Code'u açıp (bu klasörde ya da herhangi bir yerde) isteğini yazman ye
 - "Yeni çıkan şu modeli sisteme ekleyelim mi?" — araştırır, kanıtla önerir; onayın olmadan kurmaz.
 - "Bu kurguyu DaVinci'de kendim de düzelteyim." — kurgunun `.otio` dosyasını verir; ücretsiz Resolve ya da Kdenlive açar.
 - "Duraklat" / "devam et" — uzun işi durdurur, kaldığı yeri `sistem/DURUM.md`'ye yazar; sonra oradan sürdürür.
+- "Bu metni sakin bir erkek sesiyle Türkçe seslendir." — yerel dış ses (VoxCPM2); aynı projede hep aynı ses.
+  Kendi sesinle istersen 10 sn'lik temiz bir kayıt ver.
+- "Ürün fotoğrafımı mermer bir masaya koy" / "şu konseptte üç görsel üret" — yerel görsel üretimi (FLUX.2 klein).
+- "Ne önerirsin?" / "Yeni çıkanları araştır, sistemi güncelleyelim." — baş ajan (yönetici) inceler, önerileri
+  maliyetiyle sunar; onaylarsan uygular ve sınar.
 
 Her iş `projeler/YYYY-AA-GG-ad/` altında kendi klasöründe yürür; asıl dosyaların salt okunur kopyalanır.
 Teslimden önce bağımsız bir denetçi ölçüm yapar; rapor neyin ölçüldüğünü ve neyi senin izleyip dinlemen
@@ -33,17 +38,22 @@ gerektiğini söyler.
 - İki kompozisyon motoru: **HyperFrames** (HTML + GSAP; her iş için serbest, varsayılan) ve **Remotion** (React;
   kişisel işlerde, yalnız dosya teslim ettiğin serbest işlerde ve en çok 3 kişilik şirket işlerinde ücretsiz —
   daha büyük şirkette ücretli lisans gerektiği için orada HyperFrames kullanılır).
+- Yerel üretim: görsel (FLUX.2 [klein] 4B, Apache-2.0) ve Türkçe dış ses (VoxCPM2, Apache-2.0) — hesap, bulut yok.
+- Elle ince ayar: Kdenlive kurulu (kurgunun `.otio` dosyasını açar).
 - Ağır çekim: gerçek yüksek fps → RIFE (1080p'ye kadar; gerçek kamerada en iyi ölçülen) ya da Apple ML (4K) → ffmpeg
   (biri takılırsa sıradakine geçer).
 - Kurgu programına devir: `medya nle` (.otio: DaVinci Resolve 18.5+, Kdenlive; .edl). "Claude DaVinci'yi yönetsin"
   yalnız ücretli Resolve Studio'nun MCP'siyle olur (295 $) — istemedikçe kapalı.
-- Uzman ajanlar (analist, kurgucu, hareket, ses, görsel, denetçi, gözcü) ve iş akışları (üretim, denetim, radar).
+- Baş ajan (yönetici: öneriler, aylık inceleme, güncelleme) ve uzman ajanlar (analist, kurgucu, hareket, ses, görsel,
+  denetçi, gözcü); iş akışları (üretim, denetim, radar, yönetim, güncelleme).
 - Ayrıntı: `CLAUDE.md` (sistemin kuralları ve mimarisi), `sistem/dersler.md`, `sistem/arastirma/`.
 
 ## Bakım
 - `medya test` — bütün yeteneklerin doğruluk sınamaları.
 - `zsh sistem/kur.sh` — yeni bilgisayarda ya da bozulunca yeniden kurulum.
 - `sistem/DURUM.md` — yarım kalan iş ve devam sırası; `sistem/gelistirme.md` — sıradaki geliştirmeler.
+- Disk dolarsa (büyük modeller belleği takasa taşırır): Mac'i yeniden başlatmak takas dosyalarını boşaltır;
+  `medya temizle --uygula` önbellekleri siler.
 - Apple'ın görüntü analizi/ağır çekimi "Neural Engine takılı" hatası verirse: Terminal'de
   `sudo killall ANECompilerService` (ya da Mac'i yeniden başlat).
 - `medya yetenekler --saglayicilar` — hangi iş hangi araçla yapılıyor, lisansları, boyutları.

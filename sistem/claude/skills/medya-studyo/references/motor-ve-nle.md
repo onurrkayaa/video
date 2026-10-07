@@ -39,6 +39,6 @@ HyperFrames'te `data-playback-rate` 1'in altına inerse kareler tekrarlanır. Bu
 - Yalnız kullanıcı açıkça satın alır ve isterse açılır.
 - Bu yolla kareler modele gider; gizlilik kuralı geçerli.
 
-**Kdenlive ve ücretsiz Resolve:** kullanıcının kurduğu uygulamalardır (`yetenekler.toml`'da `tur = "uygulama"`, `etkin = false`). Kurulum satırları kayıt defterinde; kurmak kullanıcının kararıdır:
-- Kdenlive: 620 MB.
-- Ücretsiz Resolve: 2,5 GB; App Store hesabı ya da kayıt formu gerekir.
+**Kdenlive ve ücretsiz Resolve:** kullanıcının uygulamalarıdır (`yetenekler.toml`'da `tur = "uygulama"`).
+- **Kdenlive 26.08.1 KURULU** (2026-10-07, `/Applications/kdenlive.app`, KDE noterli, SHA doğrulandı): .otio'yu Dosya > İçe Aktar ile açar.
+- Ücretsiz Resolve (daha güçlü renk/ses; 2,5 GB, App Store hesabı ya da kayıt formu): disk yetince kullanıcı App Store'dan kurar.

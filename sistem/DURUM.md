@@ -1,21 +1,21 @@
 # Stüdyo durumu — kaldığımız yer
 
-**2026-10-05 22:05 — İŞ YOK.** Kurulum ve geliştirme tamamlandı; yarım iş yok. Yeni istek gelince yeni proje aç.
+**2026-10-07 — İŞ YOK.** Kullanıcının 2026-10-07 kararları uygulandı; yarım iş yok. Yeni istek gelince yeni proje aç.
 (Uzun bir iş yarıda kalırsa bu dosyaya "DURAKLATILDI" + devam sırası yazılır; kurallar CLAUDE.md "Uzun işler".)
 
 ## Son durum (sınandı)
-- `medya test`: 101 sınama geçti (91 sn). /tmp'den açılan yeni oturumda 7 ajan + 8 beceri yüklendi.
-- Uçtan uca deneme `projeler/2026-10-05-deniz-kenari-deneme`: 3 bağımsız denetçi GEÇTİ; rapor `cikti/RAPOR.md`.
-- Bilgi tabanı: `sistem/arastirma/2026-10-05/remotion-davinci-yavascekim-bosluklar.md` (Remotion, DaVinci/NLE, ağır
-  çekim ölçümü, kapsam boşlukları; şüpheci doğrulamadan geçti).
-- Sıradaki geliştirmeler: `sistem/gelistirme.md`.
+- Kuruldu ve ölçüldü: FLUX.2 [klein] 4B (`medya gorsel-uret`; 1024² ~84 sn, 8,8 GB bellek; aynı tohum = aynı görsel),
+  VoxCPM2 4-bit (`medya seslendir`; Türkçe CER %0, ses kimliğiyle konuşmacı benzerliği 0,73–0,76), Kdenlive 26.08.1.
+- Baş ajan `medya-yonetici` + iş akışları `medya-yonetim` (öneri) ve `medya-guncelle` (onaylananı uygula);
+  oturum özeti kancası. GitHub: https://github.com/onurrkayaa/video (herkese açık, main).
+- `medya test`: hafif takım geçiyor; ağır üretici sınamaları `medya test --agir` (FLUX.2 + VoxCPM2, 2026-10-07 geçti).
 
 ## Kullanıcının kararını bekleyenler
-- Elle ince ayar programı: Kdenlive (620 MB) ya da ücretsiz DaVinci Resolve (2,5 GB; App Store hesabı ya da kayıt formu).
-- Yerel görsel üretimi: FLUX.2 [klein] 4B (5,6 GB). Türkçe dış ses modeli (~3 GB). DaVinci Resolve Studio MCP (295 $).
-- İş videolarında Remotion: işverenin kişi sayısı (4+ ise ücretli lisans → HyperFrames kullanılır).
-- Deneme projesinin ara dosyaları (`calisma/`, 1,2 GB) silinsin mi; git'e ilk kayıt (commit) yapılsın mı.
+- Disk dar (~3–7 GB boş; takas oynatıyor): Mac'i yeniden başlatmak takası boşaltır. `~/.npm` önbelleği (1,8 GB,
+  yeniden indirilebilir) silinsin mi?
+- Ücretsiz DaVinci Resolve (2,5 GB; App Store hesabı) — disk yetince; şimdilik Kdenlive.
+- Remotion 3B/Lottie ekleri (62 MB) ve VoxCPM2 8-bit (+0,9 GB) — disk açılınca, istenirse.
+- DaVinci Resolve Studio + yerleşik MCP (295 $, ücretli → kapalı) — yalnız açık istekle.
 
 ## Arşiv
-Bu oturumun ham araştırma/ölçüm dosyaları `sistem/devam/` altında (beceri tanımları `beceri-tanimlari.json` →
-`medya-beceri-yaz` iş akışının girdisi; ağır çekim ölçümü `yavas-cekim/`).
+Ham araştırma/ölçüm: `sistem/devam/` (beceri tanımları `beceri-tanimlari.json`; ağır çekim ölçümü `yavas-cekim/`).

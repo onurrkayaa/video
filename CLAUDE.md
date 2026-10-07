@@ -32,6 +32,8 @@ sistem değişmez: işler **yetenek** adıyla çağrılır (`medya <komut>`), ar
    ızgarası 2026-10-04'te "sesler kaymış" hatasına yol açtı.)
 4. Sıralamadan önce `medya ses-turu`: çekim sesi karışıksa ses kendi görüntüsüyle taşınır.
 5. Kullanıcıyla Türkçe konuş; raporda dosya yolları, ölçülenler ve ölçülemeyenler olsun; "mükemmel" deme.
+6. **İş sonunda öneriler** (kullanıcı özellikle istiyor): ölçülmüş bulgulara dayanan 1–5 somut öneri + kararını
+   bekleyen maddeler ayrı liste (boyut, lisans, maliyet). Önerileri onaysız uygulama.
 
 ## Mimari (üç katman)
 | Katman | Nerede | Ne yapar |
@@ -41,12 +43,14 @@ sistem değişmez: işler **yetenek** adıyla çağrılır (`medya <komut>`), ar
 | Bilgi | Beceriler `sistem/claude/skills/` (→ `~/.claude/skills/` bağlantı; satıcı becerileri sabit commit'le, `sistem/claude/satici/KAYNAKLAR.md`), bilgi tabanı `sistem/arastirma/<tarih>/`, dersler `sistem/dersler.md` | Zanaat, karar kuralları, araç seçimleri ve gerekçeleri |
 | Ajan | Ajanlar `sistem/claude/agents/` (→ `~/.claude/agents/`), iş akışları `.claude/workflows/`, kanca `sistem/claude/hooks/medya-koruma.py` | Uzman roller, uçtan uca boru hattı, kuralların zorlanması |
 
-**Ajanlar:** `medya-analist` (kaynak analizi → `analiz/OZET.md`), `medya-kurgucu` (`plan/kurgu.json`,
+**Baş ajan:** `medya-yonetici` — bütün sistemi görür; öncelikli, maliyeti belli, kanıtlı öneriler hazırlar; kurmaz,
+karar kullanıcının. **Uzman ajanlar:** `medya-analist` (kaynak analizi → `analiz/OZET.md`), `medya-kurgucu` (`plan/kurgu.json`,
 `KARARLAR.md`, ara klipler, NLE devri), `medya-hareket` (motor seçimi, kompozisyon, animasyon, çizim), `medya-ses`
 (müzik, katman, efekt, miks, ustalık), `medya-gorsel` (görseller), `medya-denetci` (salt okunur, şüpheci denetim),
 `medya-gozcu` (yeni araç araştırması; kurmaz).
 **İş akışları:** `medya-uretim` (analiz → plan → yapım → çizim → 3 mercekli denetim → düzeltme → rapor),
-`medya-denetim` (bağımsız denetim), `medya-radar` (teknoloji radarı), `medya-beceri-yaz` (beceri yaz/incele/düzelt;
+`medya-denetim` (bağımsız denetim), `medya-radar` (teknoloji radarı), `medya-yonetim` (baş ajan: inceleme + öneriler),
+`medya-guncelle` (onaylanan önerileri uygular), `medya-beceri-yaz` (beceri yaz/incele/düzelt;
 tanımlar `sistem/devam/beceri-tanimlari.json`). Stüdyo dışından:
 `Workflow({scriptPath: '/Users/onurkaya/Projects/video/.claude/workflows/<ad>.js', args: {...}})`.
 **Beceriler:** `medya-studyo` (giriş/yönlendirme), `kurgu-zanaati`, `hareket-tasarimi`, `ses-tasarimi`,
@@ -57,7 +61,9 @@ ve `remotion-best-practices` (başındaki stüdyo kuralları önce gelir).
 ## Motorlar ve lisans kapısı
 - **HyperFrames** her iş için serbest (Apache-2.0) — varsayılan.
 - **Remotion** yalnız `BRIEF.md` → Lisans bağlamı kişisel, yalnız dosya teslim edilen tek kişilik serbest iş ya da en
-  çok 3 kişilik şirket/ekipse. Şirket 4+ kişi, müşteri kodu alacak ya da bilinmiyorsa → HyperFrames (boşsa sor).
+  çok 3 kişilik şirket/ekipse. Kullanıcı beyanı (2026-10-07): stüdyoyu yalnız kendisi, kişisel işlerde ve yalnız dosya
+  teslim ettiği işlerde kullanıyor → varsayılan bağlam bu; yalnız 4+ kişilik işveren adına ya da müşteri kodu
+  alacaksa HyperFrames (o durumda sor).
   Lisans anahtarı ASLA (ücretsiz anahtar da kullanım olayı gönderir); Studio kendiliğinden açılmaz; Google Fonts,
   uzak varlık, web-renderer, Lambda yok (kanca engeller). 5.x'e lisans incelemesiz geçilmez. Son çizimde
   `--image-format=png --color-space=bt709`.
@@ -78,9 +84,9 @@ ve `remotion-best-practices` (başındaki stüdyo kuralları önce gelir).
    ya da beceri. Denetim (`medya-denetci` / `medya-denetim`) geçmeden "bitti" denmez.
 
 ## Komutlar (`medya --help`, ayrıntı `medya <komut> --help`)
-| İnceleme | Dönüştürme | Ses | Denetim | Sistem |
-|---|---|---|---|---|
-| `incele` `kontak` `sahneler` `analiz` `ses-turu` `ses-olay` `muzik` `yaziya-dok` | `sdr` `cfr` `yavaslat` `meta-temizle` `ayir` `arkaplan-sil` | `ses-temizle` `ustala` | `senkron` `denetle` `zamankodu` | `proje` `yetenekler` `kur` `test` `temizle` |
+| İnceleme | Dönüştürme | Üretim | Ses | Denetim | Sistem |
+|---|---|---|---|---|---|
+| `incele` `kontak` `sahneler` `analiz` `ses-turu` `ses-olay` `muzik` `yaziya-dok` | `sdr` `cfr` `yavaslat` `meta-temizle` `ayir` `arkaplan-sil` | `gorsel-uret` (FLUX.2 klein) `seslendir` (VoxCPM2) | `ses-temizle` `ustala` | `senkron` `denetle` `zamankodu` | `proje` `yetenekler` `kur` `test [--agir]` `temizle` |
 Teslim/devir: `nle` (kurgu planı → .otio / .edl). Kompozisyon/çizim: `hyperframes lint|check|snapshot --describe false|render`;
 Remotion: proje klasöründen `$MEDYA/node_modules/.bin/remotion still|render src/index.ts <Id> …`.
 Apple ML komutları bekçiyle çalışır: Neural Engine derleyicisi (`ANECompilerService`) takılıysa beklemeden hata
@@ -105,6 +111,15 @@ verir; çözüm kullanıcıda (`sudo killall ANECompilerService` ya da yeniden b
 - İş akışlarını küçük tut (~10 ajan); bağımsız dalgalar hâlinde çalıştır ki bir kesinti hepsini götürmesin.
   `resumeFromRunId` önbelleği SIRAYA bağlıdır: ilk değişen/bitmemiş ajandan sonrası yeniden koşar.
 
+## Yönetim ve güncelleme (baş ajan)
+- **"Öneri / ne yapalım / sistemin durumu"** → `medya-yonetim` iş akışı (radarsız, hızlı). **"Yeni çıkanları araştır,
+  sistemi güncelle"** → `medya-yonetim` `{radar: true}`. Rapor: `sistem/yonetim/<tarih>-oneriler.md` + `.json`.
+- Kullanıcı önerileri onaylayınca → `medya-guncelle` `{oneriler_json, onaylanan: ['O1', …]}`: öneri başına sabit
+  sürümlü kurulum + kayıt + uyarlayıcı + sınama + belge, bağımsız doğrulama, sonda tam `medya test`. Git commit/push
+  yalnız kullanıcı isterse (`commit`/`push` argümanları).
+- **Oturum özeti (SessionStart kancası `oturum-ozeti.py`):** yarım iş, son incelemeden geçen gün (30+ → incelemeyi
+  öner), bekleyen kararlar, disk, git. Ağır işten önce disk düşükse kullanıcıya söyle.
+
 ## Bakım ve gelişim
 - **Sınamalar:** `medya test` (doğruluk sınamaları: vuruş, sahne, ağır çekim, Whisper, Demucs, denetim, kanca).
   Bir yeteneği değiştirdikten sonra sınamalar geçmeden "çalışıyor" deme.
@@ -113,14 +128,19 @@ verir; çözüm kullanıcıda (`sudo killall ANECompilerService` ya da yeniden b
   Ücretli/bulut araçlar yalnız `etkin = false` sağlayıcı olarak yazılır; kullanıcı açıkça isterse açılır.
 - **Dersler:** her projeden sonra `sistem/dersler.md`'ye kısa ders; tekrar eden ders beceriye taşınır.
 - **Yeni makine / onarım:** `zsh sistem/kur.sh` (bağımlılıklar, Swift aracı, beceri ve ajan bağlantıları).
-- **Disk** (~15 GB boş, sınır 5 GB): modeller `modeller/`, Python önbelleği `.uv/`; temizlik `hyperframes clean`,
-  `arac/uv cache clean`. Büyük kurulumdan önce boyutu söyle ve sor.
+- **Disk** (taban 5 GB; 2026-10-07 kurulumlardan sonra ~3–7 GB boş — takas boyutuna göre oynar): modeller `modeller/`,
+  Python önbelleği `.uv/`; temizlik `medya temizle --uygula`. Büyük kurulumdan önce boyutu söyle ve sor.
+  **Takas:** FLUX.2 (~9 GB) / VoxCPM2 (~7 GB) bellek tepesi macOS takasını büyütür ve diskten yer alır (2026-10-07:
+  6 GB takas, boş disk 1,4 GB'a düştü). Ağır ML'yi sırayla çalıştır; `gorsel-uret`/`seslendir` diskte 3/2,5 GB altında
+  çalışmaz; yeniden başlatma takası boşaltır. Ağır sınamalar yalnız `medya test --agir`.
 
 ## Ortam gerçekleri (2026-10-05)
 Apple M2, 16 GB RAM, macOS 27. Homebrew kilitli (Xcode lisansı kabul edilmemiş; `sudo xcodebuild -license accept`
 kullanıcının kararı) → araçlar uv/npm/resmî ikili ile kurulur; Swift için `DEVELOPER_DIR=/Library/Developer/CommandLineTools`.
 Python 3.12 (`.venv`, uv), ağır ses yığını `ortamlar/ses` (torch, Beat This!, Essentia, librosa, Demucs, mlx-whisper),
 ffmpeg-static 6.0 (`arac/ffmpeg`), HyperFrames 0.8.124, Remotion 4.0.533 (kök `node_modules`), OTIO 0.18.1,
-RIFE 20221029 (`arac/rife`). Döngüde ffmpeg'e `-nostdin`; zsh'de değişken sözcüklere
+RIFE 20221029 (`arac/rife`), mflux 0.21.0 + FLUX.2 [klein] 4B Q4 (`.uv/tools/mflux`), mlx-audio 0.5.8 + VoxCPM2 4-bit
+(`.uv/tools/mlx-audio`), SpeechBrain ECAPA (ses doğrulama), Kdenlive 26.08.1 (`/Applications`). Satıcı becerileri
+(lisanssız) depoda tutulmaz: `sistem/claude/satici/satici.py kur`. Döngüde ffmpeg'e `-nostdin`; zsh'de değişken sözcüklere
 bölünmez (bayrakları açık yaz); ffmpeg `psnr` süzgeci farklı zaman damgalı akışlarda kare kaydırır (kareleri
 doğrudan çözüp karşılaştır).

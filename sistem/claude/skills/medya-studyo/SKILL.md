@@ -32,6 +32,9 @@ Her medya işi `/Users/onurkaya/Projects/video` stüdyosunda, bir proje klasör�
 | Fotoğraf, kapak, görsel | medya-gorsel | gorsel-uretim |
 | Teslim, denetim | medya-denetci | teslim-denetimi |
 | Yeni araç, ücretli servis | medya-gozcu | arac-radari |
+| Öneri, sistem durumu, "yeni çıkanları araştır, güncelle" | medya-yonetici (baş ajan) | arac-radari |
+
+Yönetim: `medya-yonetim` iş akışı (`{radar: true}` = yeni araç taraması) → rapor `sistem/yonetim/` → kullanıcı onayı → `medya-guncelle` (`{oneriler_json, onaylanan}`). Oturum özeti (kanca) son incelemeden 30 gün geçince söyler.
 
 İş akışları, duraklatma, satıcı becerileri, bağlı olmayan ajan/beceri, başka klasör: [yonlendirme](references/yonlendirme.md). Motor ve DaVinci/Kdenlive: [motor-ve-nle](references/motor-ve-nle.md).
 

@@ -46,18 +46,21 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 | lama-onnx | nesne silme | Apache-2.0 | 208 MB |
 | depth-anything-v2-small | 2.5D paralaks için derinlik | Apache-2.0 | 50 MB |
 | resvg | vektörleştirilmiş logoyu geri çizip denetleme | MPL-2.0 | 5 MB |
-| mflux + FLUX.2 [klein] 4B Q4 | yerel görsel üretimi | MIT + Apache-2.0 | **5,6 GB — kullanıcıya sor** |
 | @remotion/three, three, R3F, @remotion/lottie, lottie-web | Remotion'da 3B ve Lottie | Remotion License + MIT | 62 MB |
 | three 0.186.1 (HyperFrames içinde) | hafif 3B: dönen logo, parçacık | MIT | 20 MB |
 | Manim Community 0.21 [typst] | matematik/algoritma açıklayıcı | MIT | ~350 MB (Homebrew'suz yol sınanmadı) |
 | asciinema 3.2.1 + agg 1.9.0 | gerçek terminal oturumu → README GIF'i | GPL-3 (çıktı serbest) | 21 MB |
 | lottie-web 5.13.0 + dotlottie-web 0.80.0 | uygulama içi Lottie oynatma/doğrulama | MIT | 33 MB |
 | Blender 5.2.2 LTS | gerçekçi 3B (Cycles Metal) | GPL (çıktı serbest) | ~1,3 GB |
-| Kdenlive 26.08.1 | elle ince ayar (.otio) | GPL-3 | 620 MB — kullanıcı kararı |
-| DaVinci Resolve 21.1.1 (ücretsiz) | elle ince ayar, renk (.otio) | Blackmagic EULA | 2,5 GB — kullanıcı kararı |
+| DaVinci Resolve 21.1.1 (ücretsiz) | daha güçlü renk/ses ince ayarı (.otio) | Blackmagic EULA | 2,5 GB — disk yetince (Kdenlive kurulu) |
+| VoxCPM2 8-bit | dış ses (4-bit CER %0 ölçüldü; doğallık için) | Apache-2.0 | +0,9 GB — kullanıcı dinleyip isterse |
+| Z-Image-Turbo Q4 | fotogerçekçilik/görselde yazı (FLUX.2 klein'ın yanına) | Apache-2.0 | 5,9 GB — disk yetince |
 | DaVinci Resolve Studio + yerleşik MCP | ajanın Resolve'u sürmesi | ücretli 295 $ | 6,7 GB — yalnız açık onayla |
 
 ## Ölçüm borçları
+- `medya seslendir`: doğallık ölçülemez (kullanıcı dinler); konuşmacı benzerliği eşiği (0,5) 5 cümlelik örnekten — uzun
+  metinlerde (≥ 30 cümle) ölç; isteğe bağlı MOS tahmincisi (UTMOS) değerlendir.
+- `medya gorsel-uret --referans`: düzenlemede kenar kalıntısı görüldü (mermerde ahşap dokusu izi) — maske/kompozit yolu.
 - 4K kaynakta RIFE'nin (UHD kipi) süre/disk ölçümü; şimdilik 4K'da Apple önce (`yavaslat` docstring'i).
 - `medya nle` çıktısının Resolve ve Kdenlive'da gerçekten içe aktarılması (program kurulunca; kare sayaçlı sınama medyası).
 - Remotion'da gerçek telefon HEVC/HDR çekimi (yalnız sayısal modda, mahrem olmayan bir klip).

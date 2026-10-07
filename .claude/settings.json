@@ -7,6 +7,11 @@
             "type": "command",
             "command": "[ -n \"$CLAUDE_ENV_FILE\" ] && echo 'source /Users/onurkaya/Projects/video/ortam.sh' >> \"$CLAUDE_ENV_FILE\"; exit 0",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python3 /Users/onurkaya/Projects/video/sistem/claude/hooks/oturum-ozeti.py",
+            "timeout": 10
           }
         ]
       }

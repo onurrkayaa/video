@@ -75,6 +75,19 @@ def ane_tikanikligi(ps_ciktisi: str | None = None) -> str | None:
     return None
 
 
+def disk_bekcisi(gerekli_gb: float, is_adi: str) -> None:
+    """Ağır ML işinden önce boş disk denetimi. 16 GB'lık Mac'te 7–9 GB bellek tepesi macOS takasını GB'larca büyütür;
+    takas dosyaları diskten yer alır (2026-10-07: 6 GB takas, boş disk 6,9 → 1,4 GB). Disk dolarsa sistem kararsızlaşır."""
+    bos = shutil.disk_usage(KOK).free / 1e9
+    cozum = ("Çözüm: Mac'i yeniden başlat (takas dosyaları silinir), `medya temizle --uygula`, büyük gereksiz dosyaları "
+             "sil; açık ağır uygulamaları kapat.")
+    if bos < gerekli_gb:
+        raise MedyaHatasi(f"{is_adi}: boş disk {bos:.1f} GB, en az {gerekli_gb:g} GB gerekli (model belleği takasa "
+                          f"taşabilir). {cozum}")
+    if bos < gerekli_gb + 2.5:
+        uyar(f"{is_adi}: boş disk {bos:.1f} GB, az. Takas büyürse sistem yavaşlar. {cozum}")
+
+
 def apple_calistir(komut: list[str], zaman_asimi: float, hata_mesaji: str) -> subprocess.CompletedProcess:
     """arac/medya-apple'ı bekçiyle çalıştırır: Neural Engine takılıysa hiç başlamaz, süre aşılırsa öldürülür.
     Her iki durumda da MedyaHatasi (yedeği olan yetenek — ör. yavaslat → ffmpeg — ona düşer)."""

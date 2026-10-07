@@ -5,6 +5,7 @@ boyutunu gösterir. Ücretli/bulut sağlayıcılar (etkin=false) kullanıcının
 """
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
@@ -69,7 +70,10 @@ def test_(args) -> int:
     komut = [sys.executable, "-m", "pytest", "-q", str(KOK / "testler")]
     if args.yetenek:
         komut += ["-k", args.yetenek]
-    return subprocess.run(komut, cwd=KOK).returncode
+    ortam = dict(os.environ)
+    if args.agir:                       # 7–9 GB bellek isteyen üretici modeller (FLUX.2, VoxCPM2): yalnız istenince
+        ortam["MEDYA_AGIR_TEST"] = "1"
+    return subprocess.run(komut, cwd=KOK, env=ortam).returncode
 
 
 def kaydet(alt, ad):
@@ -83,6 +87,8 @@ def kaydet(alt, ad):
         p.add_argument("--yeniden", action="store_true")
         p.set_defaults(islev=kur_)
     elif ad == "test":
-        p = alt.add_parser(ad, help="duman testleri")
+        p = alt.add_parser(ad, help="doğruluk sınamaları")
         p.add_argument("yetenek", nargs="?")
+        p.add_argument("--agir", action="store_true",
+                       help="ağır üretici model sınamalarını da koş (FLUX.2 ~9 GB, VoxCPM2 ~7 GB bellek; takas büyütür)")
         p.set_defaults(islev=test_)
