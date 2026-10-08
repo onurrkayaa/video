@@ -1,0 +1,1155 @@
+{
+ "ffmpeg": "ffmpeg version 6.0 Copyright (c) 2000-2023 the FFmpeg developers",
+ "sdr": {
+  "etiketsiz_1280x720": {
+   "kaynak_matris": "yok",
+   "giris_matrisi_bugun": "bt709",
+   "hf_cubuk_kaynak": {
+    "beyaz75": [
+     189,
+     189,
+     189
+    ],
+    "sari": [
+     189,
+     188,
+     0
+    ],
+    "camgobegi": [
+     0,
+     189,
+     188
+    ],
+    "yesil": [
+     0,
+     189,
+     0
+    ],
+    "eflatun": [
+     189,
+     0,
+     190
+    ],
+    "kirmizi": [
+     189,
+     0,
+     0
+    ],
+    "mavi": [
+     0,
+     0,
+     189
+    ]
+   },
+   "olceksiz": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 74.86,
+      "en_kotu": 74.81
+     },
+     "U": {
+      "ort": 69.36,
+      "en_kotu": 69.29
+     },
+     "V": {
+      "ort": 66.87,
+      "en_kotu": 66.87
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 31.21,
+      "en_kotu": 31.21
+     },
+     "U": {
+      "ort": 36.1,
+      "en_kotu": 36.1
+     },
+     "V": {
+      "ort": 35.4,
+      "en_kotu": 35.4
+     }
+    },
+    "hf_fark_ort": 0.01,
+    "hf_fark_en_cok": 5,
+    "hf_cubuk": {
+     "beyaz75": [
+      189,
+      189,
+      189
+     ],
+     "sari": [
+      189,
+      188,
+      0
+     ],
+     "camgobegi": [
+      0,
+      189,
+      188
+     ],
+     "yesil": [
+      0,
+      189,
+      0
+     ],
+     "eflatun": [
+      189,
+      0,
+      190
+     ],
+     "kirmizi": [
+      189,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      189
+     ]
+    }
+   },
+   "olcek_eski": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 31.16,
+      "en_kotu": 31.16
+     },
+     "U": {
+      "ort": 36.05,
+      "en_kotu": 36.05
+     },
+     "V": {
+      "ort": 35.31,
+      "en_kotu": 35.31
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 62.37,
+      "en_kotu": 62.37
+     },
+     "U": {
+      "ort": 63.59,
+      "en_kotu": 63.56
+     },
+     "V": {
+      "ort": 63.66,
+      "en_kotu": 63.64
+     }
+    },
+    "hf_fark_ort": 5.18,
+    "hf_fark_en_cok": 83,
+    "hf_cubuk": {
+     "beyaz75": [
+      185,
+      187,
+      187
+     ],
+     "sari": [
+      185,
+      201,
+      2
+     ],
+     "camgobegi": [
+      12,
+      208,
+      183
+     ],
+     "yesil": [
+      8,
+      219,
+      1
+     ],
+     "eflatun": [
+      169,
+      0,
+      181
+     ],
+     "kirmizi": [
+      168,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      178
+     ]
+    }
+   },
+   "olcek_bugun": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 63.0,
+      "en_kotu": 62.99
+     },
+     "U": {
+      "ort": 61.51,
+      "en_kotu": 61.51
+     },
+     "V": {
+      "ort": 63.34,
+      "en_kotu": 63.34
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 31.17,
+      "en_kotu": 31.17
+     },
+     "U": {
+      "ort": 36.02,
+      "en_kotu": 36.02
+     },
+     "V": {
+      "ort": 35.32,
+      "en_kotu": 35.32
+     }
+    },
+    "hf_fark_ort": 0.42,
+    "hf_fark_en_cok": 33,
+    "hf_cubuk": {
+     "beyaz75": [
+      189,
+      189,
+      189
+     ],
+     "sari": [
+      189,
+      188,
+      0
+     ],
+     "camgobegi": [
+      0,
+      189,
+      188
+     ],
+     "yesil": [
+      0,
+      189,
+      0
+     ],
+     "eflatun": [
+      189,
+      0,
+      190
+     ],
+     "kirmizi": [
+      189,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      189
+     ]
+    }
+   }
+  },
+  "bt709_1280x720": {
+   "kaynak_matris": "bt709",
+   "giris_matrisi_bugun": "auto",
+   "hf_cubuk_kaynak": {
+    "beyaz75": [
+     189,
+     189,
+     189
+    ],
+    "sari": [
+     189,
+     188,
+     0
+    ],
+    "camgobegi": [
+     0,
+     189,
+     188
+    ],
+    "yesil": [
+     0,
+     189,
+     0
+    ],
+    "eflatun": [
+     189,
+     0,
+     190
+    ],
+    "kirmizi": [
+     189,
+     0,
+     0
+    ],
+    "mavi": [
+     0,
+     0,
+     189
+    ]
+   },
+   "olceksiz": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 74.86,
+      "en_kotu": 74.81
+     },
+     "U": {
+      "ort": 69.36,
+      "en_kotu": 69.29
+     },
+     "V": {
+      "ort": 66.87,
+      "en_kotu": 66.87
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 31.21,
+      "en_kotu": 31.21
+     },
+     "U": {
+      "ort": 36.1,
+      "en_kotu": 36.1
+     },
+     "V": {
+      "ort": 35.4,
+      "en_kotu": 35.4
+     }
+    },
+    "hf_fark_ort": 0.01,
+    "hf_fark_en_cok": 5,
+    "hf_cubuk": {
+     "beyaz75": [
+      189,
+      189,
+      189
+     ],
+     "sari": [
+      189,
+      188,
+      0
+     ],
+     "camgobegi": [
+      0,
+      189,
+      188
+     ],
+     "yesil": [
+      0,
+      189,
+      0
+     ],
+     "eflatun": [
+      189,
+      0,
+      190
+     ],
+     "kirmizi": [
+      189,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      189
+     ]
+    }
+   },
+   "olcek_eski": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 63.0,
+      "en_kotu": 62.99
+     },
+     "U": {
+      "ort": 61.51,
+      "en_kotu": 61.51
+     },
+     "V": {
+      "ort": 63.34,
+      "en_kotu": 63.34
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 31.17,
+      "en_kotu": 31.17
+     },
+     "U": {
+      "ort": 36.02,
+      "en_kotu": 36.02
+     },
+     "V": {
+      "ort": 35.32,
+      "en_kotu": 35.32
+     }
+    },
+    "hf_fark_ort": 0.42,
+    "hf_fark_en_cok": 33,
+    "hf_cubuk": {
+     "beyaz75": [
+      189,
+      189,
+      189
+     ],
+     "sari": [
+      189,
+      188,
+      0
+     ],
+     "camgobegi": [
+      0,
+      189,
+      188
+     ],
+     "yesil": [
+      0,
+      189,
+      0
+     ],
+     "eflatun": [
+      189,
+      0,
+      190
+     ],
+     "kirmizi": [
+      189,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      189
+     ]
+    }
+   },
+   "olcek_bugun": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 63.0,
+      "en_kotu": 62.99
+     },
+     "U": {
+      "ort": 61.51,
+      "en_kotu": 61.51
+     },
+     "V": {
+      "ort": 63.34,
+      "en_kotu": 63.34
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 31.17,
+      "en_kotu": 31.17
+     },
+     "U": {
+      "ort": 36.02,
+      "en_kotu": 36.02
+     },
+     "V": {
+      "ort": 35.32,
+      "en_kotu": 35.32
+     }
+    },
+    "hf_fark_ort": 0.42,
+    "hf_fark_en_cok": 33,
+    "hf_cubuk": {
+     "beyaz75": [
+      189,
+      189,
+      189
+     ],
+     "sari": [
+      189,
+      188,
+      0
+     ],
+     "camgobegi": [
+      0,
+      189,
+      188
+     ],
+     "yesil": [
+      0,
+      189,
+      0
+     ],
+     "eflatun": [
+      189,
+      0,
+      190
+     ],
+     "kirmizi": [
+      189,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      189
+     ]
+    }
+   }
+  },
+  "smpte170m_1280x720": {
+   "kaynak_matris": "smpte170m",
+   "giris_matrisi_bugun": "auto",
+   "hf_cubuk_kaynak": {
+    "beyaz75": [
+     189,
+     189,
+     189
+    ],
+    "sari": [
+     188,
+     203,
+     6
+    ],
+    "camgobegi": [
+     15,
+     210,
+     187
+    ],
+    "yesil": [
+     13,
+     222,
+     4
+    ],
+    "eflatun": [
+     174,
+     0,
+     185
+    ],
+    "kirmizi": [
+     173,
+     0,
+     1
+    ],
+    "mavi": [
+     0,
+     0,
+     182
+    ]
+   },
+   "olceksiz": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 74.86,
+      "en_kotu": 74.81
+     },
+     "U": {
+      "ort": 69.36,
+      "en_kotu": 69.29
+     },
+     "V": {
+      "ort": 66.87,
+      "en_kotu": 66.87
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 31.21,
+      "en_kotu": 31.21
+     },
+     "U": {
+      "ort": 36.1,
+      "en_kotu": 36.1
+     },
+     "V": {
+      "ort": 35.4,
+      "en_kotu": 35.4
+     }
+    },
+    "hf_fark_ort": 3.53,
+    "hf_fark_en_cok": 33,
+    "hf_cubuk": {
+     "beyaz75": [
+      189,
+      189,
+      189
+     ],
+     "sari": [
+      189,
+      188,
+      0
+     ],
+     "camgobegi": [
+      0,
+      189,
+      188
+     ],
+     "yesil": [
+      0,
+      189,
+      0
+     ],
+     "eflatun": [
+      189,
+      0,
+      190
+     ],
+     "kirmizi": [
+      189,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      189
+     ]
+    }
+   },
+   "olcek_eski": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 31.16,
+      "en_kotu": 31.16
+     },
+     "U": {
+      "ort": 36.05,
+      "en_kotu": 36.05
+     },
+     "V": {
+      "ort": 35.31,
+      "en_kotu": 35.31
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 62.37,
+      "en_kotu": 62.37
+     },
+     "U": {
+      "ort": 63.59,
+      "en_kotu": 63.56
+     },
+     "V": {
+      "ort": 63.66,
+      "en_kotu": 63.64
+     }
+    },
+    "hf_fark_ort": 2.73,
+    "hf_fark_en_cok": 73,
+    "hf_cubuk": {
+     "beyaz75": [
+      185,
+      187,
+      187
+     ],
+     "sari": [
+      185,
+      201,
+      2
+     ],
+     "camgobegi": [
+      12,
+      208,
+      183
+     ],
+     "yesil": [
+      8,
+      219,
+      1
+     ],
+     "eflatun": [
+      169,
+      0,
+      181
+     ],
+     "kirmizi": [
+      168,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      178
+     ]
+    }
+   },
+   "olcek_bugun": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 31.16,
+      "en_kotu": 31.16
+     },
+     "U": {
+      "ort": 36.05,
+      "en_kotu": 36.05
+     },
+     "V": {
+      "ort": 35.31,
+      "en_kotu": 35.31
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 62.37,
+      "en_kotu": 62.37
+     },
+     "U": {
+      "ort": 63.59,
+      "en_kotu": 63.56
+     },
+     "V": {
+      "ort": 63.66,
+      "en_kotu": 63.64
+     }
+    },
+    "hf_fark_ort": 2.73,
+    "hf_fark_en_cok": 73,
+    "hf_cubuk": {
+     "beyaz75": [
+      185,
+      187,
+      187
+     ],
+     "sari": [
+      185,
+      201,
+      2
+     ],
+     "camgobegi": [
+      12,
+      208,
+      183
+     ],
+     "yesil": [
+      8,
+      219,
+      1
+     ],
+     "eflatun": [
+      169,
+      0,
+      181
+     ],
+     "kirmizi": [
+      168,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      178
+     ]
+    }
+   }
+  },
+  "etiketsiz_640x360": {
+   "kaynak_matris": "yok",
+   "giris_matrisi_bugun": "bt601",
+   "hf_cubuk_kaynak": {
+    "beyaz75": [
+     189,
+     189,
+     189
+    ],
+    "sari": [
+     188,
+     203,
+     6
+    ],
+    "camgobegi": [
+     15,
+     210,
+     187
+    ],
+    "yesil": [
+     13,
+     222,
+     4
+    ],
+    "eflatun": [
+     174,
+     0,
+     185
+    ],
+    "kirmizi": [
+     173,
+     0,
+     1
+    ],
+    "mavi": [
+     0,
+     0,
+     182
+    ]
+   },
+   "olceksiz": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 67.76,
+      "en_kotu": 67.74
+     },
+     "U": {
+      "ort": 66.61,
+      "en_kotu": 66.6
+     },
+     "V": {
+      "ort": 64.97,
+      "en_kotu": 64.93
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 31.27,
+      "en_kotu": 31.27
+     },
+     "U": {
+      "ort": 36.16,
+      "en_kotu": 36.16
+     },
+     "V": {
+      "ort": 35.39,
+      "en_kotu": 35.39
+     }
+    },
+    "hf_fark_ort": 3.5,
+    "hf_fark_en_cok": 34,
+    "hf_cubuk": {
+     "beyaz75": [
+      189,
+      189,
+      189
+     ],
+     "sari": [
+      189,
+      188,
+      0
+     ],
+     "camgobegi": [
+      0,
+      189,
+      188
+     ],
+     "yesil": [
+      0,
+      189,
+      0
+     ],
+     "eflatun": [
+      189,
+      0,
+      190
+     ],
+     "kirmizi": [
+      189,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      189
+     ]
+    }
+   },
+   "olcek_eski": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 31.23,
+      "en_kotu": 31.23
+     },
+     "U": {
+      "ort": 32.81,
+      "en_kotu": 32.81
+     },
+     "V": {
+      "ort": 32.75,
+      "en_kotu": 32.75
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 57.76,
+      "en_kotu": 57.76
+     },
+     "U": {
+      "ort": 59.95,
+      "en_kotu": 59.92
+     },
+     "V": {
+      "ort": 59.23,
+      "en_kotu": 59.21
+     }
+    },
+    "hf_fark_ort": 3.34,
+    "hf_fark_en_cok": 228,
+    "hf_cubuk": {
+     "beyaz75": [
+      185,
+      187,
+      187
+     ],
+     "sari": [
+      185,
+      201,
+      2
+     ],
+     "camgobegi": [
+      12,
+      208,
+      183
+     ],
+     "yesil": [
+      8,
+      219,
+      1
+     ],
+     "eflatun": [
+      169,
+      0,
+      181
+     ],
+     "kirmizi": [
+      168,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      178
+     ]
+    }
+   },
+   "olcek_bugun": {
+    "yontem": "dogal",
+    "kare": 30,
+    "cikti_matris": "bt709",
+    "psnr_duz": {
+     "Y": {
+      "ort": 31.23,
+      "en_kotu": 31.23
+     },
+     "U": {
+      "ort": 32.81,
+      "en_kotu": 32.81
+     },
+     "V": {
+      "ort": 32.75,
+      "en_kotu": 32.75
+     }
+    },
+    "psnr_601_709": {
+     "Y": {
+      "ort": 57.76,
+      "en_kotu": 57.76
+     },
+     "U": {
+      "ort": 59.95,
+      "en_kotu": 59.92
+     },
+     "V": {
+      "ort": 59.23,
+      "en_kotu": 59.21
+     }
+    },
+    "hf_fark_ort": 3.34,
+    "hf_fark_en_cok": 228,
+    "hf_cubuk": {
+     "beyaz75": [
+      185,
+      187,
+      187
+     ],
+     "sari": [
+      185,
+      201,
+      2
+     ],
+     "camgobegi": [
+      12,
+      208,
+      183
+     ],
+     "yesil": [
+      8,
+      219,
+      1
+     ],
+     "eflatun": [
+      169,
+      0,
+      181
+     ],
+     "kirmizi": [
+      168,
+      0,
+      0
+     ],
+     "mavi": [
+      0,
+      0,
+      178
+     ]
+    }
+   }
+  }
+ },
+ "hdr": {
+  "dogal_ayarsiz": {
+   "yontem": "dogal",
+   "kare": 90,
+   "cikti_matris": null,
+   "psnr": {
+    "Y": {
+     "ort": 24.09,
+     "en_kotu": 23.94
+    },
+    "U": {
+     "ort": 30.71,
+     "en_kotu": 30.6
+    },
+    "V": {
+     "ort": 30.7,
+     "en_kotu": 30.57
+    }
+   },
+   "sinama_olcutu_gri_en_kotu": 22.68
+  },
+  "dogal_ayarli_setparams_yok": {
+   "yontem": "dogal",
+   "kare": 90,
+   "cikti_matris": null,
+   "psnr": {
+    "Y": {
+     "ort": 51.13,
+     "en_kotu": 48.94
+    },
+    "U": {
+     "ort": 39.25,
+     "en_kotu": 38.9
+    },
+    "V": {
+     "ort": 38.98,
+     "en_kotu": 38.27
+    }
+   },
+   "sinama_olcutu_gri_en_kotu": 46.31
+  },
+  "dogal_bugun": {
+   "yontem": "dogal",
+   "kare": 90,
+   "cikti_matris": "bt709",
+   "psnr": {
+    "Y": {
+     "ort": 51.13,
+     "en_kotu": 48.94
+    },
+    "U": {
+     "ort": 39.25,
+     "en_kotu": 38.9
+    },
+    "V": {
+     "ort": 38.98,
+     "en_kotu": 38.27
+    }
+   },
+   "sinama_olcutu_gri_en_kotu": 46.31
+  },
+  "ara_ayarsiz": {
+   "yontem": "ffmpeg",
+   "kare": 180,
+   "cikti_matris": "bt709",
+   "psnr": {
+    "Y": {
+     "ort": 24.11,
+     "en_kotu": 23.96
+    },
+    "U": {
+     "ort": 30.59,
+     "en_kotu": 30.46
+    },
+    "V": {
+     "ort": 30.64,
+     "en_kotu": 30.47
+    }
+   },
+   "sinama_olcutu_gri_en_kotu": 22.7
+  },
+  "ara_ayarli_setparams_yok": {
+   "yontem": "ffmpeg",
+   "kare": 180,
+   "cikti_matris": "bt709",
+   "psnr": {
+    "Y": {
+     "ort": 49.91,
+     "en_kotu": 48.71
+    },
+    "U": {
+     "ort": 38.74,
+     "en_kotu": 38.11
+    },
+    "V": {
+     "ort": 38.53,
+     "en_kotu": 37.77
+    }
+   },
+   "sinama_olcutu_gri_en_kotu": 45.63
+  },
+  "ara_bugun": {
+   "yontem": "ffmpeg",
+   "kare": 180,
+   "cikti_matris": "bt709",
+   "psnr": {
+    "Y": {
+     "ort": 49.91,
+     "en_kotu": 48.71
+    },
+    "U": {
+     "ort": 38.74,
+     "en_kotu": 38.11
+    },
+    "V": {
+     "ort": 38.53,
+     "en_kotu": 37.77
+    }
+   },
+   "sinama_olcutu_gri_en_kotu": 45.63
+  }
+ }
+}

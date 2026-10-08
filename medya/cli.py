@@ -41,6 +41,7 @@ KOMUTLAR = {
     "ustala": ("ustala", "ses düzeyini hedefe getirir (LUFS + gerçek tepe), görüntüye dokunmaz"),
     "senkron": ("senkron", "kesimlerin vuruşa uzaklığını ölçer"),
     "denetle": ("denetle", "teslim öncesi kalite denetimi: siyah/donma/flaş kare, ses, senkron, üst veri"),
+    "ciz": ("ciz", "kurgu planını HyperFrames'siz, doğrudan ffmpeg ile çizer (kesim, erime, kadraj, punch/Ken Burns, ses)"),
     "nle": ("nle", "kurgu planını kurgu programına aktarır: DaVinci Resolve, Kdenlive (.otio), EDL"),
     "zamankodu": ("zamankodu", "gözden geçirme taslağı: köşede dk:sn.kare (geri bildirim için; teslim değil)"),
     "temizle": ("temizle", "disk bütçesi: yeniden üretilebilir önbellekleri raporla/temizle"),

@@ -161,13 +161,15 @@ def test_sabit_izgara_kayan_tempoda_basarisiz(veri):
 
 
 # ------------------------------------------------------------------ yeni yetenekler (Apple çerçeveleri, Whisper, Demucs)
-def _kareler(yol, w=640, h=360):
-    """Videonun bütün karelerini gri ve küçültülmüş olarak doğrudan çözer (sıra = kare sırası).
-    ffmpeg'in psnr süzgeci zaman damgası farklı akışlarda kare kaydırabildiği için kullanılmaz."""
+def _kareler(yol, w=640, h=360, on=""):
+    """Videonun bütün karelerini gri ve küçültülmüş olarak doğrudan çözer (sıra = kare sırası); `on`: önce uygulanacak
+    süzgeç (ör. başvuru kırpımı, virgülle biter). ffmpeg'in psnr süzgeci zaman damgası farklı akışlarda kare
+    kaydırabildiği için kullanılmaz."""
     import subprocess
     import numpy as np
     from medya.ortak import ffmpeg
-    r = subprocess.run([ffmpeg(), "-nostdin", "-v", "error", "-i", str(yol), "-vf", f"scale={w}:{h}:flags=area,format=gray",
+    r = subprocess.run([ffmpeg(), "-nostdin", "-v", "error", "-i", str(yol), "-vf",
+                        f"{on}scale={w}:{h}:flags=area,format=gray",
                         "-fps_mode", "passthrough", "-f", "rawvideo", "-"], capture_output=True, check=True)
     return np.frombuffer(r.stdout, np.uint8).reshape(-1, h, w).astype(float)
 
@@ -229,6 +231,198 @@ def test_yavaslat_dogal_yol(tmp_path):
     r = yavaslat(str(VERI / "hareket120.mp4"), str(tmp_path / "d.mov"), 0.25)
     assert r["yontem"] == "dogal"
     assert abs(float(probe(tmp_path / "d.mov")["format"]["duration"]) - 4.0) < 0.1
+
+
+# ---- yavaslat --kirp/--olcek (O3, 2026-10-08): 4K kaynaktan teslim boyutunda ağır çekim
+KIRP_4K, VF_4K = "1312,0,1216,2160", "crop=1216:2160:1312:0,scale=1080:1920:flags=lanczos,"
+
+
+@pytest.fixture(scope="module")
+def kaynak_4k(tmp_path_factory):
+    """3840x2160 testsrc2, 60 fps 0,5 sn ve onun çift kareleri (30 fps): tek kez üretilir."""
+    from medya.ortak import ffmpeg
+    d = tmp_path_factory.mktemp("kaynak4k")
+    renk = ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv"]
+    kod = ["-c:v", "libx264", "-crf", "10", "-preset", "ultrafast", "-pix_fmt", "yuv420p", *renk]
+    ff = lambda *a: subprocess.run([ffmpeg(), "-nostdin", "-v", "error", "-y", *a], check=True)
+    ff("-f", "lavfi", "-i", "testsrc2=s=3840x2160:r=60:d=0.5", *kod, str(d / "k60.mp4"))
+    ff("-i", str(d / "k60.mp4"), "-vf", "select='not(mod(n\\,2))',setpts=N/30/TB", "-r", "30", *kod, str(d / "k30.mp4"))
+    return d / "k60.mp4", d / "k30.mp4"
+
+
+def _teslim_klibi(yol, w, h, fps, kare):
+    """Boyut, sabit kare hızı, kare sayısı ve bt709 etiketleri."""
+    from medya.komutlar.incele import incele_dosya
+    from medya.ortak import probe, video_akisi
+    v = video_akisi(probe(yol))
+    assert (int(v["width"]), int(v["height"])) == (w, h)
+    assert v["r_frame_rate"] == f"{fps}/1" and v["avg_frame_rate"] == f"{fps}/1" and int(v["nb_frames"]) == kare, v
+    assert (v.get("color_space"), v.get("color_transfer"), v.get("color_primaries")) == ("bt709",) * 3
+    assert not any("VFR" in u for u in incele_dosya(yol)["uyarilar"])
+
+
+def test_yavaslat_kirp_olcek_dogal_yol_4k(tmp_path, kaynak_4k):
+    """4K60 → 0,5x, --kirp --olcek 1080x1920: doğal yol (ara kare yok) doğrudan teslim boyutunda; her çıktı karesi
+    kaynağın aynı karesinin kırpılıp ölçeklenmiş hâli. Doğal yol eskiden kırpmayı hiç görmezdi (deneme projesi)."""
+    from medya.komutlar.yavaslat import yavaslat
+    k60, _ = kaynak_4k
+    r = yavaslat(str(k60), str(tmp_path / "d.mov"), 0.5, kirp=KIRP_4K, olcek="1080x1920")
+    assert r["yontem"] == "dogal"
+    _teslim_klibi(tmp_path / "d.mov", 1080, 1920, 30, 30)
+    y, ref = _kareler(tmp_path / "d.mov", 540, 960), _kareler(k60, 540, 960, VF_4K)
+    yanlis = _kareler(k60, 540, 960, VF_4K.replace(":1312:", ":1112:"))      # 200 px kaymış kırpım
+    assert len(y) == len(ref) == 30
+    assert min(_psnr(a, b) for a, b in zip(y, ref)) > 40
+    assert max(_psnr(a, b) for a, b in zip(y, yanlis)) < 25                 # kırpımın yeri gerçekten denetleniyor
+
+
+def test_yavaslat_kirp_olcek_ara_kare_yolu_4k(tmp_path, kaynak_4k):
+    """4K30 → 0,5x aynı kırp/ölçek, .mp4 (HyperFrames'e girecek biçim): ara kareler kırpılmış 1080x1920 karede
+    üretilir, bu yüzden RIFE ilk sırada (yöntem sırası hazır kareye bakar); çift kareler kaynağın kırpılmış kareleri."""
+    import shutil
+    from medya.komutlar.yavaslat import RIFE, RIFE_MODEL, yavaslat
+    _, k30 = kaynak_4k
+    r = yavaslat(str(k30), str(tmp_path / "a.mp4"), 0.5, kirp=KIRP_4K, olcek="1080x1920")
+    assert r["kat"] == 2 and r["hazir_fps"] == 30
+    if RIFE.exists() and RIFE_MODEL.exists() and shutil.disk_usage(KOK).free / 1e9 >= 5.5:
+        assert r["yontem"] == "rife", r
+    _teslim_klibi(tmp_path / "a.mp4", 1080, 1920, 30, 30)
+    y, ref = _kareler(tmp_path / "a.mp4", 540, 960), _kareler(k30, 540, 960, VF_4K)
+    assert min(_psnr(y[2 * j], ref[j]) for j in range(len(ref))) > 38
+
+
+@pytest.mark.parametrize("yol", ["dogal", "ara"])
+def test_yavaslat_hdr_ton_esleme_sonra_kirp_olcek(tmp_path, yol):
+    """HLG kaynak: ton eşleme kırpma/ölçekten önce, ölçek renk matrisini ve etiketini bozmaz. Başvuru: bugünkü ton
+    eşleme → yuv420p → kırp/ölçek. Renk ayarsız scale RGB'yi yanlış matris/aralıkla YUV'ye çeviriyordu (Y 24 dB);
+    etiketsiz doğal yol ProRes'inde matris "unknown" kalıyordu (ikisi de 2026-10-08)."""
+    from medya.komutlar.incele import incele_dosya
+    from medya.komutlar.yavaslat import yavaslat
+    kw = {"fps": 15} if yol == "dogal" else {"yontem": "ffmpeg"}
+    r = yavaslat(str(VERI / "hdr_hlg.mp4"), str(tmp_path / "h.mov"), 0.5, kirp="160,0,320,360", olcek="160x180", **kw)
+    assert r["yontem"] == ("dogal" if yol == "dogal" else "ffmpeg")
+    _teslim_klibi(tmp_path / "h.mov", 160, 180, 15 if yol == "dogal" else 30, 90 if yol == "dogal" else 180)
+    assert not incele_dosya(tmp_path / "h.mov")["video"]["hdr"]
+    ton = ("zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=mobius:desat=0,"
+           "zscale=t=bt709:m=bt709:r=tv,format=yuv420p,crop=320:360:160:0,scale=160:180:flags=lanczos,")
+    y, ref = _kareler(tmp_path / "h.mov", 160, 180), _kareler(VERI / "hdr_hlg.mp4", 160, 180, ton)
+    adim = 1 if yol == "dogal" else 2                       # ara yolda çift kareler kaynağın kareleri
+    son = len(ref) - (adim - 1)                             # ara yolun son karesi sağ komşusuz (önceki kare)
+    assert min(_psnr(y[adim * j], ref[j]) for j in range(son)) > 40
+
+
+@pytest.mark.parametrize("boyut,etiket,yol,beklenen", [("1280x720", "yok", "dogal", "duz"),
+                                                       ("1280x720", "yok", "ara", "duz"),
+                                                       ("1280x720", "smpte170m", "dogal", "601_709"),
+                                                       ("640x360", "yok", "dogal", "601_709")])
+def test_yavaslat_olcek_sdr_renk_matrisi(tmp_path, boyut, etiket, yol, beklenen):
+    """--olcek SDR kaynağın renk matrisini HyperFrames'in 1x çekimi okuduğu gibi okur. Etiketsiz (matris 'unknown') HD
+    kaynakta scale'in giriş matrisi 'auto' kalınca kare BT.601 okunup BT.709'a çevriliyordu: kırmızı çubuk 189 → 168,
+    Y/U/V düz ölçeğe 31/36/35 dB (2026-10-08 doğrulamasında bulundu; olc_renk.json). HyperFrames etiketsiz ≥ 720p'yi
+    BT.709, altını BT.601 sayar (chromeGuessForUntaggedMatrix); BT.601 etiketli kaynak BT.709'a çevrilir. Çıktının
+    Y/U/V'si (ham yuv420p) beklenen başvuruya > 45 dB, ötekine < 40 dB (sınama iki durumu gerçekten ayırıyor)."""
+    import numpy as np
+    from medya.komutlar.incele import incele_dosya
+    from medya.komutlar.yavaslat import yavaslat
+    from medya.ortak import ffmpeg
+    w, h = (int(n) for n in boyut.split("x"))
+    ow, oh, k = w // 2, h // 2, tmp_path / "k.mp4"
+    renk = (["-bsf:v", "h264_metadata=matrix_coefficients=2:colour_primaries=2:transfer_characteristics=2"]
+            if etiket == "yok" else ["-colorspace", etiket, "-color_primaries", etiket, "-color_trc", etiket])
+    subprocess.run([ffmpeg(), "-nostdin", "-v", "error", "-y", "-f", "lavfi", "-i", f"smptehdbars=s={boyut}:r=60:d=0.5",
+                    "-c:v", "libx264", "-crf", "10", "-preset", "ultrafast", "-pix_fmt", "yuv420p", *renk, str(k)],
+                   check=True)
+    assert (incele_dosya(k)["video"]["renk"]["matris"] or "yok") in ((etiket,) if etiket != "yok" else ("yok", "unknown"))
+    kw = {"yontem": "ffmpeg"} if yol == "ara" else {}
+    r = yavaslat(str(k), str(tmp_path / "y.mp4"), 0.25 if yol == "ara" else 0.5, olcek=f"{ow}x{oh}", **kw)
+    assert r["yontem"] == ("ffmpeg" if yol == "ara" else "dogal")
+
+    def yuv(dosya, vf=None):
+        a = subprocess.run([ffmpeg(), "-nostdin", "-v", "error", "-i", str(dosya), *(["-vf", vf] if vf else []), "-f",
+                            "rawvideo", "-pix_fmt", "yuv420p", "-"], capture_output=True, check=True).stdout
+        a, n = np.frombuffer(a, np.uint8).astype(float).reshape(-1, ow * oh * 3 // 2), ow * oh
+        return a[:, :n], a[:, n:n * 5 // 4], a[:, n * 5 // 4:]
+
+    cikti = yuv(tmp_path / "y.mp4")
+    duz = yuv(k, f"scale={ow}:{oh}:flags=lanczos")                     # matris çevirmez
+    cevir = yuv(k, f"scale={ow}:{oh}:flags=lanczos:in_color_matrix=bt601:out_color_matrix=bt709:out_range=tv")
+    iyi, kotu = (duz, cevir) if beklenen == "duz" else (cevir, duz)
+    for d in range(3):                                                  # Y, U, V; çubuklar durağan: başvurunun ilk karesi
+        assert min(_psnr(c, iyi[d][0]) for c in cikti[d]) > 45, ("YUV"[d], beklenen)
+        assert max(_psnr(c, kotu[d][0]) for c in cikti[d]) < 40, ("YUV"[d], beklenen)
+
+
+def test_yavaslat_kirp_hatalari_ve_donuk_kaynak(tmp_path):
+    """Kırpma görünen yönde: 90° döndürmeli 640x360 klip 360x640 görünür. Kodlanmış yöne göre geçerli ama görünen
+    karenin dışındaki kırpım, tek sayı, bozuk biçim ve en-boy uyuşmazlığı işe başlamadan açık hatayla durur; görünen
+    yöndeki kırpım ekranda görünen bölgeyi verir (ffmpeg kareyi süzgeçten önce döndürür: üst yarı mavi)."""
+    import numpy as np
+    from medya.komutlar.incele import incele_dosya
+    from medya.komutlar.yavaslat import yavaslat
+    from medya.ortak import MedyaHatasi, ffmpeg
+    duz, donuk = tmp_path / "duz.mp4", tmp_path / "donuk.mp4"
+    ff = lambda *a: subprocess.run([ffmpeg(), "-nostdin", "-v", "error", "-y", *a], check=True)
+    ff("-f", "lavfi", "-i", "color=red:s=320x360:r=30:d=1", "-f", "lavfi", "-i", "color=blue:s=320x360:r=30:d=1",
+       "-filter_complex", "[0][1]hstack", "-c:v", "libx264", "-pix_fmt", "yuv420p", str(duz))
+    ff("-display_rotation:v:0", "90", "-i", str(duz), "-c", "copy", str(donuk))
+    assert incele_dosya(donuk)["video"]["gorunen"] == "360x640"
+    for kirp, olcek, mesaj in [("0,0,640,360", None, "dışına taşıyor"), ("0,0,360,642", None, "dışına taşıyor"),
+                               ("0,0,359,320", None, "çift sayı"), ("1,0,358,320", None, "çift sayı"),
+                               ("0,0,360,320", "181x160", "çift sayı"), ("1,2,3", None, "biçiminde"),
+                               (None, "1080", "biçiminde"), ("0,0,360,320", "320x320", "en-boy")]:
+        with pytest.raises(MedyaHatasi, match=mesaj):
+            yavaslat(str(donuk), str(tmp_path / "x.mov"), 0.5, fps=15, kirp=kirp, olcek=olcek)
+    assert not (tmp_path / "x.mov").exists()
+    r = yavaslat(str(donuk), str(tmp_path / "u.mp4"), 0.5, fps=15, kirp="0,0,360,320")
+    assert r["yontem"] == "dogal"
+    b = subprocess.run([ffmpeg(), "-nostdin", "-v", "error", "-i", str(tmp_path / "u.mp4"), "-frames:v", "1", "-f",
+                        "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True, check=True).stdout
+    ort = np.frombuffer(b, np.uint8).reshape(320, 360, 3).reshape(-1, 3).mean(0)
+    assert ort[2] > 200 and ort[0] < 30, ort                # tek renk (mavi): kodlanmış yönde kırpılsa kırmızı+mavi
+
+
+def test_yavaslat_60fps_kaynakta_gercek_kareleri_atmaz(tmp_path):
+    """Ara kare yolunda 60 fps kaynak 0,25x: hazırlık 60 fps × 2. Eskiden 30 fps'e inip × 4 üretiyordu, gerçek
+    karelerin yarısı atılıyordu (2026-10-08 doğrulamasında bulundu). Her çift çıktı karesi gerçek bir 60 fps karesi."""
+    from medya.komutlar.yavaslat import _hazir_fps, yavaslat
+    assert _hazir_fps(60, 30, 120) == (60, 2)              # 0,25x
+    assert _hazir_fps(59.94, 30, 120) == (60, 2)
+    assert _hazir_fps(60, 30, 300) == (60, 5)              # 0,1x (eskiden 30 fps × 10 → 8'e kırpılıp kare yineliyordu)
+    assert _hazir_fps(60, 30, 30 / 0.2) == (30, 5)         # 60'ta kat 2,5 → 30 fps × 5
+    assert _hazir_fps(120, 30, 300) == (60, 5)             # 120'de kat 2,5 → 60 × 5 (eskiden 30 × 8)
+    assert _hazir_fps(50, 30, 60) == (30, 2)               # uygun bölen yok → eski yol
+    assert _hazir_fps(30, 30, 60) == (30, 2) and _hazir_fps(24, 24, 48) == (24, 2)
+    r = yavaslat(str(VERI / "hareket60.mp4"), str(tmp_path / "y.mov"), 0.25, sure=0.5)
+    assert r["hazir_fps"] == 60 and r["kat"] == 2 and abs(r["sure"] - 2.0) < 0.05
+    y, ref = _kareler(tmp_path / "y.mov"), _kareler(VERI / "hareket60.mp4")
+    assert len(y) == 60
+    assert min(_psnr(y[2 * j], ref[j]) for j in range(30)) > 40
+
+
+def test_yavaslat_kirp_once_ara_kare_kalitesi(tmp_path):
+    """Kırpınca kenarda bağlam azalır; ara kare kalitesi düşmemeli. Aynı yöntemle (RIFE) önce kırpıp × 2 üretmek, tam
+    kareyi × 2 üretip sonra kırpmaya karşı, gerçek 60 fps karelerinin aynı kırpımıyla ölçülür (2026-10-08: 720p'de
+    fark −0,03 dB; 4K ve gerçek çekim ölçümü sistem/dersler.md)."""
+    import shutil
+    import statistics as st
+    from medya.komutlar.yavaslat import RIFE, yavaslat
+    if not RIFE.exists():
+        pytest.skip("RIFE kurulu değil: medya kur rife")
+    if shutil.disk_usage(KOK).free / 1e9 < 5.5:
+        pytest.skip("boş disk 5 GB tabanına yakın: RIFE bilerek çalışmaz (yedeğe düşer) — önce yer aç")
+    K = "crop=400:720:440:0,"
+    a = yavaslat(str(VERI / "hareket30.mp4"), str(tmp_path / "a.mov"), 0.5, yontem="rife", kirp="440,0,400,720")
+    b = yavaslat(str(VERI / "hareket30.mp4"), str(tmp_path / "b.mov"), 0.5, yontem="rife")
+    assert a["yontem"] == b["yontem"] == "rife"
+    ya, yb = _kareler(tmp_path / "a.mov", 400, 720), _kareler(tmp_path / "b.mov", 400, 720, K)
+    ref = _kareler(VERI / "hareket60.mp4", 400, 720, K)
+    n = min(len(ya), len(yb), len(ref))
+    assert n >= 110
+    ara = range(1, n - 1, 2)                               # son kare: RIFE'nin sağ komşusuz kopyası
+    pa, pb = [_psnr(ya[i], ref[i]) for i in ara], [_psnr(yb[i], ref[i]) for i in ara]
+    kopya = [_psnr(ref[i - 1], ref[i]) for i in ara]
+    assert st.mean(pa) >= st.mean(pb) - 0.5, (st.mean(pa), st.mean(pb))
+    assert st.mean(pa) > st.mean(kopya) + 2.5, (st.mean(pa), st.mean(kopya))
 
 
 def test_analiz_ve_ses_olay(tmp_path, apple_ml):

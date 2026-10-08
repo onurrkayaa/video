@@ -29,10 +29,11 @@ telifli şarkı ve kişilerin rızası; iş videosunda ticari lisanslı müzik.
 | Alt yazı (yalnız istenirse) | aynı komuta `--srt`; HyperFrames'e indirmesiz `hyperframes transcribe analiz/yazi/<ad>.srt -d calisma/kompozisyon` (işaret düzeyi; kelime zamanı: medya-studyo "Alt yazı istenirse"). Satıcı altyazı akışını çalıştırma: sormadan indirir, kanca engeller |
 | Müzik | `medya muzik … --cikti analiz/muzik.json` → `guven_seviye` |
 | HDR / VFR | `medya sdr` / `medya cfr` `--cikti calisma/klipler/…` |
-| Ağır çekim | `medya yavaslat X --hiz 0.5 --bas A --sure S --cikti calisma/klipler/<ad>-yavas.mov` |
+| Ağır çekim | `medya yavaslat X --hiz 0.5 --bas A --sure S [--kirp x,y,gen,yük --olcek 1080x1920] --cikti calisma/klipler/<ad>-yavas.mp4` (HyperFrames; yalnız NLE devrine `.mov` ProRes). Kırpma payı: [teknikler](references/teknikler.md) Hız |
 | Rampa (gerçek yüksek fps) | `$P $K/rampa.py X --hiz 0.25 --a … --d … --cikti calisma/klipler/<ad>-rampa.mp4` |
 | Titreme | `$P $K/titreme.py X` (önce/sonra) |
 | Plan denetimi | `$P $K/plan_denetle.py plan/kurgu.json [--html …] [--denetim …]` |
+| Çizim, gerçek çekim | `medya ciz plan/kurgu.json [--cikti cikti/<ad>.mp4] [--crf 16]` — kesim, erime, sabit kadraj, punch/Ken Burns, hazır klipler, `hiz > 1`, kendi sesi + müzik; kare dökmez. Kısma: `--yalniz-konusma calisma/ses/konusma.wav` → ses-tasarimi `kisma.py` → kısılmış WAV `muzik.dosya` |
 | Geri bildirim taslağı | `medya zamankodu calisma/taslak.mp4 --cikti calisma/taslak-tc.mp4` |
 | Resolve / Kdenlive | `medya nle plan/kurgu.json --bicim hepsi` → `cikti/nle/kurgu.otio` (Resolve) · `kurgu-kdenlive.otio` (Kdenlive) |
 
@@ -41,7 +42,7 @@ telifli şarkı ve kişilerin rızası; iş videosunda ticari lisanslı müzik.
 2. Künye, kontak, sahneler, analiz, ses-olay; müzik kesiti + analiz (önerilen `bas: 0`).
 3. Seçki → stringout (sıralı kontak + tablo) → **kullanıcı onayı** → kaba → ince kurgu: [teknikler](references/teknikler.md).
 4. Ara klipler `calisma/klipler/`e (sdr, cfr, yavaslat, rampa, sabit); asıllara dokunma.
-5. `plan/kurgu.json` → `plan_denetle` GEÇTİ → kompozisyon ([kompozisyon](references/kompozisyon.md)) → taslak → ölç → `zamankodu` taslağıyla notlar → son çizim (`--video-frame-format png`).
+5. `plan/kurgu.json` → `plan_denetle` GEÇTİ → motor: plan yalnız `medya ciz` kapsamındaysa `medya ciz` (taslak `--crf 28 --preset veryfast`), yazı/grafik/süslü geçiş/dip/J-L/fotoğraf varsa kompozisyon ([kompozisyon](references/kompozisyon.md)) → taslak → ölç → `zamankodu` taslağıyla notlar → son çizim (HyperFrames'te `--video-frame-format png`).
 6. Bitirme: görüntü düzeltmesi → ses onarımı → `medya ustala` → `medya meta-temizle` EN SON → `medya denetle`.
 
 ## Kesin kurallar
@@ -53,6 +54,9 @@ telifli şarkı ve kişilerin rızası; iş videosunda ticari lisanslı müzik.
 - Sabitleme yalnız ölçülmüş titremede (+kontak); `Final zoom` KARARLAR'a.
 - Etkin ölçek (cover × punch × sabitleme) ≤ 1,15: 4K yatay → dikey punch ≤ 1,29; 1080p yatay → dikey punch yok, söyle.
 - HDR asıl kompozisyona girmez: `medya sdr` klibi (`--sdr` hable uygular).
+- Gerçek çekim kurgusunda önce `medya ciz`: kare dökmez, kare-kesin (4K → 1080x1920 10 sn: disk tepesi 0,02 GB; aynı
+  plan HyperFrames PNG kipinde 3,5 GB kare + takas 0,9 → 15,9 GB ile çöktü, 2026-10-08). Kapsam dışı öğeyi sessizce
+  kesime çevirmez, hata verir → HyperFrames. İki motor aynı planı aynı geometriyle çizer ([plan şeması](references/plan-semasi.md)).
 
 ## Doğrulama (bitti demeden)
 1. `plan_denetle` (+`--html`, çizimden sonra `--denetim`) GEÇTİ; `hyperframes lint` 0 hata.

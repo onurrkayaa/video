@@ -1,6 +1,10 @@
 # Motor seçimi ve kurgu programına devir
 
 ## Kompozisyon motoru
+- **`medya ciz` (ffmpeg, stüdyonun kodu):** yazısız, grafiksiz gerçek çekim kurgusunda ilk seçim; kompozisyon yazılmaz,
+  plan doğrudan çizilir, kaynak kareleri diske dökülmez. Kapsam: kesim, erime, sabit kadraj, punch/Ken Burns, hazır
+  klipler, `hiz > 1`, kendi sesi + müzik. Kapsam dışı öğede (dip, savurma, J/L, fotoğraf, pan/takip, yazı) hata verir →
+  HyperFrames. Ölçüm ve kurallar: kurgu-zanaati SKILL.md, plan-semasi.md.
 - **HyperFrames 0.8.140:** varsayılan motor, Apache-2.0, iş için de serbest. Becerileri aynı etiketin commit'inden (`satici.py kur` + `bagla`; 2026-10-08'de bağlandı, eski v0.8.124 kopyaları `sistem/devam/ham/satici-yedek-2026-10-08.tar.gz`'de; durum: `satici.py dogrula`). Ayrıntısı hareket-tasarimi'nde.
 - **Remotion 4.0.533:** yalnız lisans kapısı geçerse kullanılır. Kapı, BRIEF.md'deki "Lisans bağlamı" satırına bakar.
 
@@ -17,7 +21,8 @@
 ## Ağır çekim
 `medya yavaslat` kaynağa göre yöntem seçer:
 - Kaynak gerçekten yüksek fps ise `dogal` kullanır.
-- Değilse sırayla Apple ML'i, RIFE v4.6'yı ve minterpolate'i dener. Asılan ya da başarısız olan yöntem bir sonrakine düşer.
+- Değilse hazır kare ≤ 2000 px ise önce RIFE v4.6'yı, daha büyükse önce Apple ML'i, sonra diğerini ve minterpolate'i dener. Asılan ya da başarısız olan yöntem bir sonrakine düşer.
+- 4K'dan dikey: `--kirp x,y,gen,yük --olcek 1080x1920` ara kareden önce kırpar (dikey çıktıda RIFE önce). HyperFrames'e girecek klip `--cikti <ad>.mp4`; ProRes `.mov` yalnız NLE devrine (HyperFrames ProRes'i her kipte 16 bit PNG'ye açar: 4K'da 33 MB/kare). Ayrıntı kurgu-zanaati → teknikler, Hız.
 
 Ölçüm sonuçları (sistem/dersler.md):
 - Hızlı harekette Apple ile RIFE yaklaşık aynı kalitede. İkisi de minterpolate'ten 1,5–2 dB daha iyi.

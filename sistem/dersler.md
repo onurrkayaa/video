@@ -3,6 +3,125 @@
 Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders ilgili beceriye taşınır (taşındıysa
 "→ beceri" notu). En yeni üstte.
 
+## 2026-10-08 — `medya ciz` (O6): planı HyperFrames'siz, kare dökmeden çizmek
+- **Açık GOP'lu HEVC'de "iki karenin ortasına ara" yetmez.** mov araması DTS'e göre: anahtar karenin hemen önündeki
+  kareye (`-ss` o karenin ortası) aranınca ffmpeg sonraki anahtar kareye iniyor, onun öncü kareleri çözülemiyor ve çıktı
+  2 kare geç başlıyor (deneme kaynağı 4096x2160 60 fps, 4 sn GOP: 248, 249 → 250; 34 aramanın 10'u). Çözüm: 0,5 sn
+  önceye ara (`-copyts`), ilk kareyi tam pts ile seç (`select=gte(pts,P)`); kare zamanları ffmpeg 6.0'ın paket
+  damgalarından (`-c copy -f framemd5`), ilk kare `showinfo` ile. Sınama: tam çözümün kare özetlerine karşı 19 konumun
+  (8'i anahtar kare önü) hepsi doğru. ffprobe ayrı paket (4.4.1), kare zamanına kullanılmadı. → medya ciz.
+- **Kare kuralı "zamanı ≤ t olan son kare" (HyperFrames gibi) tam kesirle hesaplanınca kayma kalmıyor.** Kare kodlu
+  sınama projesi (`testler/nle_olc.py`): 228 karenin hepsi beklenen kaynak karesi (A/B 30, C 60, D 24 fps; Resolve
+  D'nin 24 karesini 1 erken veriyordu), kesimler 0, 60, 168 (erimeden sonraki kesim dahil; elle `concat → xfade →
+  concat` +1 kare kaydırmıştı), erime rampadan 11,9 kare, ortası 114,05 (kesim 114). Ses: müzik `medya senkron` ses
+  hizasıyla 0,0 ms, tonlar 1,0–1,1 ms; çekim sesi 4,0 / 1,5 ms (ilki 8 ms giriş geçişinin eşik etkisi).
+- **perspective süzgecinin kuralı ölçüldü:** hedef piksel x → kaynak `x0 + x·s` (piksel dizini; merkez değil), `in`
+  1'den sayar. Piksel merkezi eşlemesi için köşeye `s/2 − ½` eklenir; eklenmezse Ken Burns'te 0,077 px hata (sınama
+  yakaladı). Lekeli kayıpsız kaynakla (CRF 1) konum hatası ≤ 0,02 px, artığın ikinci farkı p95 0,032–0,037 px
+  (doğrulamanın ölçtüğü 0,039 ile aynı; zoompan 0,94); CRF 16'da 0,055–0,062 (kodlayıcı gürültüsü). Sabit kadraj
+  tamsayı kırpma (çift piksel): ≤ 0,5 px.
+- **Karşılaştırma, 1080p gerçek çekim 10 sn** (deneme kaynağının ölçeksiz 1920x1080 kesiti, yalnız sayısal; aynı
+  x264 ayarı: medium, CRF 16, B kare yok; kayıpsız başvuruya karşı):
+
+  | Çizim | Süre | Disk tepesi | RSS tepesi | VMAF ort / en az | Y-PSNR | Y kayması |
+  |---|---|---|---|---|---|---|
+  | `medya ciz` | 5,8 sn | 0,02 GB | 0,97 GB | 96,21 / 94,69 | 47,1 dB | +0,02 |
+  | HyperFrames PNG | 34,6 sn | 1,11 GB | 3,2 GB | 95,98 / 94,48 | 40,9 dB | −1,9 düzey (her parlaklıkta) |
+  | HyperFrames JPEG (varsayılan) | 18,4 sn | 0,18 GB | 2,6 GB | 94,77 / 93,56 | 45,3 dB | +0,04 |
+
+  Üçü de kareye hizalı (−1/0/+1 kaymada en iyi 0). VMAF farkı ciz − HF PNG +0,23 (ölçütün ≥ −0,3). PNG kipinin sabit Y
+  kayması VMAF'ta görünmüyor, PSNR'de görünüyor (nedeni ayrılmadı → gelistirme.md).
+- **4K → 1080x1920 dikey 10 sn (2 Ken Burns + erime):** `medya ciz` 12,6 sn, disk 0,02 GB, RSS 1,45 GB (çözücü
+  `-threads 4`: 2,36 → 1,70 GB, kareler bit bit aynı; iki çekim kuralı 1,51; x264 `-threads 8` 1,45). HyperFrames PNG (5 işçi) 100 sn sonra SIGABRT ile çöktü:
+  4096x2160 8 bit RGB PNG kare başı 11,3 MB (312 kare 3,5 GB, çizimin yanındaki `work-…` klasöründe kaldı), takas 0,9 →
+  15,9 GB, boş disk 50,9 → 31,5 GB (tepe 19,4 GB); çöken çizimin Chrome süreçleri belleği tutmaya devam etti, öldürülünce takas 5 GB'a
+  indi. Aynı plan HyperFrames JPEG `--workers 1`: 35,8 sn, 0,37 GB, 4,55 GB. İki motor aynı geometriyi çiziyor: ciz ↔
+  HyperFrames Y-PSNR ort. 42,05 dB; Ken Burns çekimlerinde ≤ 0,2 px, sabit çekimde ≤ 0,6 px (tamsayı kırpma).
+  → kurgu-zanaati (gerçek çekimde önce ciz), CLAUDE.md HyperFrames notları.
+- **Uzun plan (300 sn, 112 çekim, 37 Ken Burns, 16 erime; 4K60 HEVC, 4 sn GOP; doğrulama ölçütü RSS ≤ 2 GB, takas
+  büyümez, disk ≈ çıktı):** ilk koşu 404 sn (0,74x), takas büyümedi ama süreç ağacı RSS toplamı 2,25 GB: erimede
+  üçüncü çözücü (önden açılan) açıktı. "Aynı anda en çok iki çekim" kuralıyla 2,04 GB, x264 `-threads 8` ile 1,92 GB
+  (kodlayıcı 662 → 558 MB; çizim çözücüde darboğazlı, süre 410 sn, 0,73x). Takas 3,00 → 2,98 GB, disk tepesi 0,47 GB
+  (çıktı 461 MB). RSS toplamı paylaşılan kitaplıkları süreç başı sayar (gerçek bellek daha az). 95 sert kesimin 95'inde
+  kare farkı tepesi tam planlı karede (tepe/çevre ≥ 17); `medya denetle`'nin kesim bulucusu aynı sahneden gelen benzer
+  çekimler arasında 13'ünü görmedi (plan_denetle `--denetim` ⚠), plansız kesim, siyah, donma, flaş yok. İlk koşunun
+  `df` ölçümü takas dosyası küçüldüğü için yanıltıcıydı (−0,6 GB "kalıcı"); sessiz planda ses ara dosyası artık yok.
+- **`kisma.py --bas` işareti:** tanımı "yatağın 0. sn'si videoda kaçıncı sn" = −`muzik.bas`; ses-tasarimi belgesi
+  `--bas <plan muzik.bas>` diyor. `muzik.bas` 0,5 iken `--bas 0.5` kısmayı 1 sn erkene (1,53–3,53 sn), `--bas −0.5` doğru
+  yere (2,53–4,53) koydu (müzik dosyası zamanı; konuşma 2,0–4,0 sn video). `bas: 0`'da (önerilen) etkisiz → gelistirme.md.
+- Kanıt (betikler + JSON): `sistem/devam/ciz/2026-10-08/`. Deneme kaynağının karelerine bakılmadı (yalnız sayısal);
+  sınamalar: `testler/test_ciz.py` (`medya test ciz`).
+
+## 2026-10-08 — `yavaslat --kirp/--olcek` (O3) ve ara kare yolunda gerçek kareler
+- **Kırp/ölçek doğal yola da girmeli.** Önerinin ilk hâli yalnız `_hazirla`'yı değiştiriyordu; denemenin ağır çekimi
+  (gerçek 60 fps, 0,5x) `_hazirla`'yı hiç çağırmayan doğal yoldan geçtiği için değişiklik onu hiç etkilemeyecekti
+  (şüpheci doğrulama buldu). Artık iki yolda da ton eşlemeden sonra, ara kareden önce. Yöntem sırası, RIFE disk tahmini
+  ve UHD kipi hazır kareye baktığından 1080x1920'de RIFE ilk sırada.
+- **Disk yükü çözünürlükten çok kodekten.** HyperFrames 0.8.140 ProRes'i her kipte 16 bit PNG'ye açıyor
+  (`resolveFrameFormat`). Deneme A kesitinde, HyperFrames'in çıkarma ayarlarıyla borudan ölçüldü (kare başı MB / denemenin
+  237 ağır çekim karesi): ProRes 4096x2160 33,05 / 7,83 GB; ProRes 1080x1920 6,86 / 1,63 GB; `.mp4` (H.264 CRF 12)
+  1080x1920 PNG'de 2,53 / 0,60 GB, taslak JPEG'de 0,22 / 0,05 GB. ProRes dosyası 676 → 136 MB. 1x 4K HEVC de PNG'de
+  11,72–11,96 MB/kare, ortalama 11,84 (237 kare 2,81 GB; taslak JPEG 0,97 MB/kare; bütün klip 8 kesitte,
+  `olc_1x4k.json`): PNG'li son çizimin sığması 1x çekimlerin de inmesini ister (gelistirme.md).
+  → kurgu-zanaati teknikler Hız, CLAUDE.md.
+- **4K'da RIFE (ölçüm borcu kapandı):** 1 sn'lik kesit (30 → 60 kare) 4096x2160 `-u` 36,6 sn, geçici disk tepesi 1,25 GB;
+  aynı kesit 1080x1920'ye kırpılıp ölçeklenince 10,2 sn, 0,27 GB. Takas değişmedi (820 MB).
+- **Ölçek renk ayarı ve etiketi şart.** HDR yolunda `scale` ton eşlenmiş RGB'yi YUV'ye çeviriyor: başvuruya karşı (kare
+  ortalaması) ayarsız Y 24,1 dB (U/V 30,7), `out_color_matrix=bt709:out_range=tv` ile 51,1 dB (U/V 39,3 / 39,0); ara
+  kare yolunda 24,1 → 49,9. Doğal yol ProRes'inde matris etiketi yine "unknown" kaldı → `setparams=colorspace=bt709:
+  range=tv` (piksel değişmedi). Sınama ikisini de tutuyor (ters sınamada gri ölçütü 22,7 dB ve "matris None" ile kaldı).
+  İlk yazılan "24,0 → 52,7 dB"nin dosyası yoktu; düzeltme turunda yeniden ölçüldü (`olc_renk.json` → hdr). Döndürme:
+  ffmpeg 6.0 kareyi süzgeçten önce döndürüyor, kırpım görünen yönde.
+- **SDR'de giriş matrisi de açık verilmeli** (düzeltme turu; şüpheci doğrulama buldu). Çıkış matrisi verilince `scale`'in
+  giriş matrisi 'auto' kalıyor ve ffmpeg 6.0 etiketsiz kareyi BT.601 okuyup BT.709'a çeviriyor. Etiketsiz 1280x720 renk
+  çubuklarında `--olcek`, HyperFrames'in göreceği rengi kaydırıyordu: kırmızı 189 → 168, mavi 189 → 178, camgöbeğinin
+  G'si 189 → 208; Y/U/V düz ölçeğe 31,16 / 36,05 / 35,31 dB (en kötü kare). Artık giriş matrisi etiketten, etiketsizse
+  HyperFrames'in tahmininden geliyor (chromeGuessForUntaggedMatrix: ≥ 720 satır BT.709, altı BT.601). Sonuç 62,99 /
+  61,51 / 63,34 dB, çubuklar kaynakla aynı. bt709 etiketli kaynakta süzgeç sonucu değişmedi (sentetikte aynı sayılar;
+  denemenin 4K kaynağında 30 kare bit bit aynı). Yeni sınama dört durumu ayırıyor: ters sınamada eski süzgeç etiketsiz
+  HD'de, etiketi yok sayan süzgeç bt601 etiketli ve etiketsiz SD'de kalıyor. `medya test yavaslat` 10 → 14; tam `medya
+  test` 293 geçti, 2 atlandı. Kapsam dışı gözlem (→ gelistirme.md): bt601 etiketli kaynakta ffmpeg 6.0'ın 601→709
+  çevirisi yaklaşık (%75 beyaz 189 → 185/187/187). `--olcek`'siz yol ise hiç çevirmeden bt709 etiketliyor (kırmızı 173
+  yerine 189).
+- **Kırp-önce kalitesi** (aynı yöntem RIFE, gerçek 60 fps karelerinin aynı kırpımına karşı, kareler ham çözülerek):
+  gerçek çekimde (denemenin en hareketli penceresi) 1216x2160'ta −0,01, 1080x1920'de 0,00 dB; RIFE'nin kendi PNG
+  çıktısında −0,02. Sentetik aşırı dokuda (mandelbrot) kırpımda −1,4 dB (RIFE'de −0,24; kalanı ProRes ara dosyası:
+  kırpık karede 35,6, tam karede 37,5), 1080x1920'de −4,1 dB (ölçekte örtüşme; σ=1,5 bulanık dokuda −0,5). Büyük
+  hareketli gerçek çekimle ölçülmedi: stüdyoda yok, denemenin en hareketli penceresinde bile önceki kare 41,6 dB.
+- **Ara kare yolu 60 fps kaynağı 30'a indiriyordu** (0,25x'te gerçek karelerin yarısı atılıp × 4). Artık kaynağın tam
+  böleni olan en yüksek hız (60 × 2). Yarı ölçekli eşdeğerde (30 fps → 15 fps çıktı, 0,25x; gerçek 60 fps karelerine
+  karşı) tüm kareler: gerçek çekimde 40,57 → 41,26 dB (en kötü %5: 39,47 → 40,72), sentetikte 35,68 → 36,69. 720p
+  sentetikte eski yolda gerçek kare olması gereken konumlarda en düşük 28,7 dB, yenide > 40.
+- **Sayı düzeltmesi:** "kaydırmada en kötü %5 kare 28,8 / 26,2" birincil veriyle tutmuyordu; `ozet.jsonl` 27,28 / 26,23
+  (46 ara karenin en kötü 2'si). Aşağıdaki 2026-10-05 dersinde ve `yavaslat.py`'de düzeltildi.
+- Kanıt (betikler + JSON): `sistem/devam/yavas-cekim/2026-10-08-kirp/` — `olc_hf` (geçici alan), `olc_1x4k` (1x 4K),
+  `olc_renk` (ölçek rengi, SDR ve HDR), `olc_4k_b`/`olc_720`/`tani2`/`tani3` (kalite, hız, disk tepesi). Deneme
+  kaynağının karelerine bakılmadı (yalnız sayısal).
+
+## 2026-10-08 — koruma kancası ek turu: snapshot gizliliği, sabit sürüm, fd ve satır devamı
+- **Kapatma değeri birebir okunur.** 0.8.140 Gemini açıklamasını yalnız `String(args.describe) === "false"` ile kapatıyor
+  (`snapshot-SD5R3NWX.js`:729). citty 0.2.2 ayrıştırıcısıyla 16 biçim ölçüldü (snapshot çalıştırılmadan): `0`, `no`,
+  `False`, boş değer ve `--describe --at 1` (değer "--at") açıklamayı açık bırakıyor; tekrar eden bayrakta son değer
+  geçiyor (`--describe false --describe x` açık); `--` sonrası konumsal (`-- --describe false` açık, snapshot fazla
+  konumsalı ayrıca reddediyor). Eski düzenli ifade `0`/`no`'yu ve metnin herhangi bir yerindeki `--describe false`'u kabul
+  ediyordu. Yeni denetim jeton tabanlı: `--`'dan önceki her değer `false` olmalı. → kanca, medya-studyo yönlendirmesi.
+- **Sürüm belirteci komut tanımayı da bozuyordu.** `HF` düzenli ifadesi `hyperframes@^0.8`'i tanımıyordu, `npx
+  hyperframes@^0.8 cloud render` bulut kuralını bile geçiyordu. Artık tam sürüm dışı her `hyperframes@` (npx/dlx/npm exec,
+  `-p/--package` değeri) ve npm/pnpm/yarn/bun'da tam sürümsüz kurulum ya da yükseltme önce engelleniyor. Sürümsüz ad da
+  engelli, çünkü latest kurup `^` ile kaydediyor. `-p/--package`'in değeri artık komut sanılmıyor; bu, aynı yoldan kaçan
+  `npx -p hyperframes hyperframes cloud render` ve `npx -p @remotion/cli remotion lambda …`'yı da kapattı. → arac-radari
+  güncelleme-ve-disk §3.
+- **fd ayrımı jetonlamadan önce yapılır.** shlex boşluğu saklıyor: `2>/dev/null` ile `600 >/dev/null` aynı jetonları
+  veriyordu. `timeout 600 >/dev/null hyperframes cloud render`'da süre fd sanılıp silinince önek komutu süre diye atladı.
+  Artık işlece bitişik fd rakamı, tırnak dışında, metinde boşluğa çevriliyor. Bu `$(… 2>&1)` içinde de yapılmalı: yoksa
+  dış geçiş `2`'yi transcribe girdisi sanıyor (sınamada). Ön süzgeç ve beceri bağlamı satır devamı silinmiş metinde
+  çalışıyor; önceden `npx hyper\` + satır sonu + `frames cloud render` geçiyordu.
+- **Derlem:** oturum kayıtlarındaki 30.019 benzersiz Bash komutu (bütün projeler) ve 11.282 belge parçası iki kancaya
+  verildi (çalıştırılmadan, 1,9 sn). 5 fark çıktı, hepsi 0 → 2 yönünde. İkisi başka bir projede sürümsüz `npm install -D
+  hyperframes`, yani kuralın hedefi. Üçü belgede `hyperframes@<sürüm>` yer tutucusu: kabukta `<` yönlendirmedir, gerçek
+  sürümle geçer. 2 → 0 yönünde fark ve çökme yok; 30.000 rastgele girdide de çökme yok. `medya test koruma` 170 → 236
+  (66 yeni sınama; 44'ü özgün kancada kırmızı); `medya test` 282 geçti, 2 atlandı (`--agir`).
+
 ## 2026-10-08 — HyperFrames 0.8.124 → 0.8.140, çizim sınaması, sabit satıcı becerileri
 - **Sınama fikstürünün kendisi ızgara dışıydı.** `testler/hyperframes-baslik` sesleri 0,25 ve 1,55 sn'de başlıyordu:
   çizimde 7,5. ve 46,5. kare (çapraz ilintiyle örnek kesinliğinde ölçüldü). Zamanlar k/30'a çekildi (0,3 / 1,5; GSAP
@@ -179,7 +298,8 @@ Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders il
   `sudo killall ANECompilerService`. Önlem: `apple_calistir` bekçisi (takılıysa başlamaz, süre aşımında öldürür),
   ağır çekimde Neural Engine'den bağımsız RIFE yedeği; Apple ML sınamaları bu durumda nedeniyle atlanır.
 - **Ağır çekim ölçümü 2 (yalnız ara kareler, ham çözülerek):** gerçek kamerada RIFE v4.6 > Apple > minterpolate
-  (el kamerası 37,7 / 36,4 / 32,6 dB; kaydırmada en kötü %5 kare 28,8 / 26,2 — Apple'da bozuk kareler); yalnız 540p
+  (el kamerası 37,7 / 36,4 / 32,6 dB; kaydırmada en kötü %5 kare 27,3 / 26,2 [2026-10-08 düzeltildi: önce 28,8 yazıyordu;
+  `ozet.jsonl` 27,28 / 26,23] — Apple'da bozuk kareler); yalnız 540p
   çizgi filmde Apple önde; sakin çekimde fark yok. → yavaslat varsayılanı ≤2000 px'te RIFE, 4K'da Apple (hız, disk).
 - **Bitirme sırası (bağımsız denetimden):** görüntü düzeltmeleri → ses kusuru onarımı → `ustala` →
   `meta-temizle` EN SON → `denetle`. `ustala`nın yeniden paketlemesi GPS (udta/loci) etiketini korur;

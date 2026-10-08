@@ -135,7 +135,7 @@ saglayici = "medya-apple"
 ad = "yavaslat"
 alan = "donusturme"
 komut = "medya yavaslat"
-aciklama = "ağır çekim: doğal (yüksek fps kaynak) / ≤2000 px'te RIFE v4.6, 4K'da Apple ML önce / ffmpeg minterpolate (asılan ya da başarısız olan sıradakine düşer)"
+aciklama = "ağır çekim: doğal (yüksek fps kaynak) / hazır kare ≤2000 px'te RIFE v4.6, üstünde Apple ML önce / ffmpeg minterpolate (asılan ya da başarısız olan sıradakine düşer); --kirp/--olcek ara kareden önce (4K → dikey 1080x1920'de RIFE önce); ara kare yolunda hazırlık kaynağın tam böleni olan hızda, çıktı ızgarasına düşen gerçek kareler korunur (60 fps 0,25x → 60 × 2), uygun bölen yoksa 30 fps"
 saglayici = "rife"
 yedek = ["medya-apple", "ffmpeg"]
 
@@ -175,6 +175,13 @@ aciklama = "kurgu planını kurgu programına aktarma: .otio (DaVinci Resolve), 
 saglayici = "otio"
 
 [[yetenek]]
+ad = "ciz"
+alan = "uretim"
+komut = "medya ciz"
+aciklama = "kurgu planını kare dökmeden doğrudan ffmpeg ile çizer (gerçek çekim): kesim, erime, sabit kadraj, punch/Ken Burns (alt piksel), hazır klipler, hiz > 1, kendi sesi + müzik; kapsam dışı öğede hata verir (HyperFrames). Ölçüldü 2026-10-08: kare kodlu planda her kare tam, ses ≤ 4 ms; Ken Burns ≤ 0,02 px"
+saglayici = "ffmpeg"
+
+[[yetenek]]
 ad = "seslendir"
 alan = "ses"
 komut = "medya seslendir"
@@ -192,12 +199,12 @@ saglayici = "flux2-klein"
 [[saglayici]]
 ad = "ffmpeg"
 tur = "ikili"
-lisans = "GPL-3.0 (ffmpeg-static derlemesi)"
+lisans = "GPL-3.0-or-later (npm ffmpeg-static 5.3.0 = FFmpeg 6.0; --enable-gpl --enable-version3 --enable-nonfree derlemesi: yerelde kullanım serbest, ikili dağıtılamaz — arac/ ve node_modules/ depoda yok)"
 ticari = "evet"
 kurulum = "npm install -D ffmpeg-static && ln -sf ../node_modules/ffmpeg-static/ffmpeg arac/ffmpeg"
 kontrol = "arac/ffmpeg -version"
 boyut_mb = 80
-not = "6.0: zscale, tonemap, vidstab, xfade, minterpolate, lut3d, nlmeans, loudnorm, videotoolbox var"
+not = "6.0: zscale, tonemap, vidstab, xfade, minterpolate, lut3d, nlmeans, loudnorm, perspective (medya ciz alt piksel yakınlaştırma), libvmaf, libx264/libx265, aac_at, videotoolbox var. Çıktı serbest (ticari evet). ffprobe ayrı paket (4.4.1); medya ciz kare zamanlarını ffmpeg 6.0'dan okur"
 
 [[saglayici]]
 ad = "ffprobe"

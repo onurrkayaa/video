@@ -1,0 +1,72 @@
+{
+  "video": "cikti/ciz/kurgu-ciz.mp4",
+  "sure": 7.616,
+  "hedef": "web",
+  "denetimler": {
+    "teknik": {
+      "gecti": true,
+      "bulgular": [],
+      "ozet": {
+        "boyut": "1280x720",
+        "fps": 30.0,
+        "codec": "h264",
+        "pix_fmt": "yuv420p",
+        "aktarim": "bt709",
+        "birincil": "bt709"
+      }
+    },
+    "siyah": {
+      "gecti": true,
+      "ic": [],
+      "planli": [],
+      "bas_son": []
+    },
+    "donma": {
+      "gecti": true,
+      "uyari": []
+    },
+    "flas": {
+      "gecti": true,
+      "anlar": [],
+      "planli": []
+    },
+    "kesimler": {
+      "gecti": true,
+      "sayi": 2,
+      "anlar": [
+        2.0,
+        5.6
+      ]
+    },
+    "ses": {
+      "olcum": {
+        "lufs": -18.0,
+        "lra": 0.8,
+        "tepe_dbtp": -2.2
+      },
+      "bulgular": [
+        "ses yüksekliği -18.0 LUFS, hedef -17.0…-15.0 → medya ustala"
+      ],
+      "gecti": false,
+      "kirpik_ornek": 0,
+      "tik": []
+    },
+    "av": {
+      "gecti": true,
+      "olcumler": [
+        {
+          "no": 2,
+          "gecikme_ms": 0.0,
+          "ilinti": 0.64
+        }
+      ],
+      "kotu": []
+    },
+    "meta": {
+      "gecti": true,
+      "konum_etiketleri": [],
+      "not": ""
+    }
+  },
+  "gecti": false
+}

@@ -31,7 +31,9 @@ Bulguyu liste olarak sun; her yükseltme ayrı onayla.
    `hyperframes render testler/hyperframes-baslik --quality draft -o "$G/once.mp4"`. Kalıcı sınaması `medya test
    kompozisyon` (~9 sn): lint 0 hata, 1920x1080/30 fps/150 kare, sesler bildirilen anda ve kare ızgarasında (çapraz
    ilinti), kareler `testler/hyperframes-baslik-basvuru.json` ile (16x9 hücre, ≤ 3 düzey). Fikstürün zamanları k/30.
-3. `npm install -D --save-exact hyperframes@<sürüm>`; `yetenekler.toml` kurulum satırındaki sürüm de.
+3. `npm install -D --save-exact hyperframes@<sürüm>`; `yetenekler.toml` kurulum satırındaki sürüm de. Tam sürüm şart:
+   kanca `latest`/`next`/`^`/`~`/aralık/etiketi, sürümsüz kurulumu ve `npx hyperframes@latest`'i engeller; `-E`'siz tam
+   sürüm package.json'a `^` yazar (kanca bunu yakalamaz).
 4. Sonra: `hyperframes doctor`; aynı lint, check ve render → `"$G/sonra.mp4"`; ikisinde `medya incele` (süre, fps,
    boyut) ve `medya denetle`; kare karşılaştırması kareler doğrudan çözülerek (`testler/test_temel.py` `_kareler`)
    ya da `ffmpeg -map 0:v -f framemd5`, ffmpeg `psnr` süzgeciyle değil. Bu fikstürde bir dosyanın kendisiyle VMAF'ı

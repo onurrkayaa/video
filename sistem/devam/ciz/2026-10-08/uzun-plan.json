@@ -1,0 +1,2658 @@
+{
+ "ad": "uzun",
+ "fps": 30,
+ "boyut": [
+  1080,
+  1920
+ ],
+ "cekimler": [
+  {
+   "no": 1,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 9.766666666666667,
+   "cikti_bas": 0.0,
+   "cikti_son": 3.5,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.79,
+     0.494
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 2,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 1.2333333333333334,
+   "cikti_bas": 3.5,
+   "cikti_son": 6.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.05,
+     0.565
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 3,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 12.733333333333333,
+   "cikti_bas": 6.0,
+   "cikti_son": 8.8,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.337,
+     0.309
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 4,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 6.733333333333333,
+   "cikti_bas": 8.8,
+   "cikti_son": 11.6,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.707,
+     0.466
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 5,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 9.2,
+   "cikti_bas": 11.6,
+   "cikti_son": 14.6,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.664,
+     0.377
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 6,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 11.933333333333334,
+   "cikti_bas": 14.6,
+   "cikti_son": 17.6,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.775,
+     0.406
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 7,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 10.4,
+   "cikti_bas": 17.2,
+   "cikti_son": 20.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.667,
+     0.638
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 8,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 3.1666666666666665,
+   "cikti_bas": 20.7,
+   "cikti_son": 23.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.376,
+     0.464
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 9,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 15.166666666666666,
+   "cikti_bas": 23.2,
+   "cikti_son": 25.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.68,
+     0.602
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 10,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 10.833333333333334,
+   "cikti_bas": 25.7,
+   "cikti_son": 29.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.767,
+     0.339
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 11,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 6.833333333333333,
+   "cikti_bas": 29.0,
+   "cikti_son": 31.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.795,
+     0.665
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 12,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 6.6,
+   "cikti_bas": 31.0,
+   "cikti_son": 33.8,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.513,
+     0.558
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 13,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 15.2,
+   "cikti_bas": 33.8,
+   "cikti_son": 37.1,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.775,
+     0.691
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 14,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 12.333333333333334,
+   "cikti_bas": 36.7,
+   "cikti_son": 38.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.27,
+     0.472
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 15,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 4.066666666666666,
+   "cikti_bas": 38.7,
+   "cikti_son": 41.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.131,
+     0.652
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 16,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 3.3666666666666667,
+   "cikti_bas": 41.2,
+   "cikti_son": 44.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.155,
+     0.565
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 17,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 6.666666666666667,
+   "cikti_bas": 44.2,
+   "cikti_son": 46.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.392,
+     0.389
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 18,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 3.566666666666667,
+   "cikti_bas": 46.7,
+   "cikti_son": 49.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.801,
+     0.65
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 19,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 0.2,
+   "cikti_bas": 49.7,
+   "cikti_son": 52.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.22,
+     0.368
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 20,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 5.666666666666667,
+   "cikti_bas": 52.7,
+   "cikti_son": 56.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.552,
+     0.569
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 21,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 5.2,
+   "cikti_bas": 55.6,
+   "cikti_son": 58.6,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.387,
+     0.511
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 22,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 4.3,
+   "cikti_bas": 58.6,
+   "cikti_son": 61.1,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.661,
+     0.496
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 23,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 14.433333333333334,
+   "cikti_bas": 61.1,
+   "cikti_son": 63.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.585,
+     0.699
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 24,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 15.033333333333333,
+   "cikti_bas": 63.3,
+   "cikti_son": 65.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.271,
+     0.692
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 25,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 11.433333333333334,
+   "cikti_bas": 65.3,
+   "cikti_son": 68.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.833,
+     0.478
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 26,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 14.166666666666666,
+   "cikti_bas": 68.3,
+   "cikti_son": 71.8,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.392,
+     0.331
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 27,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 16.066666666666666,
+   "cikti_bas": 71.8,
+   "cikti_son": 74.6,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.323,
+     0.627
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 28,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 6.533333333333333,
+   "cikti_bas": 74.2,
+   "cikti_son": 76.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.722,
+     0.406
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 29,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 5.866666666666666,
+   "cikti_bas": 76.2,
+   "cikti_son": 79.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.067,
+     0.515
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 30,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 12.3,
+   "cikti_bas": 79.0,
+   "cikti_son": 81.5,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.219,
+     0.501
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 31,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 8.666666666666666,
+   "cikti_bas": 81.5,
+   "cikti_son": 84.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.933,
+     0.671
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 32,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 16.566666666666666,
+   "cikti_bas": 84.0,
+   "cikti_son": 86.8,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.291,
+     0.49
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 33,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 16.766666666666666,
+   "cikti_bas": 86.8,
+   "cikti_son": 89.6,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.178,
+     0.451
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 34,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 15.933333333333334,
+   "cikti_bas": 89.6,
+   "cikti_son": 92.1,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.341,
+     0.564
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 35,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 6.4,
+   "cikti_bas": 91.7,
+   "cikti_son": 94.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.675,
+     0.406
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 36,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 6.766666666666667,
+   "cikti_bas": 94.7,
+   "cikti_son": 98.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.928,
+     0.592
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 37,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 9.9,
+   "cikti_bas": 98.0,
+   "cikti_son": 100.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.554,
+     0.55
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 38,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 6.2,
+   "cikti_bas": 100.2,
+   "cikti_son": 102.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.077,
+     0.609
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 39,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 12.633333333333333,
+   "cikti_bas": 102.2,
+   "cikti_son": 104.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.376,
+     0.675
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 40,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 10.033333333333333,
+   "cikti_bas": 104.2,
+   "cikti_son": 107.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.106,
+     0.377
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 41,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 0.5,
+   "cikti_bas": 107.7,
+   "cikti_son": 110.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.43,
+     0.613
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 42,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 8.933333333333334,
+   "cikti_bas": 109.8,
+   "cikti_son": 113.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.493,
+     0.488
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 43,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 12.633333333333333,
+   "cikti_bas": 113.3,
+   "cikti_son": 115.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.376,
+     0.358
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 44,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 4.133333333333334,
+   "cikti_bas": 115.3,
+   "cikti_son": 118.6,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.596,
+     0.358
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 45,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 11.4,
+   "cikti_bas": 118.6,
+   "cikti_son": 121.9,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.138,
+     0.342
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 46,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 8.133333333333333,
+   "cikti_bas": 121.9,
+   "cikti_son": 125.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.466,
+     0.66
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 47,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 0.5,
+   "cikti_bas": 125.2,
+   "cikti_son": 128.5,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.681,
+     0.351
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 48,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 15.766666666666667,
+   "cikti_bas": 128.5,
+   "cikti_son": 132.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.125,
+     0.547
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 49,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 15.4,
+   "cikti_bas": 131.6,
+   "cikti_son": 134.1,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.5,
+     0.308
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 50,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 2.3333333333333335,
+   "cikti_bas": 134.1,
+   "cikti_son": 137.4,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.786,
+     0.376
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 51,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 16.333333333333332,
+   "cikti_bas": 137.4,
+   "cikti_son": 140.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.751,
+     0.479
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 52,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 16.266666666666666,
+   "cikti_bas": 140.2,
+   "cikti_son": 142.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.691,
+     0.325
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 53,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 4.966666666666667,
+   "cikti_bas": 142.7,
+   "cikti_son": 146.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.93,
+     0.414
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 54,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 2.8333333333333335,
+   "cikti_bas": 146.2,
+   "cikti_son": 148.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.502,
+     0.41
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 55,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 16.133333333333333,
+   "cikti_bas": 148.2,
+   "cikti_son": 150.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.438,
+     0.669
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 56,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 2.9,
+   "cikti_bas": 150.3,
+   "cikti_son": 152.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.275,
+     0.542
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 57,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 1.1,
+   "cikti_bas": 152.3,
+   "cikti_son": 154.5,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.715,
+     0.435
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 58,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 1.7666666666666666,
+   "cikti_bas": 154.5,
+   "cikti_son": 156.5,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.907,
+     0.596
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 59,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 16.2,
+   "cikti_bas": 156.5,
+   "cikti_son": 160.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.238,
+     0.473
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 60,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 5.366666666666666,
+   "cikti_bas": 160.0,
+   "cikti_son": 162.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.708,
+     0.346
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 61,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 2.3,
+   "cikti_bas": 162.0,
+   "cikti_son": 165.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.468,
+     0.498
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 62,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 4.366666666666666,
+   "cikti_bas": 165.0,
+   "cikti_son": 167.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.117,
+     0.508
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 63,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 6.333333333333333,
+   "cikti_bas": 166.6,
+   "cikti_son": 168.6,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.523,
+     0.36
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 64,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 5.133333333333334,
+   "cikti_bas": 168.6,
+   "cikti_son": 171.1,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.507,
+     0.64
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 65,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 3.8,
+   "cikti_bas": 171.1,
+   "cikti_son": 174.6,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.901,
+     0.578
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 66,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 15.533333333333333,
+   "cikti_bas": 174.6,
+   "cikti_son": 177.9,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.163,
+     0.576
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 67,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 5.4,
+   "cikti_bas": 177.9,
+   "cikti_son": 181.4,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.944,
+     0.524
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 68,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 13.166666666666666,
+   "cikti_bas": 181.4,
+   "cikti_son": 183.4,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.219,
+     0.43
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 69,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 15.033333333333333,
+   "cikti_bas": 183.4,
+   "cikti_son": 186.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.059,
+     0.638
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 70,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 9.4,
+   "cikti_bas": 185.8,
+   "cikti_son": 188.8,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.815,
+     0.355
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 71,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 12.7,
+   "cikti_bas": 188.8,
+   "cikti_son": 191.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.295,
+     0.374
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 72,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 5.6,
+   "cikti_bas": 191.0,
+   "cikti_son": 193.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.671,
+     0.354
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 73,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 2.066666666666667,
+   "cikti_bas": 193.2,
+   "cikti_son": 195.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.061,
+     0.489
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 74,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 3.9,
+   "cikti_bas": 195.2,
+   "cikti_son": 197.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.636,
+     0.516
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 75,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 6.266666666666667,
+   "cikti_bas": 197.2,
+   "cikti_son": 200.5,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.586,
+     0.324
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 76,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 13.866666666666667,
+   "cikti_bas": 200.5,
+   "cikti_son": 202.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.253,
+     0.526
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 77,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 3.1333333333333333,
+   "cikti_bas": 202.3,
+   "cikti_son": 204.8,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.474,
+     0.59
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 78,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 1.0,
+   "cikti_bas": 204.8,
+   "cikti_son": 208.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.202,
+     0.565
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 79,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 3.8,
+   "cikti_bas": 208.3,
+   "cikti_son": 210.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.682,
+     0.371
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 80,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 15.666666666666666,
+   "cikti_bas": 210.3,
+   "cikti_son": 213.6,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.077,
+     0.636
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 81,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 7.233333333333333,
+   "cikti_bas": 213.6,
+   "cikti_son": 216.9,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.636,
+     0.415
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 82,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 7.9,
+   "cikti_bas": 216.9,
+   "cikti_son": 219.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.232,
+     0.644
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 83,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 9.133333333333333,
+   "cikti_bas": 219.7,
+   "cikti_son": 223.2,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.759,
+     0.386
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 84,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 0.2,
+   "cikti_bas": 222.8,
+   "cikti_son": 225.8,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.279,
+     0.616
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 85,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 16.6,
+   "cikti_bas": 225.8,
+   "cikti_son": 229.1,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.946,
+     0.583
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 86,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 5.633333333333334,
+   "cikti_bas": 229.1,
+   "cikti_son": 232.4,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.749,
+     0.337
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 87,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 11.0,
+   "cikti_bas": 232.4,
+   "cikti_son": 235.4,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.079,
+     0.447
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 88,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 7.7,
+   "cikti_bas": 235.4,
+   "cikti_son": 237.4,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.904,
+     0.311
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 89,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 16.166666666666668,
+   "cikti_bas": 237.4,
+   "cikti_son": 240.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.357,
+     0.574
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 90,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 11.733333333333333,
+   "cikti_bas": 240.7,
+   "cikti_son": 242.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.175,
+     0.304
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 91,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 16.533333333333335,
+   "cikti_bas": 242.3,
+   "cikti_son": 244.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.052,
+     0.631
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 92,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 9.3,
+   "cikti_bas": 244.3,
+   "cikti_son": 246.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.257,
+     0.35
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 93,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 3.1,
+   "cikti_bas": 246.3,
+   "cikti_son": 249.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.269,
+     0.565
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 94,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 7.3,
+   "cikti_bas": 249.3,
+   "cikti_son": 252.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.557,
+     0.551
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 95,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 9.2,
+   "cikti_bas": 252.3,
+   "cikti_son": 255.1,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.278,
+     0.42
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 96,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 6.566666666666666,
+   "cikti_bas": 255.1,
+   "cikti_son": 257.1,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.732,
+     0.342
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 97,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 3.7,
+   "cikti_bas": 257.1,
+   "cikti_son": 259.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.903,
+     0.624
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 98,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 2.7333333333333334,
+   "cikti_bas": 258.9,
+   "cikti_son": 261.9,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.158,
+     0.537
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 99,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 16.566666666666666,
+   "cikti_bas": 261.9,
+   "cikti_son": 264.7,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.826,
+     0.512
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 100,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 9.233333333333333,
+   "cikti_bas": 264.7,
+   "cikti_son": 268.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.78,
+     0.488
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 101,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 10.966666666666667,
+   "cikti_bas": 268.0,
+   "cikti_son": 271.5,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.859,
+     0.362
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 102,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 0.3333333333333333,
+   "cikti_bas": 271.5,
+   "cikti_son": 274.3,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.354,
+     0.401
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 103,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 9.733333333333333,
+   "cikti_bas": 274.3,
+   "cikti_son": 276.5,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.384,
+     0.642
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 104,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 7.6,
+   "cikti_bas": 276.5,
+   "cikti_son": 279.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.055,
+     0.422
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 105,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 13.9,
+   "cikti_bas": 278.6,
+   "cikti_son": 280.6,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.61,
+     0.607
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 106,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 1.5,
+   "cikti_bas": 280.6,
+   "cikti_son": 283.9,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.225,
+     0.465
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 107,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 15.533333333333333,
+   "cikti_bas": 283.9,
+   "cikti_son": 287.4,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.872,
+     0.359
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 108,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 17.733333333333334,
+   "cikti_bas": 287.4,
+   "cikti_son": 289.4,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.522,
+     0.687
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.06,
+     1.0
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 109,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 11.2,
+   "cikti_bas": 289.4,
+   "cikti_son": 291.9,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.808,
+     0.537
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 110,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 4.633333333333334,
+   "cikti_bas": 291.9,
+   "cikti_son": 295.4,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.634,
+     0.619
+    ],
+    "mod": "sabit"
+   }
+  },
+  {
+   "no": 111,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 8.9,
+   "cikti_bas": 295.4,
+   "cikti_son": 297.4,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "kesim",
+    "sure_kare": 0
+   },
+   "kadraj": {
+    "ilgi": [
+     0.168,
+     0.344
+    ],
+    "mod": "sabit"
+   },
+   "hareket": {
+    "tur": "kenburns",
+    "olcek": [
+     1.0,
+     1.06
+    ],
+    "egri": "sine.inOut"
+   }
+  },
+  {
+   "no": 112,
+   "kaynak": "/Users/onurkaya/Projects/video/projeler/2026-10-05-deniz-kenari-deneme/kaynak/IMG_4021.MOV",
+   "kaynak_bas": 10.433333333333334,
+   "cikti_bas": 297.0,
+   "cikti_son": 300.0,
+   "hiz": 1,
+   "ses": "sessiz",
+   "vurusa": false,
+   "gecis": {
+    "tur": "erime",
+    "sure_kare": 12
+   },
+   "kadraj": {
+    "ilgi": [
+     0.698,
+     0.362
+    ],
+    "mod": "sabit"
+   }
+  }
+ ]
+}

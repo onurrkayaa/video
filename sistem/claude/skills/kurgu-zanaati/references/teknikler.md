@@ -71,10 +71,25 @@ Blok adları `hyperframes catalog --tag transition --json` ile doğrulandı (202
   görüneceğini kullanıcıya söyle. `plan_denetle` cover × `hareket.olcek`'i ⚠ ile bildirir (sabitleme zoom'unu bilmez).
 
 ## Hız
-- **Ağır çekim:** `medya yavaslat <kaynak> --hiz H --bas A --sure S --cikti calisma/klipler/<ad>-yavas.mov` — motor
-  seçme (gerçek yüksek fps → doğal; değilse Apple ML → RIFE → minterpolate; HDR'yi kendisi SDR'ye çevirir; çıktı sessiz
-  ProRes). ×2 çoğu çekimde güvenli; ×4 yalnız basit harekette (el, saç, su, kesişen insan "jöle" yapar: şeride bak).
-  Dakikada 1–3, yalnız duygu doruklarında; en yavaş an ölçü başında. Planda `hiz` < 1, `klip` = bu dosya, `ses` ≠ kendi.
+- **Ağır çekim:** `medya yavaslat <kaynak> --hiz H --bas A --sure S --cikti calisma/klipler/<ad>-yavas.mp4` — motor
+  seçme (gerçek yüksek fps → doğal; değilse hazır kare ≤ 2000 px ise RIFE, üstünde Apple ML → diğeri → minterpolate;
+  HDR'yi kendisi SDR'ye çevirir; çıktı sessiz). HyperFrames'e `.mp4` (H.264 CRF 12): HyperFrames ProRes'i her kipte 16 bit
+  PNG kareye açar; `.mov` (ProRes 422 HQ) yalnız NLE devrine. ×2 çoğu çekimde güvenli; ×4 yalnız basit harekette (el,
+  saç, su, kesişen insan "jöle" yapar: şeride bak). Dakikada 1–3, yalnız duygu doruklarında; en yavaş an ölçü başında.
+  Planda `hiz` < 1, `klip` = bu dosya, `ses` ≠ kendi.
+- **4K'dan dikey ağır çekim:** `--kirp x,y,gen,yük --olcek 1080x1920` (görünen yönde, çift sayılar; ara kareden önce,
+  doğal yolda da). 16:9 4K'nın tam boy 9:16 penceresi 1216x2160, `x = clamp(ilgi_x·Wk − 608, 0, Wk − 1216)`, çifte
+  yuvarla. Ölçüldü (2026-10-08, deneme kesiti; HyperFrames'in kare çıkarma ayarları borudan taklit edildi, gerçek çizim
+  yapılmadı): 237 ağır çekim karesinin geçici alanı ProRes 4K 7,8 GB → ProRes 1080x1920 1,6 GB (kırp/ölçek) → `.mp4`
+  1080x1920 0,60 GB (kodek; PNG son çizim) / 0,05 GB (taslak JPEG); RIFE 4K'ya göre 3,6 kat hızlı. Kalite: gerçek
+  çekimde kırp-önce = ara-kare-önce (0,00 dB; yalnız küçük harekette ölçüldü); aşırı ince desen (kumaş, ekran, ızgara)
+  ölçeklenince örtüşür (sentetik en kötü −4,1 dB) → böyle çekimde yalnız `--kirp`.
+  - Punch/Ken Burns olan çekimde pay bırak: `--olcek` = 1080x1920 × en büyük `hareket.olcek` (çifte yuvarla) ya da yalnız
+    `--kirp` (cover 0,89 kalır, punch ≤ 1,29). Payla uzun kenar 2000 px'i aşarsa yöntem yine Apple önce.
+  - Kırpma klibe pişer: kadraj değişirse klip yeniden üretilir. O çekimde `kadraj.ilgi` klibe göredir:
+    `ilgi_x' = (ilgi_x·Wk − x)/gen` (y için aynı).
+  - PNG'li son çizimin diske sığması için 1x 4K çekimler de teslim boyutuna inmeli: denemede 237 karelik 1x 4K HEVC
+    PNG'de 2,8 GB (ağır çekimden büyük); bugün bunun komutu yok (gelistirme.md).
 - **Rampa:** yalnız gerçek fps ≥ çıktı fps/hız olan kaynakta (240 fps → 0,125x; 120 → 0,25x):
   `$P $K/rampa.py kaynak/X.MOV --bas A --sure S --hiz 0.25 --a 0.8 --b 1.0 --c 1.6 --d 1.8 --cikti calisma/klipler/X-rampa.mp4`
   (a–d kesit içi kaynak saniyesi: iniş 6–12 kare, tutuş 0,5–2 sn, çıkış 6–10 kare). Değilse hız kesmesi: 1x çekim →

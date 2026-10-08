@@ -1,0 +1,48 @@
+{
+  "yatak": "kaynak/muzik.wav",
+  "konusma": "/private/tmp/claude-501/-Users-onurkaya-Projects-video/751b0520-a2bb-4907-b2a0-5609716dbd05/scratchpad/o6/kisma/konusma.wav",
+  "cikti": "/private/tmp/claude-501/-Users-onurkaya-Projects-video/751b0520-a2bb-4907-b2a0-5609716dbd05/scratchpad/o6/kisma/muzik-kisik-0.5.wav",
+  "aralik_kaynagi": "/private/tmp/claude-501/-Users-onurkaya-Projects-video/751b0520-a2bb-4907-b2a0-5609716dbd05/scratchpad/o6/kisma/aralik.json",
+  "bas_sn": -0.5,
+  "parametreler": {
+    "derinlik_db": -12.0,
+    "kazanc_db": 0.0,
+    "on_sn": 0.12,
+    "atak_sn": 0.08,
+    "birak_sn": 0.45
+  },
+  "sure_sn": 10.0,
+  "kisma_bolgeleri_cikti_sn": [
+    [
+      2.0,
+      4.0
+    ]
+  ],
+  "olcum": {
+    "pencere_sn": 3.0,
+    "pencere_sayisi": 1,
+    "en_dusuk_pencere_cikti_sn_lu": [
+      1.96,
+      4.0,
+      8.09
+    ],
+    "kapi_alti_pencereler_cikti_sn_lu": [
+      [
+        1.96,
+        4.0,
+        8.09
+      ]
+    ],
+    "olculmeyen_kisa_bolgeler_cikti_sn": [],
+    "konusma_eksi_yatak_lu_tum_konusma": 8.09,
+    "kisma_disi_yatak_degisimi_lu": 0.0,
+    "olculen_kisma_lu": 12.0
+  },
+  "kapi": {
+    "konusma_eksi_yatak_lu_en_az": 10.0,
+    "kisma_disi_en_cok_lu": 0.5
+  },
+  "gecti": false,
+  "oneri": "--derinlik -15",
+  "uyarilar": []
+}

@@ -1,0 +1,46 @@
+{
+ "60fps_0.25x_eski": {
+  "yontem": "rife",
+  "kat": 4,
+  "hazir_fps": null,
+  "kare": 120,
+  "n": 120,
+  "sure_sn": 6.9,
+  "cift_ort": 35.02,
+  "cift_min": 25.49,
+  "tek_ort": 32.21,
+  "tek_min": 24.13,
+  "dort_min": 39.78,
+  "hepsi_ort": 33.62
+ },
+ "60fps_0.25x_yeni": {
+  "yontem": "rife",
+  "kat": 2,
+  "hazir_fps": 60.0,
+  "kare": 120,
+  "n": 120,
+  "sure_sn": 8.0,
+  "cift_ort": 39.97,
+  "cift_min": 39.34,
+  "tek_ort": 29.69,
+  "tek_min": 26.06,
+  "dort_min": 39.34,
+  "hepsi_ort": 34.83
+ },
+ "kirp_once_vs_ara_kare_once_720p": {
+  "yontem": [
+   "rife",
+   "rife"
+  ],
+  "n": 120,
+  "kirp_once_ara_ort": 28.15,
+  "ara_once_ara_ort": 28.18,
+  "kirp_once_kotu5": 23.77,
+  "ara_once_kotu5": 23.92,
+  "kopya_ort": 24.75,
+  "kirp_once_ozgun_min": 39.74,
+  "ara_once_ozgun_min": 37.49,
+  "fark_ort": -0.03,
+  "kare_kare_fark_min": -0.41
+ }
+}

@@ -5,13 +5,26 @@ silinir ve `sistem/dersler.md`'ye ölçümüyle yazılır. Öncelik: **Y** yüks
 Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü ve ücretli olanlar kullanıcıya sorulur.
 
 ## Yetenek katmanı (`medya` komutları)
-- **Y** `medya yavaslat --kirp x,y,w,h --olcek WxH`: 4K kaynağın ağır çekimini teslim boyutunda üret (HyperFrames 4K
-  ProRes'i kare başı ~33 MB PNG'ye açıyor; uçtan uca denemede disk doldu, vekil klip gerekti).
-- **Y** `medya ciz` (ffmpeg EDL çizicisi): uzun ve çekim ağırlıklı kurgularda planı doğrudan ffmpeg'le çiz (kesim,
-  xfade, ölçek/kırpma, ses miksi); HyperFrames 45 dk'lık işte ~1,9 saat sürüyor (kapsam incelemesi, doğrulanmadı).
-  Ölçüt hazır: `testler/nle_olc.py` (Resolve çizimi geçiyor). Dikkat (ölçüldü 2026-10-08): elle kurulan
-  `concat → xfade → concat` zinciri erimeden sonra 1 kare kaydı (gelen klip 1 kare erken içerik, sonraki kesim 1 kare
-  geç, toplam +1 kare) — zaman tabanlarını kare ızgarasına oturtup 0 kareye indirmeden yayımlama.
+- **O** `medya ciz` kalanları (çekirdek 2026-10-08'de kuruldu ve ölçüldü: dersler.md, `medya test ciz`):
+  - `siyah-dip`/`beyaz-dip`: önce sözleşme kararı (dip kesimin iki yanında mı, `sure_kare` toplam mı; ilk çekimde
+    siyahtan açılış). HyperFrames kompozisyonunda da tanımsız; iki motor aynı tanımla + `nle_olc`'ye dip ölçümü.
+  - Fotoğraf: EXIF yönü (tarayıcı uygular, ffmpeg 6.0'ın uyguladığı ölçülmedi), HEIC → `sips`; Ken Burns'ün asıl yeri.
+  - J/L kesim (planda ayrı ses kaynağı alanı yok: aşağıdaki O maddesi), kadraj pan/takip (anahtar kare alanı yok).
+  - Sabit kadraj tamsayı (çift) kırpma: HyperFrames'in alt piksel `object-position`'ından ≤ 1 kaynak pikseli (ölçülen
+    0,6 çıktı pikseli). İstenirse perspective yolu (bir yeniden örnekleme daha, hafif yumuşar) — ölçerek.
+  - Ses: miksin PCM'ini de yazmak (`ustala` + `teslim.py kodla --ses` ile tek AAC kuşağı; bugün ciz AAC 320k yazar,
+    `ustala` yeniden AAC kodlar). Erimede iki `kendi` çekimin sesi toplanır (HyperFrames gibi); ses çapraz geçişi yok.
+  - `.claude/workflows/medya-uretim.js`'in atlanan aşama özetleri hâlâ `calisma/kompozisyon/` diyor.
+  - Radar notu: Kdenlive içindeki melt 7.41.0 (MLT, GPL) de başsız ve kare dökmeden çizebilir; değerlendirilmedi
+    (ffmpeg yolu daha az bağımlılık getirdiği için seçildi; MLT erimesi ilk karede ağırlık 0, son kare kapsayıcı).
+- **Y** `kisma.py --bas` işareti: ses-tasarimi SKILL.md (Kısma adımı), teknikler.md §5 ve kisma.py'nin parantez notu
+  `--bas <plan muzik.bas>` diyor; betiğin kendi tanımına göre doğrusu −`muzik.bas`. `muzik.bas` 0,5 iken `--bas 0.5`
+  kısmayı 1 sn erken koydu (ölçüldü 2026-10-08, dersler.md). Önerilen `bas: 0`'da etkisiz. Düzeltme + sınama.
+- **O** HyperFrames 0.8.140 PNG kipi (`--video-frame-format png`, CLAUDE.md'nin gerçek çekim son çizim önerisi):
+  1080p bt709 8 bit gerçek çekimde Y her parlaklıkta sabit −1,9 düzey (JPEG kipi +0,04, ciz +0,02; nedeni ayrılmadı);
+  4K kaynakta 5 işçiyle takas 0,9 → 15,9 GB, SIGABRT; çöken çizimin Chrome süreçleri kapanmadı, `work-…` klasörü
+  (3,5 GB) çıktı klasöründe kaldı (2026-10-08). Öneri gözden geçirilmeli (gerçek çekimde `medya ciz`; HyperFrames'te
+  JPEG + `--workers 1` ölçüldü: 35,8 sn, 0,37 GB).
 - **Y** `medya temizle --uygula`: `uv cache clean`'e `--cache-dir` açıkça verilsin. Hedef bugün `UV_CACHE_DIR`'den
   geliyor; ortam yüklenmeden çalışırsa stüdyo dışı `~/.cache/uv`'yi siler, yol bekçisi yalnız `.uv/cache`'i denetliyor
   (`env -u UV_CACHE_DIR arac/uv cache dir` → `~/.cache/uv`, 2026-10-08; o gün 16 KB). Sınama: alt süreç argümanı.
@@ -27,6 +40,24 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 - **O** `medya sabitle`: titreme ölçümü (önce/sonra) + iki geçişli vidstab (bugün `kurgu-zanaati/scripts/titreme.py`).
 - **O** Hız rampası yeteneği (`medya yavaslat --rampa`): 30 fps kaynaklar için ML ara kareli rampa (bugün `rampa.py`
   yalnız gerçek yüksek fps kaynakta).
+- **O** 1x 4K çekimler için teslim boyutunda ara klip (kırp/ölçek; `yavaslat`ın `_kirp_olcek` süzgeci ve renk ayarı
+  yeniden kullanılır; `medya ciz` ile birlikte düşünülebilir): HyperFrames 1x 4K HEVC'yi PNG son çizimde kare başı
+  11,8 MB'a açıyor (denemenin 237 karesi 2,8 GB; ağır çekim `.mp4` 1080x1920 ile 0,6 GB, 2026-10-08 borudan ölçüldü).
+  Ağır çekim tek başına PNG'li son çizimi diske sığdırmaz. `medya ciz` kapsamındaki planlarda gerekmez (4K'yı kare
+  dökmeden çiziyor, 2026-10-08); yalnız HyperFrames'e girecek 1x 4K çekimler için.
+- **D** RIFE yolunda ProRes HQ ara dosyası (PNG → `ara.mov` → çıktı) aşırı ayrıntılı kırpılmış karede tam karedekinden
+  1,8 dB fazla kaybettiriyor (sentetik 35,6 / 37,5 dB; gerçek çekimde 38,44 / 38,45, fark yok; 2026-10-08). Aday:
+  kayıpsız ara dosya (FFV1 ya da x264 `-qp 0`) + önce/sonra ölçümü ve disk payı.
+- **D** Ara kare yolunda son çıktı karesinin sağ komşusu yok: minterpolate'te son kare önceki kaynak karesini gösteriyor
+  (ölçüldü: HDR sınaması, j=89 → 88, 46,4 dB); RIFE'de son iki çıktı karesi son girdinin birebir aynısı (4 girdi,
+  `-n 8`; 2026-10-08), yani klip sonunda 1 karelik duruş. Planda klibin son karesini kullanma ya da
+  `--sure`'yu bir kaynak karesi uzun ver; kalıcı çözüm adayı: hazırlıkta bir kare fazla al, çıktıyı kırp.
+- **D** bt601 etiketli (ve etiketsiz < 720 satır) SDR kaynakta `yavaslat`ın rengi, HyperFrames'in aynı kameranın 1x
+  çekiminde göreceğinden sapıyor. `--olcek`'siz yol pikselleri çevirmeden bt709 etiketliyor: smptehdbars kırmızısı 173
+  yerine 189, kare ortalaması 3,5 düzey fark. `--olcek` ffmpeg 6.0'ın ara 8 bit RGB çevirisiyle yaklaşıyor ama griyi
+  kaydırıyor: %75 beyaz 189 → 185/187/187, kare ortalaması 2,7 (etiketsiz SD'de 3,3). Ölçüm 2026-10-08:
+  `sistem/devam/yavas-cekim/2026-10-08-kirp/olc_renk.json`. Stüdyonun bugünkü kaynakları bt709 etiketli, etkilenmiyor.
+  Aday (ölçülmedi): iki yolda da aynı tek adımlı çeviri (zscale ya da swscale `accurate_rnd`) + aynı ölçüm.
 - **O** Yeniden kadraj yolu: `medya analiz` konu kutularından yumuşatılmış kırpma/anahtar kare JSON'u (16:9 → 9:16).
 - **O** `medya nle`: müzik seviyesi/kısma ve J/L kesim sesi taşınsın; `--paket` (.otioz), `--pisir` (hareket ve hızı
   pişmiş ara klipler); Resolve_OTIO efekt üst verisi (Dynamic Zoom, faders) — her biri `testler/nle_olc.py` ile Resolve
@@ -88,7 +119,7 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
   hyperframes publish` ve `(cd x); npx hyperframes cloud render` geçiyor. Aday: yalnız noktalamadan oluşan jetonu bilinen
   işleçlere bölmek (`);` → `)` `;`). Sınama: bu iki örnek engellenir; `;;`, `|&`, `>&`, `&>` ve heredoc örnekleri aynı kalır.
 - **O** Kalan önek ve biçim kaçakları (aynı ölçüm, özgün ve yeni kancada çıkış 0): değer bayrağı önek tablosunda olmayan
-  önekler (`sudo -u onur …`, `/usr/bin/time -o t.txt …`, `npx -p hyperframes hyperframes cloud render`); here-string ve
+  önekler (`sudo -u onur …`, `/usr/bin/time -o t.txt …`); here-string ve
   `env -S` (`bash <<< 'npx hyperframes cloud render'`, `env -S '…'`); whisperx'in ilk üç jetondan sonra gelmesi (`pip
   install -q -U whisperx`, `uv pip install --python ortamlar/ses/bin/python whisperx`; sürümlü biçim yakalanıyor);
   `init … --skip-transcribe --no-skip-transcribe` (citty `--no-` olumsuzlaması dökümü geri açıyor; kodda okundu);
@@ -105,6 +136,14 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
   sonunda bunu ve `catch-up`'ı önermeye başladı. Bugün uygulama kurulu değil, komut yalnız indirme adresini yazıyor
   (`open-*.js`, kodda okundu 2026-10-08); uygulamanın hesap ve ağ davranışı incelenmedi. medya-studyo yönlendirmesi
   "masaüstü uygulaması tanıtımı atlanır" diyor; uygulama kurulursa kural kararı gerekir.
+- **D** Sabit sürümün kancada serbest kalan yolları (2026-10-08 ek turu): `-E`/`--save-exact`'sız tam sürüm (`npm i -D
+  hyperframes@0.8.140`) package.json'a `^0.8.140` yazar (npm 11.19.0 arborist `reify.js`:1812-1827 "specific versions save
+  with the save-prefix"; stüdyoda `.npmrc` yok, `save-exact` false; kodda okundu); git/URL/tarball kaynağı (`npm i
+  github:heygen-com/hyperframes`) tanınmıyor. Aday: tam sürümlü proje kurulumunda `-E` zorunlu + sınama.
+- **D** `hyperframes capture`: OPENROUTER/GEMINI/GOOGLE anahtarı ya da Vertex hesabı varsa yakalanan sitenin varlıklarını
+  görsel açıklama için dışarı gönderiyor (0.8.140 `capture-EHOMO4MP.js`:1031, :3479; kodda okundu, çalıştırılmadı); kanca
+  `--skip-vision` (`capture-5EHGRJZM.js`:73) istemiyor. Kişisel kare değil, kullanıcının verdiği web sitesi; 2026-10-08'de
+  dört değişken de tanımsız, `@google/genai` kurulu değil.
 - **D** `ortam.sh` `HYPERFRAMES_NO_UPDATE_CHECK=1`'i koymuyor (yalnız `~/.claude/settings.json` env'i koyuyor): Claude Code
   dışındaki kabukta CLI günde bir npm kayıt defterine sürüm sorar (0.8.140 `chunk-DDQ4LOML.js`:258-262 yalnız bu
   değişkene, CI'ye ve geliştirici kipine bakıyor; kodda okundu, ölçülmedi). Yerel kurulum kendini güncellemez

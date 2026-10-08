@@ -8,7 +8,7 @@ Motor başvurusu: `hyperframes-core` (sözleşme), `hyperframes-keyframes` (punc
 K=calisma/kompozisyon; mkdir -p $K/medya
 cp $MEDYA/varliklar/js/gsap.min.js $K/                    # ağdan betik yok
 ln -s ../../../kaynak/IMG_0433.MOV $K/medya/IMG_0433.MOV   # medya kompozisyon klasörü İÇİNDEN görünmeli
-ln -s ../../klipler/IMG_0420-yavas025.mov $K/medya/
+ln -s ../../klipler/IMG_0420-yavas025.mp4 $K/medya/
 ln -s ../../ses/muzik.wav $K/medya/
 ```
 `src="../…"` lint hatasıdır ve çizim görüntüyü atlar; bağlantı (symlink) çalışır (sınandı).
@@ -24,7 +24,7 @@ ln -s ../../ses/muzik.wav $K/medya/
 </style>
 <div id="root" data-composition-id="kurgu" data-start="0" data-width="1080" data-height="1920" data-duration="60">
   <div class="kat" id="k2" style="z-index:2"><div class="ic" id="i2">
-    <video id="c2" class="clip" src="medya/IMG_0420-yavas025.mov" muted playsinline
+    <video id="c2" class="clip" src="medya/IMG_0420-yavas025.mp4" muted playsinline
            data-start="4.266667" data-duration="3.2" data-media-start="0" data-track-index="1"></video></div></div>
   <div class="kat" id="k3" style="z-index:3"><div class="ic" id="i3">
     <video id="c3" class="clip" src="medya/IMG_0433.MOV" data-has-audio="true" playsinline
@@ -40,6 +40,9 @@ window.__timelines["kurgu"] = tl;
 ```
 - Değerleri elle yazma; plandan üret (her zaman `k/fps`). Zamanlı öğenin atasında `data-start` olmaz (lint hatası);
   animasyon zamansız sarmalayıcıda, zamanlı `<video>`da değil.
+- Eğri, çapa ve uçlar plandan ([plan şeması](plan-semasi.md) "Kadraj, hareket ve erime anlamı"): `ease` = `gecis.egri` /
+  `hareket.egri` (yoksa `"none"`), `.ic` `transform-origin` = ilginin ekrandaki yeri, kenburns `fromTo` süresi
+  (son kare − ilk kare)/fps. Böylece `medya ciz` aynı plandan aynı hareketi çizer (ölçüldü: Ken Burns ≤ 0,2 px).
 - Erime: gelen `.kat` üstte, opaklık 0→1; giden kararmaz (parlaklık çukuru olmaz). Siyah/beyaz dip: siyah/beyaz katmanın
   opaklığı. Tek, duraklatılmış zaman çizelgesi; `Math.random`/`Date` yok.
 - `data-playback-rate` yalnız `> 1` hızlandırmada; `< 1` kare tekrarlar (ölçüldü: 0,5x'te yinelenen kare %48).
@@ -73,5 +76,6 @@ caffeinate -i hyperframes render calisma/kompozisyon --sdr -q delivery --video-f
   denetler, `medya nle` taşımaz → KARARLAR.md'ye yaz, Resolve'a devirde kullanıcıya söyle.
 - Müzik tek, sürekli bir `<audio>`; ses parça parça kodlanıp birleştirilmez (AAC başlangıç gecikmesi birikir:
   segment başına ~24 ms ffmpeg, ~67 ms Apple).
-- Yedek yol yalnız HyperFrames çizemezse: ffmpeg `xfade` (`fade` = çapraz geçiş; `dissolve` titreşimli/noktalı) ve
-  `concat` süzgeci; `zoompan` tam piksele yuvarlar → yavaş zoomda titrer.
+- Kare dökmeyen yol: `medya ciz plan/kurgu.json` (kesim, erime, sabit kadraj, punch/Ken Burns, kendi sesi + müzik;
+  motor seçimi SKILL.md). Elle `xfade`/`concat`/`zoompan` zinciri kurma: concat → xfade → concat erimeden sonra +1 kare
+  kaydırdı, `zoompan` tam piksele yuvarlayıp titrer (p95 0,94 px; ölçüldü).

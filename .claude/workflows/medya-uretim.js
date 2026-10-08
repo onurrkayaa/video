@@ -78,8 +78,10 @@ const yapimSes = ATLA.includes('yapim-ses') ? { ozet: ONCEKI + ' — calisma/ses
   { label: 'ses', phase: 'Yapım', schema: YAPIM })
 if (!yapimSes) return dur('yapim-ses')
 const yapimGorsel = ATLA.includes('yapim-gorsel') ? { ozet: ONCEKI + ' — calisma/kompozisyon/', ciktilar: [], sorunlar: [] }
-  : await agent(`${rol('medya-hareket')}\nGÖREV: plan/kurgu.json'u kompozisyona çevir. Motor: rolündeki "Motor seçimi" ` +
-  `(BRIEF.md 'Kompozisyon motoru' + 'Lisans bağlamı'; kapı geçmezse HyperFrames): HyperFrames → calisma/kompozisyon/ ` +
+  : await agent(`${rol('medya-hareket')}\nGÖREV: plan/kurgu.json'u çizime hazırla. Motor: rolündeki "Motor seçimi" ` +
+  `(gerçek çekim ve plan 'medya ciz' kapsamındaysa medya ciz: plan_denetle GEÇTİ + taslak 'medya ciz plan/kurgu.json ` +
+  `--crf 28 --preset veryfast --cikti cikti/taslak.mp4', kompozisyon yazılmaz; değilse ` +
+  `BRIEF.md 'Kompozisyon motoru' + 'Lisans bağlamı'; kapı geçmezse HyperFrames): HyperFrames → calisma/kompozisyon/ ` +
   `(lint 0 hata, snapshot --describe false temas sayfaları), Remotion → calisma/remotion/ (remotion still kareleri). ` +
   `calisma/ses/ çıktılarını bağla; taslak çizim (cikti/taslak.mp4, 'caffeinate -i' ile). ` +
   `PLAN: ${plan.ozet}\nSES: ${yapimSes.ozet}` +
@@ -89,8 +91,8 @@ if (!yapimGorsel) return dur('yapim-gorsel')
 // ---------------------------------------------------------------- Çizim
 phase('Çizim')
 const cizim = ATLA.includes('cizim') ? { ozet: ONCEKI + ' — cikti/*-final.mp4', ciktilar: [], sorunlar: [] }
-  : await agent(`${rol('medya-hareket')}\nGÖREV: medya-ses'in çıktılarını (calisma/ses/) kompozisyona bağla, ` +
-  `son çizimi 'caffeinate -i' ile yap (cikti/<proje-adı>.mp4; HyperFrames'te --quality standard (delivery 1080x1920'de ` +
+  : await agent(`${rol('medya-hareket')}\nGÖREV: medya-ses'in çıktılarını (calisma/ses/) kompozisyona (medya ciz'de plan muzik.dosya'ya) bağla, ` +
+  `son çizimi 'caffeinate -i' ile yap (cikti/<proje-adı>.mp4; medya ciz'de varsayılan ayarlar; HyperFrames'te --quality standard (delivery 1080x1920'de ` +
   `H.264 seviye 5.0 verir, dikey teslim kapısından kalır); --video-bitrate BRIEF'teki platforma uygun; gerçek ` +
   `çekimli işte --video-frame-format png; Remotion'da --image-format=png --color-space=bt709), ardından 'medya ustala' ile ` +
   `ses düzeyini platform hedefine getir ` +

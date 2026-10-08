@@ -1,0 +1,90 @@
+{
+ "sabit": {
+  "kare": 60,
+  "leke": 360,
+  "en_buyuk_hata_px": 0.494,
+  "ort_hata_px": [
+   0.404,
+   -0.0
+  ],
+  "artik_ikinci_fark_p95_px": 0.0,
+  "kirp": [
+   608,
+   1080,
+   886,
+   0
+  ],
+  "pencere": [
+   886.65,
+   0.0,
+   607.5,
+   1080.0
+  ]
+ },
+ "kenburns_dogrusal": {
+  "kare": 60,
+  "leke": 360,
+  "en_buyuk_hata_px": 0.02,
+  "ort_hata_px": [
+   -0.001,
+   -0.0
+  ],
+  "artik_ikinci_fark_p95_px": 0.0366,
+  "kirp": [
+   610,
+   1080,
+   886,
+   0
+  ],
+  "pencere": [
+   886.65,
+   0.0,
+   607.5,
+   1080.0
+  ]
+ },
+ "kenburns_sine": {
+  "kare": 60,
+  "leke": 360,
+  "en_buyuk_hata_px": 0.02,
+  "ort_hata_px": [
+   -0.001,
+   -0.001
+  ],
+  "artik_ikinci_fark_p95_px": 0.0321,
+  "kirp": [
+   610,
+   1080,
+   886,
+   0
+  ],
+  "pencere": [
+   886.65,
+   0.0,
+   607.5,
+   1080.0
+  ]
+ },
+ "punch": {
+  "kare": 60,
+  "leke": 186,
+  "en_buyuk_hata_px": 0.015,
+  "ort_hata_px": [
+   -0.0,
+   0.002
+  ],
+  "artik_ikinci_fark_p95_px": 0.0012,
+  "kirp": [
+   608,
+   1080,
+   656,
+   0
+  ],
+  "pencere": [
+   656.25,
+   0.0,
+   607.5,
+   1080.0
+  ]
+ }
+}

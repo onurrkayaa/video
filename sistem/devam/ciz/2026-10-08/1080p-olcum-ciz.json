@@ -1,0 +1,17 @@
+{
+ "komut": [
+  "medya",
+  "ciz",
+  "/private/tmp/claude-501/-Users-onurkaya-Projects-video/751b0520-a2bb-4907-b2a0-5609716dbd05/scratchpad/o6/kars/plan/kurgu.json",
+  "--cikti",
+  "/private/tmp/claude-501/-Users-onurkaya-Projects-video/751b0520-a2bb-4907-b2a0-5609716dbd05/scratchpad/o6/kars/ciz.mp4"
+ ],
+ "cikis": 0,
+ "sure_sn": 5.41,
+ "disk_tepe_gb": 0.018,
+ "disk_kalici_gb": 0.014,
+ "rss_tepe_gb": 1.305,
+ "takas_once_mb": 779.88,
+ "takas_tepe_mb": 779.88,
+ "takas_sonra_mb": 779.88
+}

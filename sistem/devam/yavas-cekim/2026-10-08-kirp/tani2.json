@@ -1,0 +1,28 @@
+{
+ "deneme_hareket": {
+  "en_hareketli_bas_sn": 1.233,
+  "kopya_psnr_160px": 48.37,
+  "a_penceresi_14_25": 52.56,
+  "ortanca": 51.65
+ },
+ "sentetik": {
+  "rife_png_kirp_once": 41.05,
+  "rife_png_ara_kare_once": 41.29,
+  "kare_kare_fark_ort": -0.24,
+  "kotu5_kirp_once": 40.45,
+  "kotu5_ara_kare_once": 40.71,
+  "kopya_ort": 19.02,
+  "prores_kaybi_kirpik_kare": 35.63,
+  "prores_kaybi_tam_kare_kirpim_bolgesi": 37.45
+ },
+ "deneme_hareketli": {
+  "rife_png_kirp_once": 45.46,
+  "rife_png_ara_kare_once": 45.48,
+  "kare_kare_fark_ort": -0.02,
+  "kotu5_kirp_once": 44.46,
+  "kotu5_ara_kare_once": 44.61,
+  "kopya_ort": 41.29,
+  "prores_kaybi_kirpik_kare": 38.44,
+  "prores_kaybi_tam_kare_kirpim_bolgesi": 38.45
+ }
+}

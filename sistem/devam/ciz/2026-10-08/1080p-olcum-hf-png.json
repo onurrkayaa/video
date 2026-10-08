@@ -1,0 +1,22 @@
+{
+ "komut": [
+  "node_modules/.bin/hyperframes",
+  "render",
+  "/private/tmp/claude-501/-Users-onurkaya-Projects-video/751b0520-a2bb-4907-b2a0-5609716dbd05/scratchpad/o6/kars/kompozisyon",
+  "--video-frame-format",
+  "png",
+  "--frames-cache-dir",
+  "off",
+  "--quiet",
+  "-o",
+  "/private/tmp/claude-501/-Users-onurkaya-Projects-video/751b0520-a2bb-4907-b2a0-5609716dbd05/scratchpad/o6/kars/hf_png.mp4"
+ ],
+ "cikis": 0,
+ "sure_sn": 34.63,
+ "disk_tepe_gb": 1.112,
+ "disk_kalici_gb": 0.015,
+ "rss_tepe_gb": 3.2,
+ "takas_once_mb": 779.88,
+ "takas_tepe_mb": 868.94,
+ "takas_sonra_mb": 868.94
+}

@@ -1,0 +1,81 @@
+{
+ "kaynak": "IMG_4021.MOV 4096x2160 HEVC 8 bit bt709 60 fps",
+ "kesitler": [
+  {
+   "bas_sn": 0,
+   "sure_sn": 3,
+   "png_kare": 90,
+   "png_mb_kare": 11.768,
+   "jpg_kare": 90,
+   "jpg_mb_kare": 0.959
+  },
+  {
+   "bas_sn": 3,
+   "sure_sn": 3,
+   "png_kare": 90,
+   "png_mb_kare": 11.828,
+   "jpg_kare": 90,
+   "jpg_mb_kare": 0.975
+  },
+  {
+   "bas_sn": 6,
+   "sure_sn": 3,
+   "png_kare": 90,
+   "png_mb_kare": 11.819,
+   "jpg_kare": 90,
+   "jpg_mb_kare": 0.982
+  },
+  {
+   "bas_sn": 9,
+   "sure_sn": 3,
+   "png_kare": 90,
+   "png_mb_kare": 11.893,
+   "jpg_kare": 90,
+   "jpg_mb_kare": 0.992
+  },
+  {
+   "bas_sn": 12,
+   "sure_sn": 3,
+   "png_kare": 90,
+   "png_mb_kare": 11.896,
+   "jpg_kare": 90,
+   "jpg_mb_kare": 0.983
+  },
+  {
+   "bas_sn": 15,
+   "sure_sn": 3,
+   "png_kare": 90,
+   "png_mb_kare": 11.872,
+   "jpg_kare": 90,
+   "jpg_mb_kare": 0.963
+  },
+  {
+   "bas_sn": 18,
+   "sure_sn": 3,
+   "png_kare": 90,
+   "png_mb_kare": 11.96,
+   "jpg_kare": 90,
+   "jpg_mb_kare": 0.956
+  },
+  {
+   "bas_sn": 21,
+   "sure_sn": 3,
+   "png_kare": 90,
+   "png_mb_kare": 11.719,
+   "jpg_kare": 90,
+   "jpg_mb_kare": 0.951
+  }
+ ],
+ "png": {
+  "mb_kare_en_az": 11.719,
+  "mb_kare_en_cok": 11.96,
+  "mb_kare_ort": 11.844,
+  "237_kare_gb_ort": 2.81
+ },
+ "jpg": {
+  "mb_kare_en_az": 0.951,
+  "mb_kare_en_cok": 0.992,
+  "mb_kare_ort": 0.97,
+  "237_kare_gb_ort": 0.23
+ }
+}

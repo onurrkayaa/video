@@ -35,13 +35,19 @@ gerektiğini söyler.
 ## Neler var
 - `medya` komutu: inceleme, sahne/çekim analizi (Apple Vision), müzik vuruşu + güven, Türkçe yazıya dökme
   (Whisper), ses katmanlarına ayırma, ağır çekim (Apple ML ara kare), HDR→SDR, ses ustalığı, kalite denetimi.
+- Gerçek çekim kurgusu: `medya ciz` planı (kesim, erime, kadraj, punch/Ken Burns, çekim sesi + müzik) HyperFrames'siz,
+  kare dökmeden doğrudan ffmpeg ile çizer; kare-kesin ölçüldü. 4K çekimden 10 sn'lik dikey kurguda disk tepesi 0,02 GB
+  (HyperFrames'in PNG kipi aynı planda 3,5 GB kare açıp takası 15,9 GB'a çıkararak çöktü); 5 dk'lık 112 çekimli 4K
+  planda bellek tepesi 1,9 GB, takas büyümedi. Yazı, hareketli grafik ve süslü geçiş gerekirse kompozisyon motoru devreye girer.
 - İki kompozisyon motoru: **HyperFrames** (HTML + GSAP; her iş için serbest, varsayılan) ve **Remotion** (React;
   kişisel işlerde, yalnız dosya teslim ettiğin serbest işlerde ve en çok 3 kişilik şirket işlerinde ücretsiz —
   daha büyük şirkette ücretli lisans gerektiği için orada HyperFrames kullanılır).
 - Yerel üretim: görsel (FLUX.2 [klein] 4B, Apache-2.0) ve Türkçe dış ses (VoxCPM2, Apache-2.0) — hesap, bulut yok.
 - Elle ince ayar: DaVinci Resolve (ücretsiz, App Store) ve Kdenlive kurulu; ikisine devir kare kodlu sınamayla ölçüldü.
-- Ağır çekim: gerçek yüksek fps → RIFE (1080p'ye kadar; gerçek kamerada en iyi ölçülen) ya da Apple ML (4K) → ffmpeg
-  (biri takılırsa sıradakine geçer).
+- Ağır çekim: telefonun yüksek fps çekiminde ara kare üretmeden; değilse RIFE (1080p'ye kadar; gerçek kamerada en iyi
+  ölçülen) ya da Apple ML (4K) → ffmpeg (biri takılırsa sıradakine geçer). 4K çekimden dikey (9:16) ağır çekim doğrudan
+  teslim boyutunda üretilir (gerektiğinde RIFE ile). Çizimin geçici alanı HyperFrames'in çıkarma ayarlarıyla borudan
+  ölçüldü: ProRes 4K 7,8 GB → `.mp4` 1080x1920 0,6 GB.
 - Kurgu programına devir: `medya nle` (.otio: DaVinci Resolve; -kdenlive.otio: Kdenlive; .edl). "Claude DaVinci'yi yönetsin"
   yalnız ücretli Resolve Studio'nun MCP'siyle olur (295 $) — istemedikçe kapalı.
 - Baş ajan (yönetici: öneriler, aylık inceleme, güncelleme) ve uzman ajanlar (analist, kurgucu, hareket, ses, görsel,

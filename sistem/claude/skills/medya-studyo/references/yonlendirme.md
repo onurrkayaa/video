@@ -46,8 +46,9 @@ HyperFrames kompozisyon motorudur. Becerileri sözdizimi başvurusu olarak kulla
 - Niyet mülakatı ve "pitch round". Brief, stüdyonun `BRIEF.md`'sidir. Satıcının `workflow`/`flow` alanlarını ekleme.
 - `publish`, `feedback`, `cloud`, `lambda`, `cloudrun`, `auth`.
 - Masaüstü uygulaması ve Framey tanıtımı.
-- `hyperframes snapshot` daima `--describe false` ile çalışır.
-- "Önce beceriyi tazele" (`npx hyperframes skills update …`) ve `hyperframes upgrade`: sabit sürümü/kaynağı bozar. Satıcının
+- `hyperframes snapshot` daima `--describe false` ile çalışır (birebir `false`; `0`/`no` açıklamayı kapatmaz).
+- "Önce beceriyi tazele" (`npx hyperframes skills update …`), `hyperframes upgrade` ve tam sürüm dışı `hyperframes@`
+  (`npx hyperframes@latest …`, sürümsüz `npm i hyperframes`): sabit sürümü/kaynağı bozar. Satıcının
   döküm ve seslendirme adımları (ses/video girdili `transcribe`, `init --video|--audio` dökümü, `tts`, `models install`,
   embedded-captions `prepare.sh`/`transcribe.cjs`/`matte.cjs`, media-use `transcribe.mjs`): sormadan model indirir. Kanca
   hepsini engeller; alt yazı yolu SKILL.md "Alt yazı istenirse".

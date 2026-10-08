@@ -1,6 +1,6 @@
 # Kurgu planı sözleşmesi — `plan/kurgu.json`
 
-Tek gerçek kaynak. `medya senkron --plan`, `medya denetle --plan`, `medya nle` ve `scripts/plan_denetle.py` bunu okur;
+Tek gerçek kaynak. `medya senkron --plan`, `medya denetle --plan`, `medya nle`, `medya ciz` ve `scripts/plan_denetle.py` bunu okur;
 alan adlarını değiştirme, yeni alan uydurma (araçlar okumaz). Üst düzey yalnız `ad fps boyut sure muzik cekimler`;
 `muzik` yalnız `dosya bas analiz`; çekimde `not`/`gerekce` yok (gerekçe `KARARLAR.md`'ye); bilinmeyen alan ⚠. Göreli yollar proje köküne göredir; `medya` komutlarını
 proje kökünden çalıştır.
@@ -19,12 +19,12 @@ proje kökünden çalıştır.
      "gecis": {"tur": "siyah-dip", "sure_kare": 12},
      "kadraj": {"ilgi": [0.62, 0.41], "mod": "sabit"}, "hareket": {"tur": "kenburns", "olcek": [1.0, 1.06]}},
     {"no": 2, "kaynak": "kaynak/IMG_0420.MOV", "kaynak_bas": 1.5,
-     "klip": "calisma/klipler/IMG_0420-yavas025.mov", "klip_bas": 0,
+     "klip": "calisma/klipler/IMG_0420-yavas025.mp4", "klip_bas": 0,
      "cikti_bas": 4.2667, "cikti_son": 7.4667, "hiz": 0.25, "ses": "sessiz", "vurusa": true,
-     "gecis": {"tur": "kesim", "sure_kare": 0}, "hareket": {"tur": "punch", "olcek": [1.0, 1.1], "kare": 3}},
+     "gecis": {"tur": "kesim", "sure_kare": 0}, "hareket": {"tur": "punch", "olcek": [1.0, 1.1], "kare": 3, "egri": "expo.out"}},
     {"no": 3, "kaynak": "kaynak/IMG_0433.MOV", "kaynak_bas": 8.0,
      "cikti_bas": 6.8667, "cikti_son": 11.0, "hiz": 1, "ses": "kendi", "vurusa": false,
-     "gecis": {"tur": "erime", "sure_kare": 18}}
+     "gecis": {"tur": "erime", "sure_kare": 18, "egri": "sine.inOut"}}
   ]
 }
 ```
@@ -43,8 +43,8 @@ proje kökünden çalıştır.
 | `hiz` | Asla göre hız. `< 1` ise ağır çekim `klip`'e pişirilmiş olmalı, klip 1x oynar. `> 1` hızlandırma `data-playback-rate` olabilir |
 | `ses` | `kendi` (kameranın sesi; yalnız `hiz: 1`), `muzik`, `sessiz` |
 | `vurusa` | Açıkça `true`/`false`. `true` = kesim vuruşa oturtuldu; `medya senkron` ölçer |
-| `gecis` | Bu çekime GİRİŞ: `{tur, sure_kare}`; `tur`: kesim, erime, j-kesim, l-kesim, eslesme, savurma, yakinlasma, isik, siyah-dip, beyaz-dip, flas |
-| `kadraj`, `hareket` | Kompozisyon parametreleri (serbest nesne). Öneri: `kadraj {ilgi:[x,y] 0–1 sol üst, mod: sabit|pan|takip|dolgu}`, `hareket {tur: punch|kenburns|paralaks, olcek:[a,b], kare}` |
+| `gecis` | Bu çekime GİRİŞ: `{tur, sure_kare, egri?}`; `tur`: kesim, erime, j-kesim, l-kesim, eslesme, savurma, yakinlasma, isik, siyah-dip, beyaz-dip, flas |
+| `kadraj`, `hareket` | `kadraj {ilgi:[x,y] 0–1 sol üst, mod: sabit|pan|takip|dolgu}`, `hareket {tur: punch|kenburns|paralaks, olcek:[a,b] ya da sayı, kare, egri?}`; anlamı aşağıda |
 
 ## Kurallar
 - **Erime örtüşmedir:** `cikti_bas = önceki cikti_son − sure_kare/fps`. Diğer bütün geçişlerde çekimler uç uca, boşluksuz.
@@ -53,6 +53,20 @@ proje kökünden çalıştır.
 - İlk çekim 0'da başlar; ilk çekime erime olmaz (siyahtan açılış = `siyah-dip`).
 - 3 kareden kısa çekim olmaz (flaş kare).
 - Kare ızgarası: her zaman `k/fps`, toplanmış yuvarlanmış sürelerden değil mutlak zamanlardan hesaplanır.
+
+## Kadraj, hareket ve erime anlamı (iki motor da böyle çizer: HyperFrames ve `medya ciz`)
+- **Kadraj:** cover (`object-fit: cover`) + her eksende `P = clamp((ilgi·Wö − Wç/2)/(Wö − Wç), 0, 1)` (`object-position`;
+  Wö = kaynağın cover ölçeğindeki boyu, Wç = çıktı boyu); `ilgi` yoksa orta. `mod`: yalnız `sabit` iki motorda aynı;
+  pan/takip/dolgu yalnız HyperFrames'te (`medya ciz` reddeder).
+- **Ölçek çapası:** `ilgi`nin ekrandaki yeri (GSAP `transform-origin`); `ilgi` yoksa kare ortası.
+- **kenburns:** `olcek[0]` çekimin ilk karesinde (`cikti_bas`), `olcek[1]` son karesinde (`cikti_son` − 1 kare); arada
+  `egri`. **punch:** `olcek[0]` → `olcek[1]` ilk `kare` karede (`cikti_bas`+`kare` karesinde `olcek[1]`), sonra durur;
+  `kare` yoksa baştan `olcek[1]`. Tek sayı = sabit ölçek. `olcek` < 1 yok (kare kenarı boşalır).
+- **Erime:** gelen çekimin opaklığı `egri((n − bas)/sure_kare)`: örtüşmenin ilk karesinde 0 (GSAP tween'i o karede
+  başlar), giden kararmaz.
+- **`egri`:** GSAP 3 dizgesi, büyük-küçük harf duyarlı: `none`/`linear`, `power0`–`power4`, `quad`…`quint`, `sine`, `expo`,
+  `circ` + `.in`/`.out`/`.inOut` (çıplak ad `.out`). Yoksa `none` (doğrusal; NLE erimesi de doğrusal). Kompozisyon aynı
+  adı kullanır; `plan_denetle` tanınmayanı ✗ sayar (`bounce`, `elastic`, `back` yok).
 
 ## `muzik.bas` (önerilen: 0)
 `bas` = müzik dosyasında videonun 0. saniyesine denk gelen an: video vuruşu = müzik vuruşu − bas. `medya nle`,
@@ -82,7 +96,8 @@ $P $K/plan_denetle.py plan/kurgu.json --denetim cikti/denetim/X-denetim.json   #
 ızgara, boşluk/örtüşme, kaynak `kaynak/` altında mı, klip süresi yetiyor mu, ağır çekim pişmiş mi, `kendi` sesi,
 güven kapısı, floor kuralı, erime ortası, geçiş çeşitliliği/sıklığı, ağır çekim sıklığı, flaş sınırı, metronom
 uzunluklar, HTML eşlemesi, ağdan betik, istenmeyen ekran yazısı, çizimde planlı/plansız kesim, flaş ve siyah,
-HDR (HLG/PQ) ortamın klipsiz kullanımı (✗), etkin ölçek = cover × `hareket.olcek` > 1,15 (⚠; döndürme hesaba katılır).
+HDR (HLG/PQ) ortamın klipsiz kullanımı (✗), etkin ölçek = cover × `hareket.olcek` > 1,15 (⚠; döndürme hesaba katılır),
+tanınmayan `gecis.egri`/`hareket.egri` (✗).
 Sınandı (2026-10-05, küçük fikstür): doğru plan GEÇTİ; bozuk planda 9 hatanın hepsi yakalandı; HyperFrames taslağı +
 `medya denetle` raporu ile planlı siyah-dip/erime "flaş" bulguları beklenen olarak ayrıldı. HDR/ölçek/bilinmeyen alan
 sınaması (2026-10-05): HLG asıl ✗, `medya sdr` klibi geçti; 4K yatay → 1080x1920 punch 1,25 geçti, 1,35 ⚠ (≤ 1,29);

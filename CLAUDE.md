@@ -43,7 +43,7 @@ sistem değişmez: işler **yetenek** adıyla çağrılır (`medya <komut>`), ar
 | Katman | Nerede | Ne yapar |
 |---|---|---|
 | Yetenek | `medya/` (CLI), `yetenekler.toml` (kayıt), `medya/isciler/` (ağır ortam işçileri), `arac/medya-apple` (Swift: VideoToolbox, Vision, SoundAnalysis), `arac/rife` (ağır çekim yedeği) | Araçtan bağımsız komutlar; sağlayıcı değişince komut aynı kalır; asılan/başarısız sağlayıcı yedeğine düşer |
-| Motor | HyperFrames (HTML+GSAP, varsayılan) · Remotion 4.0.533 (React/TSX, **lisans kapısıyla**) · ffmpeg | Kompozisyon ve çizim |
+| Motor | HyperFrames (HTML+GSAP, varsayılan) · Remotion 4.0.533 (React/TSX, **lisans kapısıyla**) · ffmpeg (`medya ciz`: gerçek çekim kurgusu, kare dökmez) | Kompozisyon ve çizim |
 | Bilgi | Beceriler `sistem/claude/skills/` (→ `~/.claude/skills/` bağlantı; satıcı becerileri sabit commit'ten — HyperFrames'inkiler CLI'nin etiketinden, v0.8.140 @5c7f631 — `satici.py kur` + `bagla`, durum `satici.py dogrula`; `sistem/claude/satici/KAYNAKLAR.md`), bilgi tabanı `sistem/arastirma/<tarih>/`, dersler `sistem/dersler.md` | Zanaat, karar kuralları, araç seçimleri ve gerekçeleri |
 | Ajan | Ajanlar `sistem/claude/agents/` (→ `~/.claude/agents/`), iş akışları `.claude/workflows/`, kanca `sistem/claude/hooks/medya-koruma.py` | Uzman roller, uçtan uca boru hattı, kuralların zorlanması |
 
@@ -63,7 +63,12 @@ HyperFrames'inkiler (`hyperframes-core`, `-cli`, `-keyframes`, `-registry`…; u
 ve `remotion-best-practices` (başındaki stüdyo kuralları önce gelir).
 
 ## Motorlar ve lisans kapısı
-- **HyperFrames** her iş için serbest (Apache-2.0) — varsayılan.
+- **`medya ciz`** (stüdyonun kodu, ffmpeg): yazısız/grafiksiz gerçek çekim kurgusunda önce bu — planı kompozisyonsuz,
+  kare dökmeden çizer (kesim, erime, sabit kadraj, punch/Ken Burns, hazır klipler, `hiz > 1`, kendi sesi + müzik; kısma
+  `--yalniz-konusma` → `kisma.py`). Kapsam dışı öğede hata verir → HyperFrames. Ölçüldü (2026-10-08): kare kodlu planda
+  her kare tam, ses ≤ 4 ms; 4K → 1080x1920 10 sn 12,6 sn, disk tepesi 0,02 GB, bellek tepesi 1,45 GB; 5 dk'lık
+  112 çekimli 4K planda 1,92 GB, takas büyümedi.
+- **HyperFrames** her iş için serbest (Apache-2.0) — hareketli grafik, yazı, süslü geçiş için varsayılan.
 - **Remotion** yalnız `BRIEF.md` → Lisans bağlamı kişisel, yalnız dosya teslim edilen tek kişilik serbest iş ya da en
   çok 3 kişilik şirket/ekipse. Kullanıcı beyanı (2026-10-07): stüdyoyu yalnız kendisi, kişisel işlerde ve yalnız dosya
   teslim ettiği işlerde kullanıyor → varsayılan bağlam bu; yalnız 4+ kişilik işveren adına ya da müşteri kodu
@@ -71,8 +76,9 @@ ve `remotion-best-practices` (başındaki stüdyo kuralları önce gelir).
   Lisans anahtarı ASLA (ücretsiz anahtar da kullanım olayı gönderir); Studio kendiliğinden açılmaz; Google Fonts,
   uzak varlık, web-renderer, Lambda yok (kanca engeller). 5.x'e lisans incelemesiz geçilmez. Son çizimde
   `--image-format=png --color-space=bt709`.
-- İki motor da ara kare üretmez: ağır çekim önce `medya yavaslat` (gerçek yüksek fps → ≤2000 px'te RIFE, 4K'da Apple →
-  diğeri → minterpolate; gerçek kamerada RIFE en iyi ölçüldü).
+- İki motor da ara kare üretmez: ağır çekim önce `medya yavaslat` (gerçek yüksek fps → doğal; hazır kare ≤2000 px'te
+  RIFE, üstünde Apple → diğeri → minterpolate; gerçek kamerada RIFE en iyi ölçüldü). 4K'dan dikey: `--kirp x,y,gen,yük
+  --olcek 1080x1920` (ara kareden önce kırpar; RIFE önce, 3,6 kat hızlı).
 - **DaVinci Resolve 21.1 (ücretsiz, App Store) kurulu:** API ile yönetilemez (dış betik yalnız Studio'da). Yol: `medya nle`
   → `kurgu.otio` (Resolve; ölçüldü: kare-kesin) ya da `kurgu-kdenlive.otio` (Kdenlive 26.08 içe aktarım hatalarına
   uyarlanmış; "SON — sil" kliplerini sil, erimeleri U ile ekle). Kum havuzu: medya `projeler/` (Media Storage'a eklendi)
@@ -92,7 +98,7 @@ ve `remotion-best-practices` (başındaki stüdyo kuralları önce gelir).
 ## Komutlar (`medya --help`, ayrıntı `medya <komut> --help`)
 | İnceleme | Dönüştürme | Üretim | Ses | Denetim | Sistem |
 |---|---|---|---|---|---|
-| `incele` `kontak` `sahneler` `analiz` `ses-turu` `ses-olay` `muzik` `yaziya-dok` | `sdr` `cfr` `yavaslat` `meta-temizle` `ayir` `arkaplan-sil` | `gorsel-uret` (FLUX.2 klein) `seslendir` (VoxCPM2) | `ses-temizle` `ustala` | `senkron` `denetle` `zamankodu` | `proje` `yetenekler` `kur` `test [--agir]` `temizle` |
+| `incele` `kontak` `sahneler` `analiz` `ses-turu` `ses-olay` `muzik` `yaziya-dok` | `sdr` `cfr` `yavaslat` `meta-temizle` `ayir` `arkaplan-sil` | `ciz` (plan → video, ffmpeg) `gorsel-uret` (FLUX.2 klein) `seslendir` (VoxCPM2) | `ses-temizle` `ustala` | `senkron` `denetle` `zamankodu` | `proje` `yetenekler` `kur` `test [--agir]` `temizle` |
 Teslim/devir: `nle` (kurgu planı → .otio Resolve / -kdenlive.otio / .edl). Kompozisyon/çizim: `hyperframes lint|check|snapshot --describe false|render`;
 Remotion: proje klasöründen `$MEDYA/node_modules/.bin/remotion still|render src/index.ts <Id> …`.
 Apple ML komutları bekçiyle çalışır: Neural Engine derleyicisi (`ANECompilerService`) takılıysa beklemeden hata
@@ -100,9 +106,14 @@ verir; çözüm kullanıcıda (`sudo killall ANECompilerService` ya da yeniden b
 
 ## HyperFrames notları (ölçülmüş)
 - Bütün zamanları kare ızgarasına oturt (k/fps); aksi hâlde görüntü sesten 1 kareye kadar geç kalır.
-- `data-playback-rate` < 1 kareleri tekrarlar → ağır çekimi önce `medya yavaslat` ile üret.
+- `data-playback-rate` < 1 kareleri tekrarlar → ağır çekimi önce `medya yavaslat` ile üret, `--cikti <ad>.mp4`:
+  ProRes klip her kipte 16 bit PNG kareye açılır (çıkarma ayarlarıyla borudan ölçüldü: 4K 33 MB/kare; denemenin 237
+  ağır çekim karesi 7,8 GB geçici alan), H.264 1080x1920 PNG'de 2,5 MB, taslak JPEG'de 0,22 MB. `.mov` ProRes yalnız
+  NLE devrine.
 - Varsayılan çizim kalitesi (CRF 16) uzun/grenli videoda devasa (4:48 → 2,5 GB); teslimde `--video-bitrate`.
 - Gerçek çekimli **son** çizimde `--video-frame-format png`: varsayılan JPEG ara kareler VMAF 95,0; PNG 96,6 (ffmpeg doğrudan 96,8), en kötü kare 94,4 → 95,7; bedeli ~2 kat çizim süresi. Taslakta varsayılan yeter.
+  2026-10-08 (O6): 1080p gerçek çekimde VMAF JPEG 94,8 / PNG 96,0 / `medya ciz` 96,2, ama PNG kipi Y'yi sabit ~1,9
+  düzey düşürüyor; 4K kaynakta (5 işçi) takas 0,9 → 15,9 GB'a çıkıp çöktü → gerçek çekimde önce `medya ciz`.
 - Lint 0 hata; tek duraklatılmış GSAP zaman çizelgesi; Math.random/Date yok; yazı tipleri yerel woff2 (latin-ext).
 - Türkçe yazı (istenirse): `<html lang="tr">` şart — ölçüldü: `lang="en"` ile büyük harf "ISTANBUL", `tr` ile "İSTANBUL"; JS'te `toLocaleUpperCase('tr-TR')`.
 

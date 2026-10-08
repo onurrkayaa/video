@@ -1,0 +1,46 @@
+{
+ "ProRes 4096x2160 (bugün)": {
+  "yontem": "dogal",
+  "uretim_sn": 16.4,
+  "dosya_mb": 676.4,
+  "png_mb_kare": 33.045,
+  "png_237_kare_gb": 7.832,
+  "kare": 174
+ },
+ "ProRes 1216x2160 (yalnız kırpma)": {
+  "yontem": "dogal",
+  "uretim_sn": 5.8,
+  "dosya_mb": 178.4,
+  "png_mb_kare": 8.495,
+  "png_237_kare_gb": 2.013,
+  "kare": 174
+ },
+ "ProRes 1080x1920 (kırp+ölçek)": {
+  "yontem": "dogal",
+  "uretim_sn": 5.2,
+  "dosya_mb": 135.6,
+  "png_mb_kare": 6.86,
+  "png_237_kare_gb": 1.626,
+  "kare": 174
+ },
+ "H.264 CRF 12 1216x2160 (yalnız kırpma)": {
+  "yontem": "dogal",
+  "uretim_sn": 6.4,
+  "dosya_mb": 9.3,
+  "png_mb_kare": 3.044,
+  "png_237_kare_gb": 0.721,
+  "kare": 174,
+  "jpg_mb_kare": 0.254,
+  "jpg_237_kare_gb": 0.06
+ },
+ "H.264 CRF 12 1080x1920 (kırp+ölçek)": {
+  "yontem": "dogal",
+  "uretim_sn": 5.8,
+  "dosya_mb": 8.9,
+  "png_mb_kare": 2.527,
+  "png_237_kare_gb": 0.599,
+  "kare": 174,
+  "jpg_mb_kare": 0.222,
+  "jpg_237_kare_gb": 0.053
+ }
+}

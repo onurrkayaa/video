@@ -16,9 +16,13 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
+
+sys.path.insert(0, os.environ.get("MEDYA", "/Users/onurkaya/Projects/video"))
+from medya.komutlar.ciz import egri_gecerli  # noqa: E402  (eğri adları: medya ciz ve HyperFrames aynı GSAP adını çizer)
 
 GECISLER = {"kesim", "erime", "j-kesim", "l-kesim", "eslesme", "savurma", "yakinlasma", "isik", "siyah-dip",
             "beyaz-dip", "flas"}
@@ -144,6 +148,11 @@ def sema(p: dict, R: Rapor) -> bool:
         if "gecis" in c and not (isinstance(g, dict) and g.get("tur") in GECISLER
                                  and isinstance(g.get("sure_kare"), int) and g["sure_kare"] >= 0):
             R.hata(f"çekim {ad}: gecis {{tur: {'|'.join(sorted(GECISLER))}, sure_kare: tamsayı ≥ 0}} olmalı; plan: {g}")
+        for alan in ("gecis", "hareket"):
+            d = c.get(alan)
+            if isinstance(d, dict) and "egri" in d and not egri_gecerli(d["egri"]):
+                R.hata(f"çekim {ad}: {alan}.egri '{d['egri']}' tanınmıyor (GSAP adı: none, sine.inOut, power2.out, "
+                       "expo.out…; yoksa doğrusal) — iki motor aynı eğriyi çizsin")
         if "ses" in c and c["ses"] not in SESLER:
             R.hata(f"çekim {ad}: ses kendi|muzik|sessiz olmalı; plan: {c['ses']}")
         if "vurusa" in c and not isinstance(c["vurusa"], bool):

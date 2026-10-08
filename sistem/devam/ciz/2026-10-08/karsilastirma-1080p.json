@@ -1,0 +1,50 @@
+{
+ "ref_kare": 300,
+ "ciz": {
+  "kare": 300,
+  "vmaf_ort": 96.211,
+  "vmaf_en_az": 94.602,
+  "vmaf_en_kotu_5": 95.517,
+  "y_psnr_ort": 47.127,
+  "y_psnr_en_az": 45.156,
+  "kayma_psnr": {
+   "-1": 38.59,
+   "0": 47.11,
+   "1": 38.34
+  },
+  "bayt": 13898199
+ },
+ "hf_png": {
+  "kare": 300,
+  "vmaf_ort": 95.984,
+  "vmaf_en_az": 94.48,
+  "vmaf_en_kotu_5": 95.355,
+  "y_psnr_ort": 40.92,
+  "y_psnr_en_az": 40.456,
+  "kayma_psnr": {
+   "-1": 36.15,
+   "0": 40.89,
+   "1": 36.02
+  },
+  "bayt": 16886015
+ },
+ "hf_auto": {
+  "kare": 300,
+  "vmaf_ort": 94.769,
+  "vmaf_en_az": 93.555,
+  "vmaf_en_kotu_5": 94.244,
+  "y_psnr_ort": 45.289,
+  "y_psnr_en_az": 44.324,
+  "kayma_psnr": {
+   "-1": 38.07,
+   "0": 45.15,
+   "1": 37.9
+  },
+  "bayt": 16924897
+ },
+ "ciz_son_surum": {
+  "vmaf_ort": 96.209,
+  "vmaf_en_az": 94.69,
+  "not": "-threads 4 çözücü, iki çekim kuralı, x264 -threads 8"
+ }
+}

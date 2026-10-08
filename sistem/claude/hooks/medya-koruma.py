@@ -8,7 +8,8 @@ Engeller (çıkış kodu 2; gerekçe stderr'den Claude'a döner) — yalnız kom
 - hyperframes cloud | lambda | cloudrun | auth | publish | usage | feedback   (ücretli/bulut/hesap/dış istek;
   feedback --file-issue projeyi GitHub'a yayımlar, --search-miss HeyGen'e rapor yollar)
 - hyperframes telemetry enable                                               (analiz verisi kapalı kalmalı)
-- hyperframes snapshot … '--describe false' olmadan                          (GEMINI_API_KEY varsa kareler Google'a gider)
+- hyperframes snapshot, '--'dan önceki her --describe değeri birebir 'false' değilse (GEMINI_API_KEY varsa kareler
+  Google'a gider; CLI yalnız "false"u kapatma sayar: 0, no, False, boş değer soru olur; tekrar edende son değer geçer)
 - hyperframes media-use resolve|doctor|adopt|from (grade/lut dışı)           (HeyGen hesabı/katalogu, ücretli avatar video)
 - heygen …                                                                   (HeyGen bulut CLI'si: hesap/OAuth/kredi)
 - remotion lambda | cloudrun | upgrade | skills, --public-license-key/--license-key (bulut çizim, sabit sürümü
@@ -23,18 +24,22 @@ Engeller (çıkış kodu 2; gerekçe stderr'den Claude'a döner) — yalnız kom
   reddeder, kanca temkinli engeller), tts, models install — sormadan whisper.cpp (brew) + ggml modeli, Kokoro ya da
   Parakeet indirir
 - hyperframes upgrade (--project dahil) ve skills (check dışında) — sabit sürümü ya da satıcı beceri kaynağını bozar
+- tam sürüm dışı hyperframes@ (latest, next, ^, ~, aralık, etiket): npx/bunx/dlx/npm exec ile ya da -p/--package
+  değeri olarak; npm/pnpm/yarn/bun i|install|add|update|up|upgrade'de sürümsüz ad da (latest kurup ^ ile kaydeder) —
+  sabit sürümü bozar. Serbest: 'npm i -D -E hyperframes@x.y.z', 'npx hyperframes@x.y.z', çıplak 'npx hyperframes'
 - indirme yapan satıcı betikleri: embedded-captions scripts/prepare.sh, transcribe.cjs, matte.cjs; media-use
   scripts/transcribe.mjs — bash/sh/source/node ile ya da yol vererek doğrudan çalıştırılınca. Adlar genel olduğundan
   yalnız yolda, komutta ya da çalışma klasöründe beceri adı geçiyorsa tutulur; cat/sed/grep/find ile okuma ve
   'node --check' / 'bash -n' sözdizimi denetimi serbest
 Bu iki hyperframes kuralında --help/-h serbesttir (CLI o zaman komutu çalıştırmaz, yalnız kullanımı yazar).
 Ayrıştırma kabuk kurallarına uyar: tek tırnak içi ve tırnaklı heredoc gövdesi VERİDİR (engellenmez); satır sonları,
-; && || | & komut ayırır; ters bölü + satır sonu (satır devamı) kabuktaki gibi silinir; yönlendirmeler (2>&1,
->/dev/null, > x.json, < x; işleç, hedefi ve önündeki fd rakamı) argüman sayılmaz, 'bash < betik' girdisi betik olarak
-denetlenir; $(…) ve `…` (tek tırnak dışında) ile kabuğa giden heredoc gövdeleri ayrıca denetlenir; npx/bunx/pnpm
-dlx/npm exec, yol önekli ikili, `node …/hyperframes.mjs`, env/time/nohup/exec/sudo/xargs/timeout/caffeinate/nice
-önekleri (yol önekli /usr/bin/env dahil; değer alan bayraklarının değeriyle, timeout'un süresiyle), ortam atamaları,
-`sh|bash|zsh -c "…"` ve eval yakalanır.
+; && || | & komut ayırır; ters bölü + satır sonu (satır devamı) kabuktaki gibi silinir (ön süzgeçte de);
+yönlendirmeler (2>&1, >/dev/null, > x.json, < x; işleç, hedefi ve işlece bitişik fd rakamı — 'timeout 600 >x'te 600
+argümandır) argüman sayılmaz, 'bash < betik' girdisi betik olarak denetlenir; $(…) ve `…` (tek tırnak dışında) ile
+kabuğa giden heredoc gövdeleri ayrıca denetlenir; npx/bunx/pnpm dlx/npm exec (-p/--package değeriyle), yol önekli
+ikili, `node …/hyperframes.mjs`, env/time/nohup/exec/sudo/xargs/timeout/caffeinate/nice önekleri (yol önekli
+/usr/bin/env dahil; değer alan bayraklarının değeriyle, timeout'un süresiyle), ortam atamaları, `sh|bash|zsh -c "…"`
+ve eval yakalanır.
 """
 from __future__ import annotations
 
@@ -46,11 +51,13 @@ import sys
 YASAK = {"cloud", "lambda", "cloudrun", "auth", "publish", "usage", "feedback"}
 SESSIZ_INDIRME = {"remove-background": "arka plan için 'medya arkaplan-sil' (Apple Vision, indirme yok)"}
 AYRAC = {";", "&&", "||", "|", "&", "(", ")", "|&", ";;"}
-# shlex'in (punctuation_chars) verdiği yönlendirme işleçleri; hedefleri (ve önlerindeki fd rakamı: 2>&1) argüman değildir
+# shlex'in (punctuation_chars) verdiği yönlendirme işleçleri; hedefleri argüman değildir (işlece bitişik fd rakamını,
+# 2>&1'deki 2'yi, fd_sil önceden siler)
 YONLENDIRME = {">", ">>", "<", "<<", "<<<", "<>", ">|", ">&", "<&", "&>", "&>>"}
+PAKET_BAYRAK = ("-p", "--package")           # npx/npm exec/dlx: çalıştırılacak paketi verir (değer alır)
 # Önekler (ad ya da yolun son parçası: /usr/bin/env) → ayrık değer alan bayrakları; değer de atlanır (xargs -n 1,
 # nice -n 10). Bayraklar bu Mac'in man sayfalarından; timeout GNU/FreeBSD'den (bu Mac'te yok) ve süresi de atlanır.
-ONEK = {"npx": (), "bunx": (), "exec": (), "time": (), "nohup": (), "command": (), "sudo": (), "builtin": (),
+ONEK = {"npx": PAKET_BAYRAK, "bunx": (), "exec": (), "time": (), "nohup": (), "command": (), "sudo": (), "builtin": (),
         "then": (), "do": (), "else": (), "if": (), "while": (), "until": (), "!": (), "{": (), "}": (),
         "env": ("-u", "-C", "-P", "-S"), "xargs": ("-E", "-I", "-J", "-L", "-n", "-P", "-R", "-S", "-s"),
         "timeout": ("-s", "--signal", "-k", "--kill-after"), "caffeinate": ("-t", "-w"), "nice": ("-n",)}
@@ -58,6 +65,9 @@ PIP = ("uvx", "pip", "pip3", "uv", "pipx")
 KABUK = {"sh", "bash", "zsh", "dash", "ksh"}
 CALISTIRICI = {"node", "bun", "deno"}
 HF = re.compile(r"^(?:.*/)?hyperframes(?:@[\w.\-]+)?(?:\.m?js)?$")
+HF_PAKET = re.compile(r"^hyperframes(?:@(.*))?$")              # paket belirteci: sürümsüz ya da @sürüm/etiket/aralık
+TAM_SURUM = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.\-]+)?$")  # 0.8.140, 0.9.0-beta.1; 0.8, 0.8.x, ^, latest değil
+KURULUM = {"i", "install", "add", "update", "up", "upgrade"}    # npm/pnpm/yarn/bun: paket kuran ya da yükselten
 RM = re.compile(r"^(?:.*/)?remotion(?:@[\w.\-]+)?$")
 RM_YASAK = {"lambda", "cloudrun", "upgrade", "skills"}
 RM_PAKET = re.compile(r"@remotion/(?:web-renderer|google-fonts|lambda|cloudrun|vercel|sfx|mcp|licensing)\b")
@@ -116,11 +126,40 @@ def alt_komut_denetle(arg: list[str]) -> None:
     if alt in SESSIZ_INDIRME:
         engelle(f"'hyperframes {alt}' ilk kullanımda sormadan büyük model indirir; {SESSIZ_INDIRME[alt]}. Gerçekten "
                 "gerekiyorsa boyutu söyleyip kullanıcıya sor.")
-    if alt == "snapshot" and not re.search(r"--describe(=|\s+)(false|0|no)\b", metin):
-        engelle("'hyperframes snapshot' her zaman '--describe false' ile çalıştırılır; aksi hâlde GEMINI_API_KEY "
-                "tanımlıysa kareler Google'a gönderilir.")
+    if alt == "snapshot" and not describe_kapali(arg[arg.index(alt) + 1:]):
+        engelle("'hyperframes snapshot' her zaman '--describe false' ile çalıştırılır (birebir 'false'; 0, no, False "
+                "ya da boş değer Gemini'ye soru olarak gider); aksi hâlde GEMINI_API_KEY tanımlıysa kareler Google'a "
+                "gönderilir.")
     if alt in INDIRME and not YARDIM & set(arg):
         indirme_denetle(alt, arg[arg.index(alt) + 1:])
+
+
+def describe_kapali(kalan: list[str]) -> bool:
+    """snapshot'ın Gemini açıklaması kapalı mı? CLI yalnız birebir "false"u kapatma sayar (0.8.140
+    snapshot-SD5R3NWX.js:729); 0, no, False, boş değer soru olarak gider. citty 0.2.2 (node parseArgs, strict:false)
+    tekrar eden bayrakta son değeri alır, '--'dan sonrasını konumsal sayar (ölçüldü 2026-10-08): '--'dan önceki her
+    --describe değeri 'false' olmalı."""
+    degerler = []
+    for k, a in enumerate(kalan):
+        if a == "--":
+            break
+        if a == "--describe":
+            degerler.append(kalan[k + 1] if k + 1 < len(kalan) else "")
+        elif a.startswith("--describe="):
+            degerler.append(a.split("=", 1)[1])
+    return bool(degerler) and all(d == "false" for d in degerler)
+
+
+def surum_denetle(paketler: list[str], surumsuz_serbest: bool) -> None:
+    """Sabit sürüm: hyperframes belirtecinde sürüm tam olmalı (x.y.z[-ön sürüm]). surumsuz_serbest: npx/dlx'te çıplak
+    'hyperframes' kurulu sürümü çalıştırır; 'npm i hyperframes' ise latest kurar ve ^ ile kaydeder."""
+    for p in paketler:
+        m = HF_PAKET.match(p)
+        if m and not (m.group(1) is None and surumsuz_serbest) and not TAM_SURUM.match(m.group(1) or ""):
+            engelle(f"'{p}' sabit sürümü bozar: HyperFrames yalnız tam sürümle kurulur ya da çalıştırılır (ör. 'npm i "
+                    "-D -E hyperframes@<x.y.z>'); latest, next, ^, ~, aralık ya da etiket package.json'daki sabit "
+                    "sürümün yerine başkasını getirir. Stüdyoda 'npx hyperframes …' kurulu sürümü çalıştırır. "
+                    "Yükseltme: arac-radari → güncelleme-ve-disk §3 (tam sürüm + sınama, kullanıcı onayıyla).")
 
 
 def indirme_denetle(alt: str, kalan: list[str]) -> None:
@@ -282,15 +321,39 @@ def tara(komut: str) -> tuple[str, list[str]]:
     return "".join(cikti), ikameler
 
 
+def fd_sil(komut: str) -> str:
+    """Yönlendirme işlecine bitişik fd rakamını boşlukla değiştirir (2>&1 → ' >&1'). Kabukta yalnız bitişik rakam
+    fd'dir: 'timeout 600 >/dev/null …'te 600 argümandır (süre); shlex boşluğu sakladığı için ayrım burada yapılır.
+    Tırnak içi veridir; tırnaklar shlex'teki gibi eşlenir ($(…) içindeki tırnaklar da düz sayılır)."""
+    cikti, i, n = [], 0, len(komut)
+    tek = cift = False
+    while i < n:
+        c = komut[i]
+        if tek:
+            tek = c != "'"
+        elif c == "\\":
+            cikti.append(komut[i:i + 2]); i += 2; continue
+        elif c == "'" and not cift:
+            tek = True
+        elif c == '"':
+            cift = not cift
+        elif c.isdigit() and not cift and (i == 0 or komut[i - 1] in " \t\n;&|()"):
+            j = i
+            while j < n and komut[j].isdigit():
+                j += 1
+            cikti.append(" " if j < n and komut[j] in "<>" else komut[i:j])
+            i = j; continue
+        cikti.append(c); i += 1
+    return "".join(cikti)
+
+
 def yonlendirme_ayikla(b: list[str]) -> tuple[list[str], list[str]]:
-    """Bölümden yönlendirmeleri çıkarır: işleç, hedefi ve işleçten hemen önceki fd rakamı (2>&1 → '2' '>&' '1').
+    """Bölümden yönlendirmeleri çıkarır: işleç ve hedefi (işlece bitişik fd rakamını fd_sil önceden siler).
     Döner: (kalan jetonlar, '<'/'<>' ile okunan dosyalar — 'bash < betik.sh' betiği çalıştırır)."""
     kalan, okunan = [], []
     i = 0
     while i < len(b):
-        if b[i].isdigit() and i + 1 < len(b) and b[i + 1] in YONLENDIRME:
-            i += 1
-        elif b[i] in YONLENDIRME:
+        if b[i] in YONLENDIRME:
             if b[i] in ("<", "<>") and i + 1 < len(b):
                 okunan.append(b[i + 1])
             i += 2
@@ -301,7 +364,7 @@ def yonlendirme_ayikla(b: list[str]) -> tuple[list[str], list[str]]:
 
 def bolumleri_denetle(komut: str, derinlik: int) -> None:
     try:
-        lx = shlex.shlex(komut, posix=True, punctuation_chars=True)
+        lx = shlex.shlex(fd_sil(komut), posix=True, punctuation_chars=True)
         lx.whitespace_split = True
         lx.commenters = ""
         jetonlar = list(lx)
@@ -322,11 +385,15 @@ def bolumleri_denetle(komut: str, derinlik: int) -> None:
     bolumler.append(bolum)
     for b in bolumler:
         b, okunan = yonlendirme_ayikla(b)
-        i, degerli = 0, ()
+        i, degerli, paketler = 0, (), []
         while i < len(b):
             j = b[i]
             onek = j.rsplit("/", 1)[-1]                      # /usr/bin/env → env
             if j.startswith("-"):                            # önekin bayrağı; ayrık değeri de (xargs -n 1, nice -n 10)
+                if j in degerli and j in PAKET_BAYRAK and i + 1 < len(b):
+                    paketler.append(b[i + 1])                # npx -p hyperframes@x hyperframes …
+                elif j.startswith("--package="):
+                    paketler.append(j.split("=", 1)[1])
                 i += 2 if j in degerli else 1
             elif re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", j):
                 i += 1                                       # ortam atamaları
@@ -337,13 +404,14 @@ def bolumleri_denetle(komut: str, derinlik: int) -> None:
                         i += 2 if b[i] in degerli else 1
                     i += 1
             elif j in ("pnpm", "yarn") and i + 1 < len(b) and b[i + 1] in ("dlx", "exec"):
-                i += 2
+                degerli, i = (PAKET_BAYRAK if b[i + 1] == "dlx" else ()), i + 2
             elif j == "npm" and i + 1 < len(b) and b[i + 1] in ("exec", "x"):
-                i += 2
+                degerli, i = PAKET_BAYRAK, i + 2
             elif j == "--":
                 i += 1
             else:
                 break
+        surum_denetle(paketler + b[i:i + 1], True)         # npx/dlx/npm exec hyperframes@<tam sürüm dışı>
         if i >= len(b):
             continue
         bas = b[i]
@@ -376,6 +444,8 @@ def bolumleri_denetle(komut: str, derinlik: int) -> None:
             engelle("Bu Remotion paketi kurulmaz: web-renderer/lambda/cloudrun/vercel bulut ya da telemetri, "
                     "google-fonts dış yazı tipi, sfx lisansı belirsiz uzak ses. Yerel karşılıklar: @remotion/fonts + "
                     "public/fonts, kodla/CC0 ses.")
+        if ad in ("npm", "pnpm", "yarn", "bun") and KURULUM & set(b[i + 1:]):   # npm --prefix p i hyperframes@latest
+            surum_denetle([x for x in b[i + 1:] if not x.startswith("-")], False)
         paket, parg = ad.lower(), b[i + 1:]                 # PyPI adı büyük/küçük harf duyarsız (whisperX)
         if re.match(r"^python[\d.]*$", paket):              # python3 -m pip install whisperx → pip install whisperx
             paket, parg = python_modulu(parg)
@@ -395,7 +465,8 @@ def bolumleri_denetle(komut: str, derinlik: int) -> None:
 
 
 def denetle(komut: str, derinlik: int = 0) -> None:
-    kucuk = komut.lower()                                    # 'pip install whisperX' de ön süzgeçten geçmeli
+    kucuk = komut.replace("\\\n", "").lower()                # 'pip install whisperX' ve 'hyper\'+satır sonu+'frames'
+                                                             # (kabuk satır devamını siler) de ön süzgeçten geçmeli
     if derinlik > 6 or not any(a in kucuk for a in ANAHTAR):
         return
     govdesiz, kabuga, ikameli = heredoc_ayikla(komut)
@@ -417,7 +488,8 @@ def main() -> int:
     except Exception:
         return 0
     komut = (veri.get("tool_input") or {}).get("command") or ""
-    BAGLAM = f"{komut}\n{veri.get('cwd') or ''}"
+    birlesik = komut.replace("\\\n", "")                     # satır devamıyla bölünmüş beceri adı da bağlamdır
+    BAGLAM = f"{birlesik}\n{veri.get('cwd') or ''}"
     try:
         denetle(komut)
     except Engel as e:

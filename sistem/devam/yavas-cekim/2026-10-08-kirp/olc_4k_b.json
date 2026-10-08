@@ -1,0 +1,202 @@
+{
+ "kirp_sirasi_sentetik": {
+  "A_kirp_once_1216x2160": {
+   "yontem": "rife",
+   "kat": 2,
+   "hazir_fps": 30.0,
+   "sure_sn": 11.2,
+   "disk_tepe_gb": 0.27,
+   "mb": 66.1,
+   "dusulen": null
+  },
+  "A2_kirp_olcek_once_1080x1920": {
+   "yontem": "rife",
+   "kat": 2,
+   "hazir_fps": 30.0,
+   "sure_sn": 9.7,
+   "disk_tepe_gb": 0.24,
+   "mb": 53.2,
+   "dusulen": null
+  },
+  "B_tam_4k": {
+   "yontem": "rife",
+   "kat": 2,
+   "hazir_fps": 30.0,
+   "sure_sn": 25.4,
+   "disk_tepe_gb": 0.64,
+   "mb": 191.7,
+   "dusulen": null
+  },
+  "kirpim_1216x2160": {
+   "kirp_once": {
+    "ara_ort": 36.73,
+    "ara_kotu5": 36.31,
+    "ara_min": 36.31,
+    "ozgun_ort": 38.32,
+    "ozgun_min": 38.04,
+    "n": 60
+   },
+   "ara_kare_once": {
+    "ara_ort": 38.13,
+    "ara_kotu5": 37.68,
+    "ara_min": 37.68,
+    "ozgun_ort": 39.9,
+    "ozgun_min": 39.28,
+    "n": 60
+   },
+   "kare_kare_fark_ort": -1.4,
+   "kopya_ort": 24.0
+  },
+  "kirpim_olcek_1080x1920": {
+   "kirp_olcek_once": {
+    "ara_ort": 35.36,
+    "ara_kotu5": 34.99,
+    "ara_min": 34.99,
+    "ozgun_ort": 38.99,
+    "ozgun_min": 38.62,
+    "n": 60
+   },
+   "ara_kare_once": {
+    "ara_ort": 39.48,
+    "ara_kotu5": 39.17,
+    "ara_min": 39.17,
+    "ozgun_ort": 40.61,
+    "ozgun_min": 40.2,
+    "n": 60
+   },
+   "kare_kare_fark_ort": -4.12
+  }
+ },
+ "kirp_sirasi_deneme_hareketli": {
+  "A_kirp_once_1216x2160": {
+   "yontem": "rife",
+   "kat": 2,
+   "hazir_fps": 30.0,
+   "sure_sn": 11.7,
+   "disk_tepe_gb": 0.32,
+   "mb": 64.9,
+   "dusulen": null
+  },
+  "A2_kirp_olcek_once_1080x1920": {
+   "yontem": "rife",
+   "kat": 2,
+   "hazir_fps": 30.0,
+   "sure_sn": 10.2,
+   "disk_tepe_gb": 0.27,
+   "mb": 53.8,
+   "dusulen": null
+  },
+  "B_tam_4k": {
+   "yontem": "rife",
+   "kat": 2,
+   "hazir_fps": 30.0,
+   "sure_sn": 36.6,
+   "disk_tepe_gb": 1.25,
+   "mb": 237.4,
+   "dusulen": null
+  },
+  "kirpim_1216x2160": {
+   "kirp_once": {
+    "ara_ort": 41.11,
+    "ara_kotu5": 40.78,
+    "ara_min": 40.78,
+    "ozgun_ort": 41.78,
+    "ozgun_min": 41.63,
+    "n": 60
+   },
+   "ara_kare_once": {
+    "ara_ort": 41.12,
+    "ara_kotu5": 40.8,
+    "ara_min": 40.8,
+    "ozgun_ort": 41.79,
+    "ozgun_min": 41.64,
+    "n": 60
+   },
+   "kare_kare_fark_ort": -0.01,
+   "kopya_ort": 41.58
+  },
+  "kirpim_olcek_1080x1920": {
+   "kirp_olcek_once": {
+    "ara_ort": 41.05,
+    "ara_kotu5": 40.71,
+    "ara_min": 40.71,
+    "ozgun_ort": 41.71,
+    "ozgun_min": 41.55,
+    "n": 60
+   },
+   "ara_kare_once": {
+    "ara_ort": 41.05,
+    "ara_kotu5": 40.73,
+    "ara_min": 40.73,
+    "ozgun_ort": 41.7,
+    "ozgun_min": 41.57,
+    "n": 60
+   },
+   "kare_kare_fark_ort": -0.0
+  }
+ },
+ "gercek_kare_yolu_sentetik": {
+  "eski": {
+   "yontem": "rife",
+   "kat": 4,
+   "hazir_fps": null,
+   "sure_sn": 9.7,
+   "n": 57,
+   "hepsi_ort": 35.68,
+   "cift_ort": 36.72,
+   "cift_min": 33.71,
+   "tek_ort": 34.61,
+   "tek_min": 33.89,
+   "dort_ort": 39.03,
+   "uretilen_ort": 34.49,
+   "kotu5": 33.8
+  },
+  "yeni": {
+   "yontem": "rife",
+   "kat": 2,
+   "hazir_fps": 30.0,
+   "sure_sn": 11.2,
+   "n": 57,
+   "hepsi_ort": 36.69,
+   "cift_ort": 38.23,
+   "cift_min": 37.77,
+   "tek_ort": 35.09,
+   "tek_min": 34.71,
+   "dort_ort": 38.23,
+   "uretilen_ort": 35.09,
+   "kotu5": 34.71
+  }
+ },
+ "gercek_kare_yolu_deneme_hareketli": {
+  "eski": {
+   "yontem": "rife",
+   "kat": 4,
+   "hazir_fps": null,
+   "sure_sn": 9.2,
+   "n": 57,
+   "hepsi_ort": 40.57,
+   "cift_ort": 40.79,
+   "cift_min": 39.35,
+   "tek_ort": 40.34,
+   "tek_min": 39.87,
+   "dort_ort": 41.73,
+   "uretilen_ort": 40.15,
+   "kotu5": 39.47
+  },
+  "yeni": {
+   "yontem": "rife",
+   "kat": 2,
+   "hazir_fps": 30.0,
+   "sure_sn": 10.2,
+   "n": 57,
+   "hepsi_ort": 41.26,
+   "cift_ort": 41.57,
+   "cift_min": 41.5,
+   "tek_ort": 40.94,
+   "tek_min": 40.61,
+   "dort_ort": 41.58,
+   "uretilen_ort": 40.94,
+   "kotu5": 40.72
+  }
+ }
+}

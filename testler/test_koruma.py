@@ -135,6 +135,58 @@ ENGELLENMELI = [
     "pip install whisperX",
     "python3 -m pip install whisperx",
     ".venv/bin/python -m pip install -U whisperX",
+    # gizlilik: snapshot açıklaması yalnız birebir 'false' ile kapanır (0.8.140 snapshot-SD5R3NWX.js:729); citty'de
+    # tekrar eden bayrakta son değer geçer, '--' sonrası konumsaldır (ölçüldü 2026-10-08); --no-describe: kural metni
+    # '--describe false', kanca birebir onu ister
+    "hyperframes snapshot p --describe 0",
+    "hyperframes snapshot p --describe no",
+    "hyperframes snapshot p --describe=0",
+    "hyperframes snapshot p --describe=no",
+    "hyperframes snapshot p --describe False --at 1",
+    "hyperframes snapshot p --at 1 --describe",
+    "hyperframes snapshot p --describe false --describe 'logo görünüyor mu?'",
+    "hyperframes snapshot p -- --describe false",
+    "hyperframes snapshot p --describe false-ish",
+    "hyperframes snapshot p --no-describe",
+    # sabit sürüm: tam sürüm dışı hyperframes@ (npx/dlx/npm exec, -p/--package) ve tam sürümsüz kurulum/yükseltme
+    # (sürümsüz ad latest kurar, ^ ile kaydeder; son örnek oturum kayıtlarındaki bir komutun aynısı)
+    "npm i -D hyperframes@latest",
+    "npm install --save-dev --save-exact hyperframes@next",
+    "npm i hyperframes@^0.8.140",
+    "npm i -D hyperframes@~0.8.140",
+    'npm i "hyperframes@>=0.8.0"',
+    "npm i hyperframes@0.8",
+    "npm i hyperframes@0.8.x",
+    "npm i -g hyperframes",
+    "npm --prefix calisma/kompozisyon install hyperframes@latest",
+    "npm update hyperframes",
+    "pnpm add -D hyperframes@latest",
+    "yarn add hyperframes@^0.8.140",
+    "bun add hyperframes@latest",
+    "npx hyperframes@latest render .",
+    "npx --yes hyperframes@next lint p",
+    "npx hyperframes@^0.8 cloud render",
+    "npx hyperframes@0.8.140+x cloud render",
+    "pnpm dlx hyperframes@latest lint p",
+    "npm exec hyperframes@latest -- lint p",
+    "bunx hyperframes@latest lint",
+    "npx -p hyperframes@latest hyperframes lint p",
+    "npx --package=hyperframes@latest hyperframes lint p",
+    "npx -p hyperframes hyperframes cloud render",
+    "npm exec -p hyperframes@0.8.140 -- hyperframes cloud render",
+    # -p/--package değeri komut sanılmaz: Remotion kuralı da aynı yoldan kaçıyordu
+    "npx -p @remotion/cli remotion lambda render x",
+    "npx --package @remotion/cli remotion upgrade",
+    "npm install --save-dev --no-fund --no-audit hyperframes ffmpeg-static 2>&1 | tail -5",
+    # fd yalnız işlece bitişik rakamdır: boşluklu '600 >x'te 600 önekin değeridir (süre), komut ondan sonra gelir
+    "timeout 600 >/dev/null hyperframes cloud render",
+    "nice -n 10 >/dev/null hyperframes cloud render",
+    "ls *.wav | xargs -n 1 >/dev/null hyperframes transcribe",
+    # satır devamı ön süzgeçte ve beceri bağlamında da silinir (kabuk 'hyper\' + satır sonu + 'frames'i birleştirir)
+    "npx hyper\\\nframes cloud render",
+    "whisper\\\nx ses.wav",
+    "cd /x/embedded-captions/scripts && bash prep\\\nare.sh p",
+    "cd ~/.claude/skills/embedded-cap\\\ntions && bash scripts/prepare.sh p",
 ]
 GECMELI = [
     "medya arkaplan-sil foto.png --cikti kesik.png",
@@ -203,6 +255,30 @@ GECMELI = [
     "caffeinate -i medya test",
     "nice -n 5 medya yaziya-dok ses.wav --dil tr --srt",
     "python3 -m pip install rich",
+    # snapshot: tırnaklı 'false' ve yönlendirmeli çağrı
+    "hyperframes snapshot p --describe 'false' --at 1",
+    "npx hyperframes snapshot calisma/kompozisyon --at 1,2 --describe false 2>&1 | tail -3",
+    # sabit sürüm: tam sürümle kurulum/çalıştırma (yetenekler.toml kurulum satırı dahil), çıplak npx (kurulu sürüm),
+    # salt okunur npm sorguları
+    "npm i -D -E hyperframes@0.8.140",
+    "npm install --save-dev --save-exact --no-audit --no-fund hyperframes@0.8.140",
+    "pnpm add -E hyperframes@0.8.140",
+    "npm i -D -E hyperframes@0.9.0-beta.1",
+    "npx hyperframes@0.8.140 lint p",
+    "npx -p hyperframes@0.8.140 hyperframes lint p",
+    "npx -p @remotion/cli remotion render src/index.ts A out.mp4",
+    "npm view hyperframes version time.modified",
+    "npm view hyperframes@latest version",
+    "npm outdated hyperframes",
+    "npm ls hyperframes",
+    # bitişik fd rakamı argüman değildir, $(…) içinde de (dış geçiş 2'yi girdi sanmamalı); tırnak içi veridir
+    'x=$(npx hyperframes transcribe a.srt -d komp 2>&1)',
+    "npx hyperframes transcribe a.srt -d komp 2> hata.txt",
+    "npx hyperframes transcribe a.srt -d komp 1>&2",
+    "timeout 600 npx hyperframes lint komp >/dev/null",
+    'echo "2>x" && npx hyperframes lint p',
+    # tek tırnak içinde satır devamı silinmez: veri
+    "echo 'hyper\\\nframes cloud'",
 ]
 # Göreli satıcı betiği: çalışma klasörü (kancanın JSON girdisindeki cwd) beceriyi gösteriyorsa engellenir; dört ad da
 # genel olduğundan başka projenin kendi betiği serbest.
@@ -226,6 +302,9 @@ ILETI = [
     ("node ~/.claude/skills/embedded-captions/scripts/transcribe.cjs .", "hyperframes transcribe <x>.srt"),
     ("ls *.wav | xargs -n1 npx hyperframes transcribe", "görünür girdisi yok"),
     ('hyperframes transcribe a.srt "$X"', "girdisi '$X' döküm dosyası"),
+    ("hyperframes snapshot p --describe 0", "birebir 'false'"),
+    ("npx hyperframes@latest render .", "tam sürümle"),
+    ("npm i -D hyperframes@latest", "güncelleme-ve-disk §3"),
 ]
 # İleti döküm dosyasını ses/video girdisi diye anmamalı (yalnız döküm dışı girdiyi adıyla söyler).
 ILETI_DEGIL = [

@@ -1,0 +1,99 @@
+{
+  "dosya": "/private/tmp/claude-501/-Users-onurkaya-Projects-video/751b0520-a2bb-4907-b2a0-5609716dbd05/scratchpad/o6/teslim/cikti.mp4",
+  "hedef": "dikey",
+  "boyut_mb": 0.16,
+  "sure": 3.008,
+  "denetimler": [
+    {
+      "ad": "akislar",
+      "durum": "gecti",
+      "ayrinti": "['video', 'audio'] (fazlası mebx/APAC/veri izi olabilir)"
+    },
+    {
+      "ad": "kodek",
+      "durum": "gecti",
+      "ayrinti": "h264 High avc1"
+    },
+    {
+      "ad": "seviye",
+      "durum": "gecti",
+      "ayrinti": "42 (en çok 42)"
+    },
+    {
+      "ad": "pix_fmt",
+      "durum": "gecti",
+      "ayrinti": "yuv420p"
+    },
+    {
+      "ad": "boyut",
+      "durum": "gecti",
+      "ayrinti": "1080x1920 (beklenen 1080x1920)"
+    },
+    {
+      "ad": "sar",
+      "durum": "gecti",
+      "ayrinti": "None (16:9→9:16 doğrudan ölçek 256:81 yapar)"
+    },
+    {
+      "ad": "cfr",
+      "durum": "gecti",
+      "ayrinti": "r=30/1 avg=30/1"
+    },
+    {
+      "ad": "renk",
+      "durum": "gecti",
+      "ayrinti": "bt709/bt709/bt709/tv"
+    },
+    {
+      "ad": "donus",
+      "durum": "gecti",
+      "ayrinti": "0° (teslim yeniden kodlanır; akış kopyasında matrisi sıfırlama: yan oynar)"
+    },
+    {
+      "ad": "alan",
+      "durum": "gecti",
+      "ayrinti": "None"
+    },
+    {
+      "ad": "ses_bicimi",
+      "durum": "gecti",
+      "ayrinti": "aac LC 48000 Hz 2 kanal"
+    },
+    {
+      "ad": "av_baslangic",
+      "durum": "gecti",
+      "ayrinti": "video 0.000 / ses 0.000 sn (sınır 1 kare)"
+    },
+    {
+      "ad": "av_sure",
+      "durum": "gecti",
+      "ayrinti": "video 3.000 / ses 3.008 sn (sınır 50 ms)"
+    },
+    {
+      "ad": "gop",
+      "durum": "inceleme",
+      "ayrinti": "en büyük anahtar kare aralığı 3.01 sn (ön ayar 0.5)"
+    },
+    {
+      "ad": "faststart",
+      "durum": "gecti",
+      "ayrinti": "ftyp moov free mdat"
+    },
+    {
+      "ad": "ust_veri",
+      "durum": "gecti",
+      "ayrinti": "yalnız zararsız etiketler"
+    },
+    {
+      "ad": "cozme",
+      "durum": "gecti",
+      "ayrinti": "0 hata satırı"
+    },
+    {
+      "ad": "luma",
+      "durum": "gecti",
+      "ayrinti": "beyaz kırpık kare %0.0 (≤2), ezik siyah kare %0.0 (≤5; gece/bilinçli beyaz olabilir), aralık dışı (Y<16/>235) kare %0.0 (≤1), YAVG ort 40.2"
+    }
+  ],
+  "gecti": true
+}
