@@ -38,6 +38,18 @@ Yönetim: `medya-yonetim` iş akışı (`{radar: true}` = yeni araç taraması) 
 
 İş akışları, duraklatma, satıcı becerileri, bağlı olmayan ajan/beceri, başka klasör: [yonlendirme](references/yonlendirme.md). Motor ve DaVinci/Kdenlive: [motor-ve-nle](references/motor-ve-nle.md).
 
+## Alt yazı istenirse
+Yalnız kullanıcı isterse. Döküm stüdyonun kurulu, Türkçe sınanmış yolundan; satıcı akışları sormadan model indirdiği için
+kancada engelli: ses/video girdili `hyperframes transcribe`, `init --video|--audio` (`--skip-transcribe` ile serbest), `tts`,
+`models install`, embedded-captions `prepare.sh`/`transcribe.cjs`/`matte.cjs`, media-use `transcribe.mjs`.
+1. `medya yaziya-dok <klip> --dil tr --srt --cikti analiz/yazi/<ad>.json` → kelime zamanlı `.json` + `.srt`.
+2. HyperFrames'e indirmesiz: `hyperframes transcribe analiz/yazi/<ad>.srt -d <kompozisyon>` işaret düzeyinde kalır (7 kelime
+   → 2 öğe, ölçüldü 2026-10-08). Kelime zamanı için `kelimeler`i `[{text,start,end}]` dizisine çevir (stüdyo JSON'u
+   doğrudan tanınmaz): `$MEDYA/.venv/bin/python -c "import json,sys;d=json.load(open(sys.argv[1]));json.dump([{'text':w['k'],'start':w['bas'],'end':w['son']} for w in d['kelimeler']],open(sys.argv[2],'w'),ensure_ascii=False)" analiz/yazi/<ad>.json calisma/<ad>-kelime.json`
+   → `hyperframes transcribe calisma/<ad>-kelime.json -d <kompozisyon>`.
+3. `embedded-captions`, `talking-head-recut` yalnız biçim başvurusu; döküm adımlarını 1–2 ile değiştir. Öznenin arkasına
+   gömülü alt yazı video matı ister (`remove-background`, büyük model; `arkaplan-sil` yalnız fotoğraf): boyutu söyle, sor.
+
 ## Boru hattı
 Sıra: analiz → plan → yapım → çizim → denetim kapısı → rapor.
 - **Video, karma ya da HyperFrames animasyonu:** `Workflow({scriptPath:'/Users/onurkaya/Projects/video/.claude/workflows/medya-uretim.js', args:{proje:'projeler/…'}})`.

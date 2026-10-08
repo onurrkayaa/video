@@ -78,8 +78,9 @@ ortamlar/tts/bin/mlx_audio.tts.generate --model mlx-community/VoxCPM2-4bit --tex
    VoxCPM2 koşullarına aykırı.
 3. **Chatterbox Multilingual v3** (MIT, Türkçe var): aynı mlx-audio ile `--model mlx-community/chatterbox-multilingual-v3
    --lang_code tr --ref_audio <izinli kayıt>` (2,7 GB). PyTorch paketi (torch 2.6, numpy<2 sabitler) kullanılmaz.
-4. **Kokoro** (`hyperframes tts`): Türkçe yok (dil listesi en-us, en-gb, es, fr-fr, hi, it, pt-br, ja, zh; yerelde okundu);
-   yalnız İngilizce, `HYPERFRAMES_PYTHON` ile kokoro-onnx ortamı ister (kurulu değil).
+4. **Kokoro** (`hyperframes tts`): kullanılmaz, `medya-koruma` kancası engeller (2026-10-08). Türkçe yok (dil listesi en-us,
+   en-gb, es, fr-fr, hi, it, pt-br, ja, zh; yerelde okundu); kokoro-onnx + soundfile ister (kurulu değil), paketler varsa
+   modeli ve sesleri (311 + 27 MB) sormadan indirir.
 5. **macOS `say -v Yelda`:** lisans "kişisel, ticari olmayan kullanım" → yalnız kişisel taslak ya da zamanlama yer
    tutucusu; yayımlanacak işte değil.
 

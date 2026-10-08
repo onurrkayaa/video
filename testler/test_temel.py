@@ -575,6 +575,35 @@ def test_kayit_birincil_saglayicilar_kurulu():
     assert not eksik, f"birincil sağlayıcı kurulu değil: {eksik}"
 
 
+def test_python_ortamlari_studyonun_yorumlayicisinda():
+    """2026-10-08'e dek mflux ortamı stüdyo dışındaki python.org 3.13.1'e bağlıydı (sistem `python3` 3.14'e geçmişti):
+    o kaldırılınca `gorsel-uret` bozulur, `ls` denetimi kopuk bağı görmezdi. Her ortam .uv/python altındaki uv
+    Python'unu kullanmalı (yeniden kurulum: --managed-python)."""
+    yonetilen = (KOK / ".uv" / "python").resolve()
+    sorunlu = []
+    for o in [KOK / ".venv", *(KOK / "ortamlar").glob("*"), *(KOK / ".uv" / "tools").glob("*")]:
+        if (o / "pyvenv.cfg").exists():
+            py = (o / "bin" / "python").resolve()
+            if not (py.is_relative_to(yonetilen) and py.exists()):
+                sorunlu.append(f"{o.relative_to(KOK)} → {py}")
+    assert not sorunlu, f"stüdyo dışı ya da kopuk yorumlayıcı: {sorunlu}"
+
+
+def test_gorsel_ortami_kisit_dosyasina_esit():
+    """Yeni makinede ve onarımda aynı paketler kurulur: kayıt komutu depodaki kısıt dosyasını kullanıyor ve kurulu
+    ortam onunla birebir aynı (paket kayması = aynı tohumda başka görsel; `uv tool upgrade` bunu sessizce yapar)."""
+    from medya.kayit import yukle
+    kisit = KOK / "sistem" / "kisitlar" / "mflux-0.21.0.txt"
+    s = yukle()[1]["flux2-klein"]
+    assert "--managed-python" in s.kurulum and f"-c {kisit.relative_to(KOK)} " in s.kurulum and kisit.exists()
+    py = KOK / ".uv" / "tools" / "mflux" / "bin" / "python"
+    if not py.exists():
+        pytest.skip("flux2-klein kurulu değil: medya kur flux2-klein")
+    kurulu = subprocess.run([str(KOK / "arac" / "uv"), "pip", "freeze", "--python", str(py)], capture_output=True,
+                            text=True, check=True).stdout.splitlines()
+    assert kurulu == [satir for satir in kisit.read_text().splitlines() if satir.strip() and not satir.startswith("#")]
+
+
 def test_senkron_cizimdeki_ses_kaymasini_yakalar(veri, tmp_path):
     """Kesimler vuruşta ama çizimin sesi 40 ms kaymışsa 'vurusta' DENMEZ (2026-10-04 'sesler kaymış'ın ikinci yolu)."""
     from medya.komutlar.senkron import senkron

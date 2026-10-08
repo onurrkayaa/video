@@ -342,10 +342,10 @@ ad = "flux2-klein"
 tur = "python-arac"
 lisans = "FLUX.2 [klein] 4B ağırlıkları Apache-2.0 (Qwen3-4B metin kodlayıcı dahil; mflux-community Q4 yeniden yüklemesi de apache-2.0) · mflux MIT"
 ticari = "evet"
-kurulum = "arac/uv tool install --python 3.13 'mflux==0.21.0' && .uv/tools/mflux/bin/python -c \"from huggingface_hub import snapshot_download as s; s('mflux-community/flux2-klein-4b-mflux-q4', revision='794cd159538149ad9830848508c31f0ea7088e58')\""
-kontrol = "ls arac/mflux-generate-flux2 modeller/hf/hub/models--mflux-community--flux2-klein-4b-mflux-q4/snapshots/794cd159538149ad9830848508c31f0ea7088e58/transformer/0.safetensors"
-boyut_mb = 5700
-not = "mflux ortamı ~1,1 GB (opencv<5 ister → ayrı uv aracı) + model 4,62 GB. Ölçüm: 1024² 4 adım ~84 sn, bellek tepesi 8,8 GB; düzenleme ~176 sn; aynı tohum = aynı görsel. FLUX.2 [klein] 9B ve [dev] ticari DEĞİL (kullanılmaz). Alternatif: Z-Image-Turbo Q4 (5,9 GB, daha iyi fotogerçekçilik/yazı; diskte tek model)."
+kurulum = "arac/uv tool install --managed-python --python 3.13.16 -c sistem/kisitlar/mflux-0.21.0.txt 'mflux==0.21.0' && .uv/tools/mflux/bin/python -c \"from huggingface_hub import snapshot_download as s; s('mflux-community/flux2-klein-4b-mflux-q4', revision='794cd159538149ad9830848508c31f0ea7088e58')\""
+kontrol = "ls -L .uv/tools/mflux/bin/python arac/mflux-generate-flux2 modeller/hf/hub/models--mflux-community--flux2-klein-4b-mflux-q4/snapshots/794cd159538149ad9830848508c31f0ea7088e58/transformer/0.safetensors"
+boyut_mb = 5850
+not = "mflux ortamı ~1,15 GB (opencv<5 ister → ayrı uv aracı) + stüdyonun Python 3.13.16'sı 73 MB (.uv/python; uv gömülü SHA-256 9e01f63b… ile doğrular, python-build-standalone 20261003 SHA256SUMS ile aynı) + model 4,62 GB. Paketler sistem/kisitlar/mflux-0.21.0.txt'e sabit (56 paket, 2026-10-08; uv tool install kısıttaki --hash'i zorlamıyor, ölçüldü). 2026-10-08'e dek stüdyo dışındaki python.org 3.13.1'e bağlıydı; taşımadan önce/sonra aynı tohum piksel piksel aynı. `ls -L`: kopuk yorumlayıcı bağında denetim başarısız olur. Ölçüm: 1024² 4 adım ~84 sn, bellek tepesi 8,8 GB; düzenleme ~176 sn; aynı tohum = aynı görsel. FLUX.2 [klein] 9B ve [dev] ticari DEĞİL (kullanılmaz). Alternatif: Z-Image-Turbo Q4 (5,9 GB, daha iyi fotogerçekçilik/yazı; diskte tek model)."
 
 [[saglayici]]
 ad = "voxcpm2"

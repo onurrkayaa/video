@@ -139,9 +139,11 @@ verir; çözüm kullanıcıda (`sudo killall ANECompilerService` ya da yeniden b
 ## Ortam gerçekleri (2026-10-05)
 Apple M2, 16 GB RAM, macOS 27. Homebrew kilitli (Xcode lisansı kabul edilmemiş; `sudo xcodebuild -license accept`
 kullanıcının kararı) → araçlar uv/npm/resmî ikili ile kurulur; Swift için `DEVELOPER_DIR=/Library/Developer/CommandLineTools`.
-Python 3.12 (`.venv`, uv), ağır ses yığını `ortamlar/ses` (torch, Beat This!, Essentia, librosa, Demucs, mlx-whisper),
+Python 3.12 (`.venv`, uv; her ortam yalnız `.uv/python`'daki uv Python'unu kullanır: `UV_MANAGED_PYTHON=1`), ağır
+ses yığını `ortamlar/ses` (torch, Beat This!, Essentia, librosa, Demucs, mlx-whisper),
 ffmpeg-static 6.0 (`arac/ffmpeg`), HyperFrames 0.8.124, Remotion 4.0.533 (kök `node_modules`), OTIO 0.18.1,
-RIFE 20221029 (`arac/rife`), mflux 0.21.0 + FLUX.2 [klein] 4B Q4 (`.uv/tools/mflux`), mlx-audio 0.5.8 + VoxCPM2 4-bit
+RIFE 20221029 (`arac/rife`), mflux 0.21.0 + FLUX.2 [klein] 4B Q4 (`.uv/tools/mflux`, Python 3.13.16, paketler
+`sistem/kisitlar/`'a sabit), mlx-audio 0.5.8 + VoxCPM2 4-bit
 (`.uv/tools/mlx-audio`), SpeechBrain ECAPA (ses doğrulama), Kdenlive 26.08.1 ve DaVinci Resolve 21.1.0 (`/Applications`). Satıcı becerileri
 (lisanssız) depoda tutulmaz: `sistem/claude/satici/satici.py kur`. Döngüde ffmpeg'e `-nostdin`; zsh'de değişken sözcüklere
 bölünmez (bayrakları açık yaz); ffmpeg `psnr` süzgeci farklı zaman damgalı akışlarda kare kaydırır (kareleri

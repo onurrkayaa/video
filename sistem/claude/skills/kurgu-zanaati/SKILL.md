@@ -26,6 +26,7 @@ telifli şarkı ve kişilerin rızası; iş videosunda ticari lisanslı müzik.
 | Seçki | `medya sahneler X --json analiz/sahneler/<ad>.json`; `medya analiz X --sahneler … --cikti analiz/vision/<ad>.json` |
 | Çekim sesi olayları | `medya ses-olay X --cikti …` (ilke 4 ham klipte: `ses: kendi`; `ses-turu` kurgulanmışta) |
 | Konuşma | `medya yaziya-dok X --dil tr --cikti analiz/yazi/<ad>.json` |
+| Alt yazı (yalnız istenirse) | aynı komuta `--srt`; HyperFrames'e indirmesiz `hyperframes transcribe analiz/yazi/<ad>.srt -d calisma/kompozisyon` (işaret düzeyi; kelime zamanı: medya-studyo "Alt yazı istenirse"). Satıcı altyazı akışını çalıştırma: sormadan indirir, kanca engeller |
 | Müzik | `medya muzik … --cikti analiz/muzik.json` → `guven_seviye` |
 | HDR / VFR | `medya sdr` / `medya cfr` `--cikti calisma/klipler/…` |
 | Ağır çekim | `medya yavaslat X --hiz 0.5 --bas A --sure S --cikti calisma/klipler/<ad>-yavas.mov` |

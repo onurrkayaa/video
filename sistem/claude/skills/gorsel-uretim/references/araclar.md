@@ -93,7 +93,7 @@ arac/resvg --version                                                            
 **Disk kararı** (`arac-radari` bilinen kararlar): yalnız **harici SSD**'de (`export HF_HOME=/Volumes/<disk>/hf`);
 iç diskte boş alan ~11 GB, kurulum sınırı (5 GB) zorlar. İç diske yalnız kullanıcı açıkça isterse.
 ```zsh
-arac/uv tool install --python 3.12 'mflux==0.21.0'
+medya kur flux2-klein   # yetenekler.toml: stüdyonun Python 3.13.16'sı + sistem/kisitlar/mflux-0.21.0.txt (elle uv kurma)
 mflux-generate-flux2 --model mflux-community/flux2-klein-4b-mflux-q4 --base-model flux2-klein-4b \
   --prompt-file plan/k1.txt --width 1024 --height 1024 --steps 4 --seed 11 23 37 \
   --low-ram --no-exif --make-conf --output "calisma/gorsel/k1-{seed}.png"
@@ -103,6 +103,9 @@ mflux-generate-flux2 --model mflux-community/flux2-klein-4b-mflux-q4 --base-mode
   istemi olumlu yaz. `--no-exif` istemin dosyaya gömülmesini önler; `--make-conf` tohum/istem yan dosyası yazar.
 - İndirmeden sonra `export HF_HUB_OFFLINE=1`; model revizyonunu (HF `sha`) KARARLAR.md'ye yaz.
 - Fotogerçekçi alternatif: Z-Image-Turbo Q4 5,90 GB Apache-2.0 (denenmedi). Diskte aynı anda tek model.
+- Ortam paketleri kısıt dosyasına sabit (2026-10-08): taşımadan önce/sonra aynı tohum piksel piksel aynı çıktı.
+  `uv tool upgrade` yapma; paket değişecekse kısıt dosyasını yenile ve `medya test gorsel --agir` koş (aynı tohum
+  başka görsel verebilir).
 
 ## Kaçınılacaklar (lisans ve kural tuzakları)
 | Ne | Neden |

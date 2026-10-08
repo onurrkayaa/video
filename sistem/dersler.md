@@ -3,6 +3,61 @@
 Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders ilgili beceriye taşınır (taşındıysa
 "→ beceri" notu). En yeni üstte.
 
+## 2026-10-08 — mflux ortamı stüdyonun Python'una taşındı
+- **Ortam stüdyo dışındaki Python'a bağlıydı, sağlık denetimi bunu göremiyordu.** `.uv/tools/mflux` python.org
+  3.13.1'i gösteriyordu (sistem `python3` 3.14'e geçmişti); `ls` kopuk bağda 0 döndürür (`ls -L` 1), yani 3.13
+  kaldırılsa `gorsel-uret` bozulur ama sağlayıcı "kurulu" görünürdü. Kontrol `ls -L` + yorumlayıcı; yeni sınama bütün
+  ortamların `.uv/python`'da olduğunu denetliyor (eski ortamın klonuyla kırmızıda sınandı). → arac-radari (benimseme §1–2).
+- **Taşıma ölçüldü:** 56 paket `sistem/kisitlar/mflux-0.21.0.txt`'e donduruldu; `--managed-python --python 3.13.16
+  -c …` 13,8 sn, `uv pip freeze` önce/sonra aynı; 256², 2 adım, tohum 3: çözülmüş pikseller aynı (en büyük fark 0).
+  CPython arşivi SHA256SUMS ile aynı (`9e01f63b…`), uv bozuk arşivi "Hash mismatch" ile reddetti; ama `uv tool
+  install` kısıttaki yanlış `--hash`'le kurdu (paket SHA'sı bu yolla sabitlenemez). Takas 988 MiB'da kaldı; ağır görsel
+  sınaması 19 sn, tepe yerleşik bellek 2,5 GB (256²; 1024² ölçülmedi).
+- **APFS klonları ve yer:** eski ortamın `cp -c` yedeği kopyalanırken 0 MB tuttu, silinince 0,85 GB açtı (eski blokları
+  o tutuyordu); uv önbelleği "1,1 GiB" silindi ama yalnız 0,04 GB açtı (bloklar ortamla paylaşılıyor). `du` iki kez
+  sayar; yer kararı `df` ile.
+- **`UV_MANAGED_PYTHON=1` (ortam.sh):** `uv python find 3.13` artık stüdyonunkini buluyor (önce python.org); ortam
+  yorumlayıcıları `uv pip --python` ile kabul ediliyor, `uv sync --dry-run` değişiklik yok, hafif takım 172 geçti.
+  Kancalar ve `kur.sh` hâlâ PATH'teki `python3`'e bağlı (gelistirme.md).
+
+## 2026-10-08 — disk payı: yeniden başlatma, npm önbelleği, ağır ML takası
+- **Takas diskten yer alır ve iş bitince bırakmaz.** Yönetici incelemesinde (01:06) 5 × 1 GiB takas dosyası, 3721 MiB
+  kullanımda, boş disk 7,80 GB; yeniden başlatmadan sonra (11:22) takas 0, `/System/Volumes/VM` boş, boş disk 15,47 GB.
+  Arada npm önbelleği silindi (1,09 GB), Resolve kuruldu (3,12 GB), Claude masaüstü verisi 11,53 GB'a çıktı: fark
+  kalemlere ayrıştırılamadı. Hafif takım (170 sınama) ve FLUX.2 256² sınaması takas açmadı; VoxCPM2 sınaması (iki
+  Türkçe cümle + Whisper + ECAPA, 41 sn) ≤ 8 sn içinde 2 × 1 GiB dosya açtı (tepe 1132 MiB), boş disk 15,69 → 13,55 GB;
+  iş bitince bellek %74 boşken dosyalar yerinde kaldı. 5 + 3 GB payı bunu karşılıyor; 1024² ve art arda üretimde
+  takas ölçülmedi. → arac-radari (güncelleme-ve-disk §6).
+- **`npm cache clean --force` yalnız `~/.npm/_cacache`'i siler** (npm 11.19 `cache.js:143`); `_npx` (0,81 GB) npx
+  kurulumlarıdır (çalışan Playwright MCP dahil) ve kalır. İlk rapordaki "1,8 GB" ikisinin toplamıydı. → arac-radari.
+- **Yeniden başlatma `$TMPDIR` artıklarını da götürdü:** 2026-10-05 tarihli `pytest-of-onurkaya` (0,37 GB) ve 218
+  onnxruntime dosyası (0,57 GB) açılıştan sonra yoktu; elle silmeye gerek kalmadı (silen mekanizma doğrulanmadı).
+- **`medya temizle --uygula` kalıcı yer açmaz:** 0,25 GB açtı, sonraki `medya test` `testler/.gecici`'yi aynı boyuta
+  geri doldurdu. `uv cache clean` hedefini `UV_CACHE_DIR`'den alır; ortam yüklenmeden stüdyo dışı `~/.cache/uv`'yi
+  hedefler (gelistirme.md).
+
+## 2026-10-08 — koruma kancası: sessiz indirme ve sabit sürüm boşlukları
+- **Kanca alt süreci görmez; satıcı komutu kendi kurulumunu yapar.** Eski kanca yeni 36 engel durumunun hepsini geçirdi
+  (çıkış 0): ses/video girdili `hyperframes transcribe` ve `init --video` → sessiz `brew install whisper-cpp` + ggml modeli
+  (bugün yalnız Xcode lisansı durduruyor), `tts` → Kokoro, `models install` → Parakeet, `skills` → sabitsiz GitHub HEAD,
+  embedded-captions `prepare.sh` → `uvx whisperx==3.8.6` (sürüm sabitli biçim eski whisperx kuralından da kaçıyordu).
+  Kural artık girdiye bakıyor: `transcribe` yalnız .json/.srt/.vtt; değer alan bayrakların değeri girdi sayılmıyor
+  (`-d out.srt ses.wav` yakalanıyor); `--help`/`-h` serbest (cli.js: argv'de varsa komut çalışmaz). `medya test koruma`
+  65 → 131. → kanca, medya-studyo.
+- **SRT içe aktarımı kelime zamanını kaybeder:** `hyperframes transcribe x.srt` her işareti tek öğe yapıyor (7 kelime → 2
+  öğe); stüdyo JSON'u doğrudan tanınmıyor. `kelimeler` → `[{text,start,end}]` .json ağsız 7/7 kelime, zamanlar birebir.
+  Önerilen kaçış yolunu da ölç: engel iletisi yanlış yolu gösterirse ajan çıkmaza girer. → medya-studyo "Alt yazı istenirse".
+- **Satıcı betiklerinin dört adı da genel** (`prepare.sh`, `transcribe.cjs`, `matte.cjs`, `transcribe.mjs`): yalnız bağlamla
+  tutulur (yolda, komutta ya da kancanın `cwd`'sinde beceri adı). İlk sürüm üçünü yalnız adla tutuyordu ve başka projenin
+  `node scripts/transcribe.mjs`'ini engelliyordu (bağımsız doğrulama buldu). `node --check` / `bash -n` serbest.
+- **shlex, kaçışlı `\(`'yi de `'('`'yi de alt kabuk `(`'iyle aynı jetona çevirir.** `find … \( -name transcribe.mjs \)`
+  ayırıcıdan sonraki çıplak adı komut başı sandı; salt okunur arama, doğrulama sırasında canlı oturumda engellendi. Çıplak
+  ad PATH'ten aranır, bu yüzden komut başında yalnız `/` içeren yol tutulur. Aynı kök neden `find . \( -name skills \)`'i
+  eskiden beri engelliyor (gelistirme.md).
+- **Kısa bayrağı CLI'nin kendi ayrıştırıcısıyla ölç:** `init -vv.mp4` ve `init -yv v.mp4` video atıyor (util.parseArgs,
+  strict:false: gruptaki bilinmeyen harf geçilir, `e`/`t`/`V` kalanı yutar); düzenli ifade yalnız `-v`'yi tutuyordu.
+  İletideki iddia da koddan doğrulanır: `tts` Python paketi kurmuyor, yalnız `pip install` ipucu veriyor.
+
 ## 2026-10-08 — kurgu programına devir ölçümü (Resolve 21.1, Kdenlive 26.08)
 - **Sınama sinyali periyodikse kaymayı göremez.** İlk ölçümde müzik tıkları 0,5 sn'de bir, çekim bip'leri saniyede birdi;
   Kdenlive müziği 0,5 sn, çekim sesini 1 sn erken başlattığı hâlde ölçüm "0,5 ms" dedi. Sinyaller numaralandı (k. müzik

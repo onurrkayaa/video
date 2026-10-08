@@ -12,6 +12,12 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
   Ölçüt hazır: `testler/nle_olc.py` (Resolve çizimi geçiyor). Dikkat (ölçüldü 2026-10-08): elle kurulan
   `concat → xfade → concat` zinciri erimeden sonra 1 kare kaydı (gelen klip 1 kare erken içerik, sonraki kesim 1 kare
   geç, toplam +1 kare) — zaman tabanlarını kare ızgarasına oturtup 0 kareye indirmeden yayımlama.
+- **Y** `medya temizle --uygula`: `uv cache clean`'e `--cache-dir` açıkça verilsin. Hedef bugün `UV_CACHE_DIR`'den
+  geliyor; ortam yüklenmeden çalışırsa stüdyo dışı `~/.cache/uv`'yi siler, yol bekçisi yalnız `.uv/cache`'i denetliyor
+  (`env -u UV_CACHE_DIR arac/uv cache dir` → `~/.cache/uv`, 2026-10-08; o gün 16 KB). Sınama: alt süreç argümanı.
+- **O** Ağır ML disk koşulu (5 + 3 = 8 GB) kodda yok: `disk_bekcisi` görsel üretimini 3,0, seslendirmeyi 2,5 GB altında
+  durduruyor (`medya/ortak.py:78`, `gorsel_uret.py:32`, `seslendir.py:132`). Tek VoxCPM2 sınaması 2 × 1 GiB takas açtı
+  (2026-10-08, dersler.md).
 - **O** İndirmesiz komut paketi (kurulu araçlarla): `sabitle` (vidstab), `gurultu` (video gürültüsü: hqdn3d/nlmeans),
   `eski` (bwdif + büyütme), `dikey` (konu takipli 9:16), `renk-esle` (çekimler arası renk eşleme), `bosluk-kes`
   (konuşmalı videoda ölü sessizlikleri kesme), `gizlilik` (Vision yüz bulanıklaştırma), `plaka`, App Store ön ayarı.
@@ -45,6 +51,40 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 - **O** `medya-uretim` iş akışına isteğe bağlı kapak/görsel aşaması (medya-gorsel + gorsel-uretim).
 - **D** `medya proje motor <p> remotion`: sonradan motor değiştirme (şablon kopyası + BRIEF satırı).
 - **D** `medya incele` durağan görsel künyesi (piksel, 2x yoğunluk, ICC/P3, alfa; SVG'de script/dış bağlantı/<text>).
+- **D** `medya yaziya-dok`: HyperFrames'in kelime biçimini (`[{text,start,end}]`) de yazsın. Bugün stüdyo JSON'u doğrudan
+  içe aktarılmıyor ("Unrecognized JSON transcript format"), `.srt` içe aktarımı işaret düzeyinde (7 kelime → 2 öğe);
+  kelime zamanı için tek satırlık dönüşüm gerekiyor (medya-studyo "Alt yazı istenirse"; ölçüldü 2026-10-08).
+- **D** `voxcpm2` sağlık denetimi yorumlayıcıya `ls` ile bakıyor (`ls .uv/tools/mlx-audio/bin/python`): kopuk bağda 0
+  döner (`flux2-klein` 2026-10-08'de `ls -L`'ye geçti). Bugün `test_python_ortamlari_studyonun_yorumlayicisinda`
+  yakalar, `medya yetenekler` yakalamaz.
+- **D** gorsel-uretim ve arac-radari belgelerinde FLUX.2 için eski durum kaldı: `gorsel-uretim/references/araclar.md`
+  "Üretici" başlığı ("çalıştırılmadı", "yalnız harici SSD", "bu Mac'te koşturulmadı"), `references/teknikler.md` §10
+  ("Üretici kurulu değil"), `arac-radari/references/bilinen-kararlar.md` ("FLUX.2 klein Q4 … yalnız harici SSD").
+  Sağlayıcı 2026-10-07'den beri iç diskte kurulu ve sınanıyor (`yetenekler.toml` flux2-klein); karar satırı kullanıcının
+  verdiği onayla güncellenmeli.
+
+## Koruma kancası
+- **O** Kancalar sistem Python'una bağlı: `medya-koruma.py` ve `oturum-ozeti.py` `#!/usr/bin/env python3`,
+  `.claude/settings.json` `python3 …/oturum-ozeti.py`; `kur.sh` de `python3` çağırıyor. python.org kaldırılırsa geriye
+  `/usr/bin/python3` kalır, o da Xcode lisansı yüzünden 69 ile çıkıyor (ölçüldü 2026-10-08); PreToolUse'da 2 dışındaki
+  çıkış engellemez (Claude Code kanca belgesi), yani koruma sessizce düşer. Kanca ortamında hangi `python3`'ün
+  seçildiği ölçülmedi. Aday: yorumlayıcı `.uv/python`'dan (ör. `$MEDYA/.venv/bin/python`) + sınama.
+- **O** Alt süreçte indiren diğer satıcı betikleri kancaya girmedi: media-use `audio/scripts/audio.mjs` (faceless-explainer,
+  pr-to-video, product-launch-video `scripts/audio.mjs` buna devreder) `npx hyperframes tts` (Kokoro) ve `npx hyperframes
+  transcribe` çalıştırıyor (`audio/scripts/lib/tts.mjs`:289–292, :363–365; kodda okundu, çalıştırılmadı). Kanca alt
+  süreci görmez; `audio.mjs` genel ad olduğu için `prepare.sh` gibi beceri adı bağlamıyla `SATICI_BETIK`'e eklenebilir.
+- **O** Önceden var olan kaçaklar (özgün kancada da çıkış 0; bağımsız doğrulama 2026-10-08, JSON stdin ile ölçüldü):
+  `node node_modules/hyperframes/dist/cli.js cloud` (HF düzenli ifadesi `dist/cli.js`'i tanımıyor; ücretli/bulut kuralı da
+  kaçıyor), `find … -exec npx hyperframes … \;` (`-exec` sonrası komut sayılmıyor), `cat …/prepare.sh | bash -s p` (boruyla
+  kabuğa), `npx zx …/transcribe.mjs` (node dışı çalıştırıcı), `env HYPERFRAMES_SKIP_SKILLS=0 hyperframes init …` (init'in
+  GitHub HEAD'den beceri tazelemesini yalnız bu değişken durduruyor). Her biri için ENGELLENMELI'ye örnek + düzeltme.
+- **D** `find . \( -name skills \)` / `-name heygen` / `-name whisperx` yanlış engelleniyor (özgün kancada da): shlex
+  kaçışlı `\(`'yi ve `'('`'yi alt kabuk `(`'iyle aynı jetona çeviriyor, ayırıcıdan sonraki çıplak ad komut başı sanılıyor.
+  Satıcı betik adları için çıplak ad artık tutulmuyor; kökten çözüm "`(` yalnız komut başında ayırır" kuralı, ama `eval \(
+  … \)`, `elif (…)`, `time -p (…)` istisnalarıyla sınanmalı (yer tutucuyla çevirmek `eval \( hyperframes cloud \)`'u kaçırıyor).
+- **D** Canlı oturumda `cd ~/.claude/skills/embedded-captions` sonrası ayrı çağrıda `bash scripts/prepare.sh p`
+  için kancaya gelen `cwd`'nin yeni klasörü gösterip göstermediği ölçülmedi (alt ajan kabuğu her çağrıda sıfırlanıyor;
+  yalnız sentetik `cwd` sınandı). Göreli satıcı betiği engeli buna dayanıyor.
 
 ## Sağlayıcılar (kurulmadı — gerektiğinde, lisans/boyut söylenerek)
 | Ne | Amaç | Lisans | Boyut |

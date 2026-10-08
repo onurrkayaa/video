@@ -14,7 +14,9 @@ cp $MEDYA/varliklar/js/gsap.min.js kompozisyon/vendor/            # GSAP 3.15.0
 cp $MEDYA/node_modules/gsap/dist/{DrawSVGPlugin,MorphSVGPlugin,MotionPathPlugin,SplitText,CustomEase}.min.js kompozisyon/vendor/
 cp $MEDYA/varliklar/yazitipleri/inter-latin{,-ext}-{400,600}-normal.woff2 $MEDYA/varliklar/yazitipleri/OFL-Inter.txt kompozisyon/fonts/
 ```
-- `HYPERFRAMES_SKIP_SKILLS=1` olmadan `init` her çalıştırmada becerileri GitHub'a karşı denetler. Bunu ne `ortam.sh` ne de settings koyar.
+- `HYPERFRAMES_SKIP_SKILLS=1` olmadan `init` her çalıştırmada becerileri GitHub HEAD'e karşı tazeler (`keepSkillsCurrent` →
+  `updateSkills`). `ortam.sh` ve `~/.claude/settings.json` (env) bunu 1 yapar; kanca bu alt süreci görmez, tek koruma bu
+  değişkendir. Ortamı yüklenmemiş bir kabuktan da çağrılabileceği için komutta yine açık yaz.
 - `--resolution` seçenekleri: `landscape`, `portrait`, `square`, `*-4k`. App Store gibi başka bir boyut gerekirse kökteki `data-width` ve `data-height` elle yazılır.
 - **Boş şablonda düzeltilecekler** (`init` çıktısı okunarak doğrulandı):
   - `<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/…">` satırı `vendor/gsap.min.js` ile değiştirilir.

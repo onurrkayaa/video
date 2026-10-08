@@ -46,11 +46,16 @@ gerektiğini söyler.
   yalnız ücretli Resolve Studio'nun MCP'siyle olur (295 $) — istemedikçe kapalı.
 - Baş ajan (yönetici: öneriler, aylık inceleme, güncelleme) ve uzman ajanlar (analist, kurgucu, hareket, ses, görsel,
   denetçi, gözcü); iş akışları (üretim, denetim, radar, yönetim, güncelleme).
+- Koruma kancası: ücretli/bulut komutlarını, sormadan büyük model indiren satıcı adımlarını (ör. altyazı akışlarının kendi
+  Whisper'ı) ve sabit sürümü bozan yükseltmeleri engeller. Alt yazı istersen döküm stüdyonun kurulu Türkçe Whisper'ıyla yapılır.
 - Ayrıntı: `CLAUDE.md` (sistemin kuralları ve mimarisi), `sistem/dersler.md`, `sistem/arastirma/`.
 
 ## Bakım
 - `medya test` — bütün yeteneklerin doğruluk sınamaları.
 - `zsh sistem/kur.sh` — yeni bilgisayarda ya da bozulunca yeniden kurulum.
+- Stüdyonun Python ortamları (görsel üretimi, ses analizi, dış ses) kendi Python'unu kullanır (`.uv/python`);
+  bilgisayardaki Python'un güncellenmesi onları etkilemez. Kancalar ve `kur.sh`'nin ilk adımı ise PATH'teki `python3`'ü
+  (çoğunlukla sistemdekini) çağırır: onu kaldırma.
 - `sistem/DURUM.md` — yarım kalan iş ve devam sırası; `sistem/gelistirme.md` — sıradaki geliştirmeler.
 - Disk dolarsa (büyük modeller belleği takasa taşırır): Mac'i yeniden başlatmak takas dosyalarını boşaltır;
   `medya temizle --uygula` önbellekleri siler.

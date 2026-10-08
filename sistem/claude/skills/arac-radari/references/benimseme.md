@@ -37,7 +37,8 @@ saglayici = "<yeni>"
 yedek = ["<eski>"]
 ```
 - `kurulum` kabukta çalışır (`shell=True`, stüdyo kökünde); `kontrol` kabuksuz çalışır (`shlex` ile bölünür, 60 sn
-  sınırı): boru, `&&`, `$DEĞİŞKEN` kullanma.
+  sınırı): boru, `&&`, `$DEĞİŞKEN` kullanma. Yorumlayıcı ya da bağ denetliyorsan `ls -L` ya da onu çalıştıran
+  komut: kopuk bağda `ls` 0 döner, `ls -L` 1 (ölçüldü 2026-10-08).
 - `etkin` (varsayılan true) ve `onay` yalnız kapalı sağlayıcı içindir: `bulut-ucretli` ve `uygulama` (§7).
 - Yeni alan gerçekten gerekiyorsa önce `Saglayici` sınıfına varsayılanlı alan ekle, sonra `medya test kayit`.
 - Denetim: `medya yetenekler --saglayicilar` hatasız döner; `medya test kayit` geçer.
@@ -53,6 +54,11 @@ yedek = ["<eski>"]
 | model | `modeller/` (`HF_HOME`, `TORCH_HOME`) | ilk kullanımda iner; `boyut_mb`'ye kat |
 
 - `.venv` `uv.lock`'a tam eşitlenir: elle `pip install` bir sonraki `uv sync`'te silinir.
+- Yorumlayıcı yalnız stüdyonun (`.uv/python`; `ortam.sh` → `UV_MANAGED_PYTHON=1`, kayıt komutunda da `--managed-python`
+  yaz). mflux 2026-10-08'e dek python.org 3.13.1'e bağlıydı; `test_python_ortamlari_studyonun_yorumlayicisinda` tutar.
+  Çok paketli ortamda `uv pip freeze` çıktısını `sistem/kisitlar/<paket>-<sürüm>.txt`'e koy, kurulumda `-c` ile ver
+  (`.uv/`, `ortamlar/`, `arac/` git'e girmez). `uv tool install` kısıttaki `--hash`'i zorlamıyor (yanlış hash'le kurdu);
+  yönetilen Python arşivini uv gömülü SHA-256'yla doğruluyor (bozuk arşivde "Hash mismatch").
 - torch: `ortamlar/ses` 2.14.1 kullanır; aynı sürüm uv klonlarıyla diski paylaşır, farklı sürüm iki kez yer kaplar.
 - İndirilen dosya: URL ve sürüm sabit; `shasum -a 256 <dosya>` yayımlanan değerle (HF: `?blobs=true` → `lfs.sha256`)
   eşleşir. safetensors / ONNX / CoreML / GGUF tercih; pickle (.pth, .ckpt, .bin) yalnız resmî kaynaktan. Üçüncü

@@ -46,11 +46,15 @@ HyperFrames kompozisyon motorudur. Becerileri sözdizimi başvurusu olarak kulla
 - `publish`, `feedback`, `cloud`, `lambda`, `cloudrun`, `auth`.
 - Masaüstü uygulaması ve Framey tanıtımı.
 - `hyperframes snapshot` daima `--describe false` ile çalışır.
+- "Önce beceriyi tazele" (`npx hyperframes skills update …`) ve `hyperframes upgrade`: sabit sürümü/kaynağı bozar. Satıcının
+  döküm ve seslendirme adımları (ses/video girdili `transcribe`, `init --video|--audio` dökümü, `tts`, `models install`,
+  embedded-captions `prepare.sh`/`transcribe.cjs`/`matte.cjs`, media-use `transcribe.mjs`): sormadan model indirir. Kanca
+  hepsini engeller; alt yazı yolu SKILL.md "Alt yazı istenirse".
 
 **Kullanılmayacak satıcı becerileri:**
 - `media-use`: HeyGen hesabı ister.
 - `music-to-video`: sabit tempo ızgarası kurar; "sesler kaymış" hatası bundan çıktı.
-- Altyazı becerileri (`embedded-captions`, `talking-head-recut`): yalnız kullanıcı yazı isterse.
+- Altyazı becerileri (`embedded-captions`, `talking-head-recut`): yalnız kullanıcı yazı isterse, döküm stüdyonun yolundan.
 
 **Başvuru olarak okunabilecekler:** `product-launch-video`, `pr-to-video`, `faceless-explainer`, `motion-graphics`, `general-video`. Bunlar yalnız stüdyo projesinin içinde, stüdyonun BRIEF.md'sinden sonra, medya-hareket ve hareket-tasarimi ile birlikte kullanılır.
 

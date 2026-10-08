@@ -9,7 +9,7 @@
   (örnek, yeniden çalıştır: ses ortamında dolaylı bağımlılık mpmath).
 - İkililer: `arac/ffmpeg -version | head -1` (6.0, 2023), `arac/ffprobe -version | head -1` (4.4.1, 2021). npm
   sarmalayıcısı güncel görünse de içindeki ikili eski olabilir.
-- Satıcı becerileri: `hyperframes skills check` (yalnız denetler; güncelleme §3.6).
+- Satıcı becerileri: `hyperframes skills check` (salt okunur: `git ls-remote` + manifest; kancada serbest). Güncelleme §3.6.
 - Son radar: `ls sistem/radar/ 2>/dev/null` — yoksa ya da en yenisi 30 günden eskiyse radar öner.
 Bulguyu liste olarak sun; her yükseltme ayrı onayla.
 
@@ -33,12 +33,16 @@ Bulguyu liste olarak sun; her yükseltme ayrı onayla.
    ffmpeg `psnr` süzgeciyle değil.
 5. `hyperframes --help | diff "$G/yardim-once.txt" -` → sunucuya ya da hesaba giden yeni alt komut varsa
    `sistem/claude/hooks/medya-koruma.py` içindeki `YASAK` kümesine ekle, `testler/test_koruma.py` `ENGELLENMELI`
-   listesine örnek koy, `medya test koruma` (öncesi ve sonrası sınama sayısını o an `medya test koruma` çıktısından al). Not: `events` ve `upgrade` bugün `YASAK`
-   içinde değil; araştırma ikisinin de engellenmesini önerdi.
-6. Satıcı becerileri: `hyperframes skills update` en yeniyi çeker (yardım metni) — yalnız hyperframes yükseltmesiyle
-   birlikte, bilerek; ardından [değerlendirme](degerlendirme.md) §4 taraması (`~/.claude/skills/hyperframes*`,
-   `media-use`, `music-to-video`…) ve `sistem/claude/satici/KAYNAKLAR.md` satırını yeni sürümle güncelle. Satıcı
-   dosyalarını düzenleme (güncelleme ezer); çelişkiyi kanca ve `medya-studyo` yönlendirmesi karşılar.
+   listesine örnek koy, `medya test koruma` (öncesi ve sonrası sınama sayısını o an `medya test koruma` çıktısından al).
+   Sormadan indiren alt komut (ör. `transcribe`, `tts`, `models install`) `INDIRME` kurallarına girer. Not: `upgrade`
+   2026-10-08'den beri engelli (`--project` dahil); `events` hâlâ `YASAK` içinde değil (araştırma engellenmesini önerdi).
+6. Satıcı becerileri: `hyperframes skills` / `skills update` kancada engelli (2026-10-08): kaynak sabit commit değil
+   GitHub HEAD, `npx skills add … --yes` (telemetri) çalıştırır, `update` yayından kalkan becerileri `npx skills remove …
+   --yes` ile siler. Yenileme 7. adımın yöntemiyle (sabit commit + tarball SHA-256, `satici.py`); HyperFrames becerileri
+   için bu yol henüz kurulmadı, o zamana dek kurulu kopyalar kalır ve `skills check` yalnız farkı gösterir. Ardından
+   [değerlendirme](degerlendirme.md) §4 taraması (`~/.claude/skills/hyperframes*`, `media-use`, `music-to-video`…) ve
+   `sistem/claude/satici/KAYNAKLAR.md` satırı. Satıcı dosyalarını düzenleme (güncelleme ezer); çelişkiyi kanca ve
+   `medya-studyo` yönlendirmesi karşılar.
 7. Diğer satıcı becerileri (ör. `remotion-best-practices`): sabit commit'in tarball'ı
    (`https://codeload.github.com/<kurum>/<depo>/tar.gz/<commit>`) → `shasum -a 256` → commit ve SHA-256
    `KAYNAKLAR.md`'ye; stüdyo kuralları bloğunu koru; metni yasaklara karşı tara (Google Fonts, Studio açma,
@@ -81,10 +85,15 @@ Geri dönüş: `npm install -D --save-exact hyperframes@<eski>`, sonra 2. adım�
 - Ölç: karar anında `df -h /Users/onurkaya/Projects/video` ya da `medya temizle` (sabit sayıya güvenme). `du` uv klonlarını iki kez sayar.
 - Rapor: `medya temizle` — yalnız rapor; uv önbelleği, `testler/.gecici`, HyperFrames kare önbelleği; `modeller/`'e
   dokunmaz. Kullanıcı onayıyla `medya temizle --uygula` (uv önbelleğinin tamamını siler; sonraki kurulum yeniden
-  indirir). Projelerin `calisma/` klasörleri için `--calisma`, ayrıca sorarak.
+  indirir; kazanç geçici: `testler/.gecici` her `medya test`te ~0,25 GB yeniden dolar). Önce `source ortam.sh`:
+  `uv cache clean` hedefi `UV_CACHE_DIR`'den gelir, ortamsız `~/.cache/uv`'dir (stüdyo dışı; `env -u UV_CACHE_DIR
+  arac/uv cache dir`, 2026-10-08). Projelerin `calisma/` klasörleri için `--calisma`, ayrıca sorarak.
 - Elle: `hyperframes clean --dry-run [proje]` → onay → `hyperframes clean [proje]` (`--snapshots` snapshot
   klasörlerini de alır); `arac/uv cache size` → `arac/uv cache prune` (yalnız sarkık girdiler) ya da
   `arac/uv cache clean` (tümü).
-- Stüdyo dışında, sorarak: `~/.npm` önbelleği (2026-10-05: 1,3 GB) `npm cache clean --force`.
+- Stüdyo dışında, sorarak: `npm cache clean --force` yalnız `~/.npm/_cacache`'i siler (2026-10-08: 1,09 GB; npm 11.19
+  `lib/commands/cache.js`). `~/.npm/_npx` (0,8 GB) npx kurulumlarıdır, çalışan MCP sunucuları dahil: dokunma.
+- Takas diskten yer alır: yeniden başlatma boşaltır (2026-10-08: 5 × 1 GiB → 0), ağır ML yeniden açar ve iş bitince
+  bırakmaz (tek VoxCPM2 sınaması ≤ 8 sn'de 2 × 1 GiB, boş disk −2,1 GB). Ağır işten önce `df -k /` ≥ 8 GB (5 + 3).
 - Kural: kurulumdan sonra ≥5 GB + 2 × beklenen çıktı. Yer yoksa kurma: isteğe bağlı aracı iş için kur, işten sonra
   kaldır, ya da harici SSD (kullanıcı kararı). Silmeden önce ne silineceğini ve boyutunu göster.
