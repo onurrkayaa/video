@@ -112,7 +112,14 @@ def zaman_cizelgesi(plan: dict, kok: Path, muzik: dict | None = None, bas_tc: st
         (src/otio/otioimport.cpp, 26.08), aynı hesapla yazınca kayma kalmaz."""
         h = fps if kdenlive else (m.fps or fps)
         t = RT(round(sn * h), h)
-        return otio.opentime.from_timecode(m.tc, h) + t if m.tc else t
+        if not m.tc:
+            return t
+        try:
+            return otio.opentime.from_timecode(m.tc, h) + t
+        except ValueError:                       # TC'nin kare alanı bu hızda yok (ör. 60 fps kamerada :45, 30 fps kurgu)
+            uyarilar.append(f"Kdenlive: {m.yol.name} zaman kodu {m.tc} ({m.fps:g} fps) zaman çizelgesi hızında "
+                            "okunamıyor — giriş noktası saniyeden yazıldı, Kdenlive'da denetle (sınanmadı)")
+            return RT(round((otio.opentime.from_timecode(m.tc, m.fps or fps).to_seconds() + sn) * h), h)
 
     reller: dict[Path, str] = {}
 
@@ -364,7 +371,7 @@ def nle_(args) -> int:
         else:
             otio.adapters.write_to_file(tl, str(hedef), adapter_name=ad)
         print(f"✓ {hedef}  ({_dogrula(hedef, ad, beklenen, fps)})")
-    for u in uyarilar:
+    for u in dict.fromkeys(uyarilar):                # aynı uyarı birden çok klipten gelebilir
         uyar(u)
     bilgi("Resolve: File > Import > Timeline… → .otio; açılan pencerede 'Set timeline resolution' "
           f"{plan.get('boyut') or '?'} ve kare hızı {plan['fps']} olsun (OTIO çözünürlük taşımaz). Kdenlive: "
