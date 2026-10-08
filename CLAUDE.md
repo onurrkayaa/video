@@ -44,7 +44,7 @@ sistem değişmez: işler **yetenek** adıyla çağrılır (`medya <komut>`), ar
 |---|---|---|
 | Yetenek | `medya/` (CLI), `yetenekler.toml` (kayıt), `medya/isciler/` (ağır ortam işçileri), `arac/medya-apple` (Swift: VideoToolbox, Vision, SoundAnalysis), `arac/rife` (ağır çekim yedeği) | Araçtan bağımsız komutlar; sağlayıcı değişince komut aynı kalır; asılan/başarısız sağlayıcı yedeğine düşer |
 | Motor | HyperFrames (HTML+GSAP, varsayılan) · Remotion 4.0.533 (React/TSX, **lisans kapısıyla**) · ffmpeg | Kompozisyon ve çizim |
-| Bilgi | Beceriler `sistem/claude/skills/` (→ `~/.claude/skills/` bağlantı; satıcı becerileri sabit commit'le, `sistem/claude/satici/KAYNAKLAR.md`; HyperFrames becerileri henüz sabit değil: GitHub HEAD, commit kaydı yok), bilgi tabanı `sistem/arastirma/<tarih>/`, dersler `sistem/dersler.md` | Zanaat, karar kuralları, araç seçimleri ve gerekçeleri |
+| Bilgi | Beceriler `sistem/claude/skills/` (→ `~/.claude/skills/` bağlantı; satıcı becerileri sabit commit'ten — HyperFrames'inkiler CLI'nin etiketinden, v0.8.140 @5c7f631 — `satici.py kur` + `bagla`, durum `satici.py dogrula`; `sistem/claude/satici/KAYNAKLAR.md`), bilgi tabanı `sistem/arastirma/<tarih>/`, dersler `sistem/dersler.md` | Zanaat, karar kuralları, araç seçimleri ve gerekçeleri |
 | Ajan | Ajanlar `sistem/claude/agents/` (→ `~/.claude/agents/`), iş akışları `.claude/workflows/`, kanca `sistem/claude/hooks/medya-koruma.py` | Uzman roller, uçtan uca boru hattı, kuralların zorlanması |
 
 **Baş ajan:** `medya-yonetici` — bütün sistemi görür; öncelikli, maliyeti belli, kanıtlı öneriler hazırlar; kurmaz,
@@ -140,15 +140,15 @@ verir; çözüm kullanıcıda (`sudo killall ANECompilerService` ya da yeniden b
   6 GB takas, boş disk 1,4 GB'a düştü). Ağır ML'yi sırayla çalıştır; `gorsel-uret`/`seslendir` diskte 3/2,5 GB altında
   çalışmaz; yeniden başlatma takası boşaltır. Ağır sınamalar yalnız `medya test --agir`.
 
-## Ortam gerçekleri (2026-10-05)
+## Ortam gerçekleri (2026-10-08)
 Apple M2, 16 GB RAM, macOS 27. Homebrew kilitli (Xcode lisansı kabul edilmemiş; `sudo xcodebuild -license accept`
 kullanıcının kararı) → araçlar uv/npm/resmî ikili ile kurulur; Swift için `DEVELOPER_DIR=/Library/Developer/CommandLineTools`.
 Python 3.12 (`.venv`, uv; her ortam yalnız `.uv/python`'daki uv Python'unu kullanır: `UV_MANAGED_PYTHON=1`), ağır
 ses yığını `ortamlar/ses` (torch, Beat This!, Essentia, librosa, Demucs, mlx-whisper),
-ffmpeg-static 6.0 (`arac/ffmpeg`), HyperFrames 0.8.124, Remotion 4.0.533 (kök `node_modules`), OTIO 0.18.1,
+ffmpeg-static 6.0 (`arac/ffmpeg`), HyperFrames 0.8.140, Remotion 4.0.533 (kök `node_modules`), OTIO 0.18.1,
 RIFE 20221029 (`arac/rife`), mflux 0.21.0 + FLUX.2 [klein] 4B Q4 (`.uv/tools/mflux`, Python 3.13.16, paketler
 `sistem/kisitlar/`'a sabit), mlx-audio 0.5.8 + VoxCPM2 4-bit
 (`.uv/tools/mlx-audio`), SpeechBrain ECAPA (ses doğrulama), Kdenlive 26.08.1 ve DaVinci Resolve 21.1.0 (`/Applications`). Satıcı becerileri
-(lisanssız) depoda tutulmaz: `sistem/claude/satici/satici.py kur`. Döngüde ffmpeg'e `-nostdin`; zsh'de değişken sözcüklere
+depoda tutulmaz, sabit commit'ten üretilir: `python3 sistem/claude/satici/satici.py kur` + `bagla --uygula`. Döngüde ffmpeg'e `-nostdin`; zsh'de değişken sözcüklere
 bölünmez (bayrakları açık yaz); ffmpeg `psnr` süzgeci farklı zaman damgalı akışlarda kare kaydırır (kareleri
 doğrudan çözüp karşılaştır).

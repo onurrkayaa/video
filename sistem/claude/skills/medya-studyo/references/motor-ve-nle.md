@@ -1,7 +1,7 @@
 # Motor seçimi ve kurgu programına devir
 
 ## Kompozisyon motoru
-- **HyperFrames 0.8.140:** varsayılan motor, Apache-2.0, iş için de serbest. Becerileri aynı etiketin commit'inden (`satici.py`); `~/.claude/skills`'e bağlanana dek eski v0.8.124 kopyaları etkin (durum: `satici.py dogrula`). Ayrıntısı hareket-tasarimi'nde.
+- **HyperFrames 0.8.140:** varsayılan motor, Apache-2.0, iş için de serbest. Becerileri aynı etiketin commit'inden (`satici.py kur` + `bagla`; 2026-10-08'de bağlandı, eski v0.8.124 kopyaları `sistem/devam/ham/satici-yedek-2026-10-08.tar.gz`'de; durum: `satici.py dogrula`). Ayrıntısı hareket-tasarimi'nde.
 - **Remotion 4.0.533:** yalnız lisans kapısı geçerse kullanılır. Kapı, BRIEF.md'deki "Lisans bağlamı" satırına bakar.
 
 | Lisans bağlamı | Motor |

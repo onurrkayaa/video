@@ -219,6 +219,11 @@ def bagla(uygula: bool = False) -> int:
             shutil.rmtree(p)
         print(f"  yedek: {arsiv} ({arsivde} dosya); {len(eski)} eski kopya kaldırıldı "
               f"(geri almak: python3 {Path(__file__)} bagla --geri {arsiv} --uygula)")
+        ajanlar = [p.name for p in eski if p.parent == ev / ".agents" / "skills"]
+        for ad in ajanlar:                                       # ~/.agents/skills'i okuyan başka ajanlar kaybetmesin
+            (ev / ".agents" / "skills" / ad).symlink_to(BECERILER / ad)
+        if ajanlar:
+            print(f"  {len(ajanlar)} bağlantı: ~/.agents/skills/<ad> → {BECERILER}/<ad> (eski kopyanın yerine)")
     for ad in baglanacak:
         hedef = ev / ".claude" / "skills" / ad
         if hedef.is_symlink():

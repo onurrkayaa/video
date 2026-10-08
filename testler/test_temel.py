@@ -655,8 +655,8 @@ def test_kompozisyon_hyperframes_cizimi_izgarada_ve_basvuruyla_ayni(tmp_path):
 def test_satici_bagla_eski_kopyayi_yedekleyip_baglar(tmp_path, monkeypatch):
     """~/.claude/skills'te aynı adlı eski gerçek kopya (npx skills --copy) dururken sabit commit'ten kurulan kopya
     sessizce devre dışı kalır (kur.sh bagla gerçek klasörü atlar). satici.py: dogrula bunu söyler; bagla --uygula olmadan
-    dokunmaz; --uygula önce yedekler ve arşivi sayar, sonra kaldırır ve bağlar; listede olmayana dokunmaz; içerik özeti
-    elle düzenlemeyi yakalar. Sahte ev klasöründe, ağsız."""
+    dokunmaz; --uygula önce yedekler ve arşivi sayar, sonra kaldırır ve bağlar (~/.agents/skills'te eski kopyası olanlar
+    oraya da bağlanır); listede olmayana dokunmaz; içerik özeti elle düzenlemeyi yakalar. Sahte ev klasöründe, ağsız."""
     import importlib.util
     import tarfile
     spec = importlib.util.spec_from_file_location("satici", KOK / "sistem" / "claude" / "satici" / "satici.py")
@@ -682,7 +682,9 @@ def test_satici_bagla_eski_kopyayi_yedekleyip_baglar(tmp_path, monkeypatch):
     for ad in ("a", "b"):
         assert (ev / ".claude" / "skills" / ad).is_symlink()
         assert (ev / ".claude" / "skills" / ad / "SKILL.md").read_text().endswith("sabit\n")
-    assert not (ev / ".agents" / "skills" / "a").exists() and (ev / ".claude" / "skills" / "kendi").is_dir()
+    ajan = ev / ".agents" / "skills" / "a"                            # başka ajanlar beceriyi kaybetmez: sabit kopyaya bağ
+    assert ajan.is_symlink() and (ajan / "SKILL.md").read_text().endswith("sabit\n")
+    assert not (ev / ".agents" / "skills" / "b").exists() and (ev / ".claude" / "skills" / "kendi").is_dir()
     arsiv, = (tmp_path / "yedek").glob("satici-yedek-*.tar.gz")
     with tarfile.open(arsiv) as t:
         assert sorted(m.name for m in t.getmembers() if m.isfile()) == [".agents/skills/a/SKILL.md",

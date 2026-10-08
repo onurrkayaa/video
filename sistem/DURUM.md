@@ -120,19 +120,9 @@ HyperFrames becerilerinin 0.8.124 kopyalarını yüklüyor, CLI ise 0.8.140.
 - `medya test`: hafif takım 216 geçti, 2 atlandı (2026-10-08, dalga 2 kapanışı). Ağır üretici sınamaları `medya test
   --agir` (FLUX.2 ve VoxCPM2, 2026-10-08 geçti).
 
+Not (ana ajan, 2026-10-08 16:24): O4'ün 3. adımı uygulandı — `satici.py bagla --uygula` (yedek `sistem/devam/ham/satici-yedek-2026-10-08.tar.gz`, 1853 dosya; ~/.claude/skills ve ~/.agents/skills → sabit v0.8.140 kopyası; `bagla` artık ~/.agents/skills'e de bağlantı koyuyor, başka ajanlar beceriyi kaybetmez); `dogrula` tamam. CLAUDE.md satır 47/148/152 güncellendi.
+
 ## Kullanıcının kararını bekleyenler
-- O4 · Satıcı becerilerini bağlamak: `python3 sistem/claude/satici/satici.py bagla --uygula`. ~/.claude/skills ve
-  ~/.agents/skills'teki 42 eski HyperFrames kopyası (21 × 2; 1.852 dosya, 33,0 MB; v0.8.124 ile blob blob aynı) önce
-  `sistem/devam/ham/satici-yedek-2026-10-08.tar.gz`'ye yedeklenir, sonra kaldırılır; ~/.claude/skills/<ad> →
-  sistem/claude/skills/<ad> bağlanır. Kuru `bagla` önce planı yazar. Geri alma: `bagla --geri <arşiv> --uygula`
-  (`tar -xzf … -C ~` çalışmıyor). Açık nokta: ~/.codex ve ~/.gemini var; ~/.agents/skills'i okuyup okumadıkları
-  ölçülmedi, `bagla` oradaki kopyaları kaldırıp yerine bağlantı koymuyor. Yapılana dek Claude 0.8.124 becerilerini
-  yüklüyor (#5026/#5028 beceri düzeltmeleri devrede değil). Uygulayıcı, proje dışında silme olduğu ve onay ajan
-  üzerinden geldiği için çalıştırmadı; kullanıcı ana oturumda doğrudan onaylarsa çalıştırılır, sonra `dogrula` "tamam" demeli.
-- O4 · CLAUDE.md yaması (ajan dokunmadı): satır 47 "Bilgi" hücresinde "HyperFrames becerileri henüz sabit değil: GitHub
-  HEAD, commit kaydı yok" yerine "HyperFrames'inkiler CLI'nin etiketinden (v0.8.140 @5c7f631), satici.py kur + bagla;
-  durum satici.py dogrula" (bağlama yapılınca tam doğru olur); satır 148 "HyperFrames 0.8.124" → "0.8.140"; satır 152
-  "Satıcı becerileri (lisanssız)" HyperFrames becerileri için yanlış (Apache-2.0).
 - O1 (isteğe bağlı, genel ayar) · `~/.claude/settings.json` → `skillOverrides`'a iki anahtar: `"embedded-captions": "user-invocable-only"` ve
   `"talking-head-recut": "user-invocable-only"`. Başka hiçbir şey değişmez; kuru birleştirme yapıldı, dosyaya yazılmadı.
 - O7 · Kancaların yorumlayıcısı: `medya-koruma.py` ve `oturum-ozeti.py` PATH'teki `python3` ile çalışıyor. O kalkarsa geriye
