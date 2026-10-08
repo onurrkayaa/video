@@ -33,7 +33,7 @@ KOMUTLAR = {
     "meta-temizle": ("donustur", "konum/GPS ve kişisel üst veriyi siler"),
     "yavaslat": ("yavaslat", "ağır çekim: doğal (yüksek fps) / Apple ML ara kare / ffmpeg"),
     "ayir": ("ayir", "sesi katmanlara ayırır: vokal, davul, bas, diğer (Demucs)"),
-    "gorsel-uret": ("gorsel_uret", "metinden ya da referans görselden görsel üretir (FLUX.2 klein 4B, yerel)"),
+    "gorsel-uret": ("gorsel_uret", "metinden ya da referans görselden görsel üretir (FLUX.2 klein / Z-Image-Turbo, yerel)"),
     "arkaplan-sil": ("arkaplan", "arka planı siler, şeffaf PNG (Apple Vision)"),
     # ses ve teslim
     "seslendir": ("seslendir", "metinden dış ses (Türkçe dahil): tutarlı ses kimliği, Whisper/ECAPA doğrulamalı"),

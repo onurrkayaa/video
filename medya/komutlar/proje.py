@@ -7,7 +7,8 @@ projeler/YYYY-AA-GG-<ad>/
   analiz/      medya incele/sahneler/muzik/... çıktıları, temas sayfaları
   plan/        kurgu planı (EDL), storyboard
   calisma/     ara dosyalar (parçalar, kompozisyon, ses katmanları) — yeniden üretilebilir
-               --motor remotion: calisma/remotion/ (sablonlar/remotion: config, tsconfig, yerel yazı tipleri)
+               --motor remotion: calisma/remotion/ (sablonlar/remotion: config, tsconfig, yerel yazı tipleri,
+               yazısız örnekler Ornek, Ornek3B, OrnekLottie)
   cikti/       teslim dosyaları + denetim raporları
 """
 from __future__ import annotations

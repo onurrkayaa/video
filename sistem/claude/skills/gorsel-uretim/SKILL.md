@@ -19,7 +19,7 @@ her biçim aynı ustadan (`disa_aktar.py`). Her kabukta:
 - **Gizlilik:** kişisel fotoğrafta kare açmadan sor; istemezse yalnız sayısal mod (`olc.py`, `medya analiz`; kullanıcı bakar).
 - İş mi kişisel mi (lisans); yazı hangi görselde ve metni ne (uydurma); hedef boyutlar.
 - Herkese açık mı → görüntüdeki kişilerin rızasını hatırlat. Konum silmede: tarih/kamera da gider, asıllar GPS'i tutar (§13).
-- Üretim: `medya gorsel-uret "<istem>" --cikti x.png [--referans ürün.png]` (FLUX.2 klein, Apache-2.0; tohum sabit = aynı görsel). Afiş metnini kullanıcı verir.
+- Üretim: `medya gorsel-uret "<istem>" --cikti x.png [--referans ürün.png]` (FLUX.2 klein varsayılan; görselde İngilizce yazı ya da dar bellek → `--model z-image`, ~3,5 kat yavaş; ikisi de Apache-2.0; aynı model + tohum = aynı görsel). Afiş metnini kullanıcı verir.
 
 ## Hızlı başvuru
 | İş | Yol | Kanıt |
@@ -69,4 +69,4 @@ Komutlar ve sınırlar: [teknikler](references/teknikler.md); kurulumlar, lisans
 - P3 kopyaya LUT (ffmpeg ICC'yi taşır) → önce `disa_aktar.py --asil`.
 - Kesiği tek zeminde görmek (hale koyuda çıkar).
 
-Bilgi tarihi 2026-10-05; kanıt: `sistem/arastirma/2026-10-05/image-photo.md` (+ footage-analysis.md); eskidiyse `arac-radari`.
+Bilgi tarihi 2026-10-05 (üretici 2026-10-08); kanıt: `sistem/arastirma/2026-10-05/image-photo.md` (+ footage-analysis.md), `sistem/dersler.md`; eskidiyse `arac-radari`.

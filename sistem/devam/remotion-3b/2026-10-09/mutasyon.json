@@ -1,0 +1,85 @@
+{
+ "mutasyonlar": [
+  {
+   "mutasyon": "gl swangle (dize sınaması geçer, etkin ayar CPU)",
+   "sinama": "test_remotion_3b_ornegi_gpu_da_cizer",
+   "kirildi": true,
+   "neden": [
+    "E           AssertionError: 3B çizim GPU'da değil: 'ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)' (gl ayarı ya da Chrome değişti mi?)",
+    "E           assert 'ANGLE Metal Renderer' in 'ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)'"
+   ]
+  },
+  {
+   "mutasyon": "gl satırı yok",
+   "sinama": "test_remotion_3b_ornegi_gpu_da_cizer",
+   "kirildi": true,
+   "neden": [
+    "E       assert \"Config.setChromiumOpenGlRenderer('angle')\" in '// Stüdyo Remotion ayarları (2026-10-05, ölçülerek seçildi — sistem/arastirma/2026-10-05/).\\n// Lisans anahtarı ASLA ... 93 → 95;\\n// süre ×1,24). bt709 ŞART: varsayılan etiketsiz BT.601 HD oynatıcıda renk kaydırır. Taslakta JPEG yeter.\\n'"
+   ]
+  },
+  {
+   "mutasyon": "ışıklar yok",
+   "sinama": "test_remotion_3b_ornegi_gpu_da_cizer",
+   "kirildi": true,
+   "neden": [
+    "E           AssertionError: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",
+    "E           assert (0.0 < 0.002 and 0.0 > 0.05)"
+   ]
+  },
+  {
+   "mutasyon": "dönüş yok",
+   "sinama": "test_remotion_3b_ornegi_gpu_da_cizer",
+   "kirildi": true,
+   "neden": [
+    "E           AssertionError: assert np.float64(0.16375514403292182) > 3",
+    "E            +  where np.float64(0.16375514403292182) = <built-in method mean of numpy.ndarray object at 0x1081b8810>()"
+   ]
+  },
+  {
+   "mutasyon": "yay girişi yok (0. karede tam boy)",
+   "sinama": "test_remotion_3b_ornegi_gpu_da_cizer",
+   "kirildi": true,
+   "neden": [
+    "E           AssertionError: [0.19844135802469134, 0.14434413580246913, 0.1265817901234568, 0.11912808641975309, 0.12753086419753087, 0.13329475308641975]",
+    "E           assert (0.19844135802469134 < 0.002)"
+   ]
+  },
+  {
+   "mutasyon": "Lottie kutusu 800 px",
+   "sinama": "test_remotion_lottie_ornegi_yerel_ve_olcusu_dogru",
+   "kirildi": true,
+   "neden": [
+    "E           AssertionError: 17152.490322580645",
+    "E           assert 0.2111685903117323 < 0.02"
+   ]
+  },
+  {
+   "mutasyon": "Lottie çizgi 28 → 25",
+   "sinama": "test_remotion_lottie_ornegi_yerel_ve_olcusu_dogru",
+   "kirildi": true,
+   "neden": [
+    "E           AssertionError: 19380.903225806447",
+    "E           assert 0.10868539056871895 < 0.02"
+   ]
+  },
+  {
+   "mutasyon": "trim path animasyonsuz",
+   "sinama": "test_remotion_lottie_ornegi_yerel_ve_olcusu_dogru",
+   "kirildi": true,
+   "neden": [
+    "E           AssertionError: [5341.406451612904, 5340.270967741935, 5344.0]",
+    "E           assert 5341.406451612904 < 5340.270967741935"
+   ]
+  },
+  {
+   "mutasyon": "uzak Lottie adresi",
+   "sinama": "test_remotion_lottie_ornegi_yerel_ve_olcusu_dogru",
+   "kirildi": true,
+   "neden": [
+    "E           assert \"staticFile('lottie/ornek.json')\" in \"// Yazısız Lottie örneği (@remotion/lottie + lottie-web): public/lottie/ornek.json — stüdyoda kodla yazıldı (üçüncü\\n...\\t\\t{veri ? <Lottie animationData={veri} style={{width: 900, height: 900}} /> : null}\\n\\t\\t</AbsoluteFill>\\n\\t);\\n};\\n\"",
+    "E            +  where \"// Yazısız Lottie örneği (@remotion/lottie + lottie-web): public/lottie/ornek.json — stüdyoda kodla yazıldı (üçüncü\\n...\\t\\t{veri ? <Lottie animationData={veri} style={{width: 900, height: 900}} /> : null}\\n\\t\\t</AbsoluteFill>\\n\\t);\\n};\\n\" = read_text()"
+   ]
+  }
+ ],
+ "sablon_git_durumu_sonra": " M sablonlar/remotion/src/Kok.tsx\n?? sablonlar/remotion/public/lottie/\n?? sablonlar/remotion/src/Ornek3B.tsx\n?? sablonlar/remotion/src/OrnekLottie.tsx\n"
+}

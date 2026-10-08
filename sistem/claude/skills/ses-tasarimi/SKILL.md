@@ -30,7 +30,7 @@ saniyeler verilir.** Ses saattir: ölçülen ana WAV çalınır; katmanlar PCM'd
 
 ## Kurallar
 1. **Lisans defteri:** her ses dosyası `KARARLAR.md`'ye (kaynak, lisans, ticari mi, atıf). Belirsiz → kullanma; NC → iş için asla. Seçenekler, kaçınılacaklar: [kaynaklar](references/kaynaklar.md).
-2. **Kurulum:** TTS kurulu (VoxCPM2; projede tek `--kimlik` — ayrı tarifle her cümle başka ses olur). Müzik üreteci yok; >2 GB onaysız kurma.
+2. **Kurulum:** TTS kurulu (VoxCPM2 8-bit; projede tek `--kimlik` — ayrı tarifle her cümle başka ses olur). Müzik üreteci yok; >2 GB onaysız kurma.
 3. **Ölçülmüş varsayılanlar:** `ses-temizle` 12 dB (sınırsızda anlaşılırlık düştü), `-D` içinde; `arac/deep-filter`'ı doğrudan çağırma.
 4. **Yazı yok:** altyazı yalnız istenirse. **Vuruş iddiası** yalnız `medya muzik` güveni `yuksek` + `medya senkron` ile.
 5. **Gizlilik:** mahrem kayıtta döküm metnini açmadan sor; "yalnız sayısal mod"da betik sayılarıyla çalış.
@@ -55,7 +55,9 @@ saniyeler verilir.** Ses saattir: ölçülen ana WAV çalınır; katmanlar PCM'd
 ## Sık hatalar
 - Türkçe TTS: `medya seslendir`; başkasının sesini klonlama (rıza); macOS `say` yalnız kişisel taslak.
 - CER %5 kapısı ya da Türkçe normalleştirmesiz ölçüm ("9'da" = "dokuzda", İ/ı).
+- Dış ses kapısı kalınca dökümü okumadan sesi suçlamak: Whisper "üçüncü"yü "3." yazar (normalleştirici "üç" okur, %5),
+  "kapalıyken"i "kapalı iken"; harf adları ("ğ, ş") ölçülemez (2026-10-08).
 - Döküm farkını kapı yapmak; güveni karşılaştır.
 - Kısma eşiği uydurmak; tıkı sınırlayıcıya ya da `adeclick`'e bırakmak (ölçüldü: olmuyor).
 
-Bilgi tarihi 2026-10-05; kanıt: `sistem/arastirma/2026-10-05/audio-production.md`, `music-sync.md`; eskidiyse `arac-radari`.
+Bilgi tarihi 2026-10-05 (dış ses 2026-10-08); kanıt: `sistem/arastirma/2026-10-05/audio-production.md`, `music-sync.md`, `sistem/dersler.md`; eskidiyse `arac-radari`.

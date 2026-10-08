@@ -90,10 +90,12 @@ iki ayrı kompozisyon (yeniden yerleşim; kırpma değil). Metin denetimi: `tess
 beklenen metinle birebir. Metni uydurma: kullanıcıdan al; kanıtsız iddia ("en hızlı") yazma.
 
 ## 10. Üretim (konsept görselleri)
-Üretici kurulu değil; yalnız harici SSD + onay ([araçlar](araclar.md)). Üretici yoksa: kullanıcının fotoğrafları,
-kesik ürün + HTML/CSS zemin (gradyan, ışık), ya da lisansı açık (CC0) fotoğraf. Varsa:
-- Konsept başına 3–4 tohum, sabit tohumla tekrarlanabilir; istem İngilizce, olumlu ("plain, unbranded surfaces"),
-  kişisel bilgi ve marka adı yok. Işık yönü ve kamera yüksekliği ürün fotoğrafına eşlenir.
+Üretici kurulu: `medya gorsel-uret` (FLUX.2 klein varsayılan; görselde İngilizce yazı ya da dar bellekte `--model
+z-image`; düzenleme `--referans`, hep FLUX.2 — [araçlar](araclar.md)). Kullanılamıyorsa (disk < 3 GB, başka ağır iş
+sürüyor): kullanıcının fotoğrafları, kesik ürün + HTML/CSS zemin (gradyan, ışık), ya da lisansı açık (CC0) fotoğraf.
+- Konsept başına 3–4 tohum, sabit tohumla tekrarlanabilir (1024² görsel başına flux2 ~1,5 dk, z-image ~5–6 dk; tohum
+  modelden modele taşınmaz); istem İngilizce, olumlu ("plain, unbranded surfaces"), kişisel bilgi ve marka adı yok.
+  Işık yönü ve kamera yüksekliği ürün fotoğrafına eşlenir.
 - Kare ve hikâye: 9:16 plaka üret, kareyi ondan kırp (iki biçimde aynı sahne).
 - Aday seçimi: `kontak.py` sayfası + `medya analiz` estetik; `tesseract` sahte yazı/logo bulursa ele.
 - KARARLAR.md: model, revizyon, istem, tohum, adım, boyut, süre. Paylaşımda "AI ile üretildi" notunu öner.

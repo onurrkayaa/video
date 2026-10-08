@@ -21,7 +21,7 @@ söyle, kullanıcı onaylasın.
 | Ad belli | Önce [bilinen kararlar](references/bilinen-kararlar.md); karar yoksa kapılar (`medya-gozcu` ajanı ya da doğrudan) |
 | Toplu / aylık | `Workflow({scriptPath: '/Users/onurkaya/Projects/video/.claude/workflows/medya-radar.js', args: {}})` (tek araç: `{konu: '<ad>'}`) — kurmaz, rapor `sistem/radar/` |
 | Onaylı benimseme | [benimseme](references/benimseme.md) |
-| Ücretli/bulut araç | İstek açık onay değil; kapı 1'de dur. Yerel karşılık: görsel → `gorsel-uretim` (ağır üreteç yalnız harici SSD, kullanıcı kararı), video → `hareket-tasarimi` (HyperFrames); üretken video yok. Kayıt kapalı ([benimseme](references/benimseme.md) §7) |
+| Ücretli/bulut araç | İstek açık onay değil; kapı 1'de dur. Yerel karşılık: görsel → `gorsel-uretim` (`medya gorsel-uret`: FLUX.2 klein + Z-Image-Turbo, yerel), video → `hareket-tasarimi` (HyperFrames); üretken video yok. Kayıt kapalı ([benimseme](references/benimseme.md) §7) |
 | GUI uygulaması (Resolve, Kdenlive) | `tur = "uygulama"`, kapalı; köprü `medya nle` (.otio) |
 | Sürüm yükseltme (HyperFrames, Remotion), disk | [güncelleme ve disk](references/guncelleme-ve-disk.md); disk raporu `medya temizle` |
 | Proje bitti | `sistem/dersler.md` en üstüne `## YYYY-AA-GG — <proje>`: ne oldu, ölçüm, çözüm; tekrar eden ders beceriye (`→ <beceri>`) |

@@ -26,12 +26,13 @@ Her görsel iddia bir snapshot ya da temas sayfasına dayanır. Yazı yalnız is
 |---|---|---|
 | Tanıtım, UI, logo, veri, denklemsiz graf | HyperFrames + GSAP/SVG | kurulu |
 | React, veriyle şablon, açık istek | Remotion 4.0.533 | kurulu, lisans kapısı |
+| 3B sahne ya da Lottie, Remotion içinde | @remotion/three (R3F), @remotion/lottie; şablonda `Ornek3B`, `OrnekLottie` | kurulu, lisans kapısı |
 | Denklem, morf | Manim CE 0.21 | yok |
-| 3B logo | Three.js, HyperFrames içinde | yok (20 MB) |
+| 3B logo | Three.js, HyperFrames içinde | three 0.178.0 kökte (Remotion eki); tarif denenmedi |
 | Gerçekçi 3B | Blender | yok (~1,3 GB) |
 | Terminal | gerçek çıktı + `code-terminal-run`; agg | agg, mono yazı tipi yok |
 | Web yakalama | puppeteer-core `page.screencast` | kurulu |
-| Uygulama içi yükleniyor | web SVG + CSS; native Lottie | lottie yok |
+| Uygulama içi yükleniyor | web SVG + CSS; native Lottie | lottie-web kökte; dotlottie-web yok |
 | GIF/WebP/APNG | `render --format gif`, ffmpeg, `img2webp` | kurulu |
 
 Kurulum, lisans, Remotion: [araçlar](references/araclar.md).
@@ -73,4 +74,4 @@ Remotion seçildiyse `init` yerine [araçlar](references/araclar.md) → Remotio
 - Remotion Studio'yu ya da `preview`'ı kendiliğinden açmak.
 - Yayımlanmamış ürün görüntüsünü sormadan Read ile açmak (istenmezse yalnız sayısal mod).
 
-Bilgi tarihi 2026-10-05; kanıt: `sistem/arastirma/2026-10-05/animation-motion.md` (+ video-framework.md, claude-code-ecosystem.md, `sistem/devam/ham/arastir-remotion.json`); eskidiyse `arac-radari`.
+Bilgi tarihi 2026-10-05 (Remotion 3B/Lottie ekleri 2026-10-09: `sistem/devam/remotion-3b/2026-10-09/`); kanıt: `sistem/arastirma/2026-10-05/animation-motion.md` (+ video-framework.md, claude-code-ecosystem.md, `sistem/devam/ham/arastir-remotion.json`); eskidiyse `arac-radari`.

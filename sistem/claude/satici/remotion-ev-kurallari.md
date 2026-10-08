@@ -17,5 +17,10 @@ version: 4.0.532
 >   ile açılır; sürüm sabit (4.0.533; beceri metni 4.0.532 için, yama farkı). Komutlar `$MEDYA/node_modules/.bin/remotion …` (proje klasöründen).
 > - Ekrana yazı yalnız istenirse. Son çizimde `--image-format=png --color-space=bt709` (bt709 şart; PNG bağımsız ölçümde
 >   VMAF 96,97 → 98,80, süre ×1,24). `Math.random` yerine `random(seed)`.
+> - 3B ve Lottie kurulu (2026-10-09): @remotion/three, three 0.178.0, R3F 9.2.0, @remotion/lottie, lottie-web 5.13.0.
+>   Örnekleri `src/Ornek3B.tsx` ve `src/OrnekLottie.tsx`. `npx remotion add` kullanılmaz. 3B'de `--gl` gerekmez (bayrak ayarı ezer):
+>   şablonun `angle` ayarı WebGL'i GPU'da çalıştırır (ANGLE Metal). Ayarsız Remotion CPU'ya (SwiftShader) düşer; 90 karede
+>   6,3 sn, angle'da 3,9 sn. Lottie JSON'u yerelde durur (`public/` + `staticFile`); lottiefiles adresi kullanılmaz.
+>   1 Remotion karesi = 1 Lottie karesi; JSON'un `fr`'si fps'ten farklıysa `playbackRate={fr / fps}`.
 > - Satıcı kaynağı: remotion-dev/skills @0b5db9d (2026-10-05, tarball SHA-256 1eb509ec…); güncelleme arac-radari ile.
 

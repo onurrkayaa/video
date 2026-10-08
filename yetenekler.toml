@@ -192,8 +192,9 @@ saglayici = "voxcpm2"
 ad = "gorsel-uret"
 alan = "gorsel"
 komut = "medya gorsel-uret"
-aciklama = "metinden görsel ve referanslı düzenleme (ürünü yeni sahneye koyma, arka plan/ışık değiştirme)"
+aciklama = "metinden görsel ve referanslı düzenleme (ürünü yeni sahneye koyma, arka plan/ışık değiştirme; yalnız FLUX.2). --model z-image: yazıda ve bellekte daha iyi, ~3,5 kat yavaş (A/B 2026-10-08)"
 saglayici = "flux2-klein"
+yedek = ["z-image-turbo"]
 
 # ---------------------------------------------------------------- sağlayıcılar
 [[saglayici]]
@@ -300,10 +301,10 @@ ad = "remotion"
 tur = "node"
 lisans = "Remotion License (kaynak-erişilebilir, özel): birey, ≤3 kişilik ekip/şirket, yalnız dosya teslim eden serbest çalışan ve kâr amacı gütmeyen için ücretsiz; 4+ kişilik işveren adına ya da müşteri kodu alırsa ücretli Company License"
 ticari = "kosullu"
-kurulum = "npm install --save-dev --save-exact --no-audit --no-fund remotion@4.0.533 @remotion/cli@4.0.533 @remotion/media@4.0.533 @remotion/transitions@4.0.533 @remotion/effects@4.0.533 @remotion/motion-blur@4.0.533 @remotion/fonts@4.0.533 @remotion/paths@4.0.533 @remotion/shapes@4.0.533 @remotion/noise@4.0.533 @remotion/layout-utils@4.0.533 @remotion/captions@4.0.533 @remotion/zod-types@4.0.533 @remotion/gsap@4.0.533 react@19.2.3 react-dom@19.2.3 zod@4.5.4"
+kurulum = "npm install --save-dev --save-exact --no-audit --no-fund remotion@4.0.533 @remotion/cli@4.0.533 @remotion/media@4.0.533 @remotion/transitions@4.0.533 @remotion/effects@4.0.533 @remotion/motion-blur@4.0.533 @remotion/fonts@4.0.533 @remotion/paths@4.0.533 @remotion/shapes@4.0.533 @remotion/noise@4.0.533 @remotion/layout-utils@4.0.533 @remotion/captions@4.0.533 @remotion/zod-types@4.0.533 @remotion/gsap@4.0.533 react@19.2.3 react-dom@19.2.3 zod@4.5.4 @remotion/three@4.0.533 three@0.178.0 @react-three/fiber@9.2.0 @remotion/lottie@4.0.533 lottie-web@5.13.0"
 kontrol = "node_modules/.bin/remotion versions"
-boyut_mb = 235
-not = "Proje: medya proje yeni … --motor remotion (sablonlar/remotion: HyperFrames'in Chrome'u, bt709, angle). Lisans anahtarı, Studio'yu kendiliğinden açma, web-renderer/lambda/cloudrun/google-fonts YASAK (kanca engeller). 5.x'e lisans incelemesiz yükseltme yok. Beceri: remotion-best-practices (sabit commit)."
+boyut_mb = 300
+not = "Proje: medya proje yeni … --motor remotion (sablonlar/remotion: HyperFrames'in Chrome'u, bt709, angle). Lisans anahtarı, Studio'yu kendiliğinden açma, web-renderer/lambda/cloudrun/google-fonts YASAK (kanca engeller). 5.x'e lisans incelemesiz yükseltme yok. Beceri: remotion-best-practices (sabit commit). 3B/Lottie ekleri (E3, 2026-10-09): three 0.178.0, @react-three/fiber 9.2.0 ve lottie-web 5.13.0, Remotion 4.0.533'ün kendi devDependencies'te sınadığı sürümler (eş bağımlılıklar npm view ile uyumlu; en yenileri three 0.186.1 ve R3F 9.8.1 bu yüzden alınmadı). Ek: 20 npm paketi, +62 MiB, kurulum betiği yok. Lisans: @remotion/three package.json'da MIT, @remotion/lottie Remotion License, üçü MIT; hepsi remotion çekirdeğine bağlı, kapı aynı. Şablon örnekleri Ornek3B ve OrnekLottie (public/lottie/ornek.json kodla yazıldı). gl 'angle' sayfanın WebGL'ini GPU'ya bağlıyor (ANGLE Metal, Apple M2). Ayarsız 4.0.533 SwiftShader'a (CPU) düşüyor; swiftshader, egl, vulkan ve angle-egl'de WebGL yok. Ornek3B 90 kare 1080x1920: angle 3,9 sn, ayarsız 6,3 sn, swangle 15,2 sn. angle'ın iki koşusu 90/90 kare bit düzeyinde aynı. Ağ kapalıyken (localhost açık) iki örnek de çiziliyor. 1 Remotion karesi = 1 Lottie karesi; JSON'daki fr yok sayılıyor. Kanıt: sistem/devam/remotion-3b/2026-10-09/."
 
 # ---------------------------------------------------------------- kurgu programları (elle ince ayar; kullanıcı kurar)
 # Ajan bunları API ile süremez (ücretsiz Resolve'da dış betik yok): medya nle .otio/.edl üretir, kullanıcı içe aktarır.
@@ -352,14 +353,24 @@ ticari = "evet"
 kurulum = "arac/uv tool install --managed-python --python 3.13.16 -c sistem/kisitlar/mflux-0.21.0.txt 'mflux==0.21.0' && .uv/tools/mflux/bin/python -c \"from huggingface_hub import snapshot_download as s; s('mflux-community/flux2-klein-4b-mflux-q4', revision='794cd159538149ad9830848508c31f0ea7088e58')\""
 kontrol = "ls -L .uv/tools/mflux/bin/python arac/mflux-generate-flux2 modeller/hf/hub/models--mflux-community--flux2-klein-4b-mflux-q4/snapshots/794cd159538149ad9830848508c31f0ea7088e58/transformer/0.safetensors"
 boyut_mb = 5850
-not = "mflux ortamı ~1,15 GB (opencv<5 ister → ayrı uv aracı) + stüdyonun Python 3.13.16'sı 73 MB (.uv/python; uv gömülü SHA-256 9e01f63b… ile doğrular, python-build-standalone 20261003 SHA256SUMS ile aynı) + model 4,62 GB. Paketler sistem/kisitlar/mflux-0.21.0.txt'e sabit (56 paket, 2026-10-08; uv tool install kısıttaki --hash'i zorlamıyor, ölçüldü). 2026-10-08'e dek stüdyo dışındaki python.org 3.13.1'e bağlıydı; taşımadan önce/sonra aynı tohum piksel piksel aynı. `ls -L`: kopuk yorumlayıcı bağında denetim başarısız olur. Ölçüm: 1024² 4 adım ~84 sn, bellek tepesi 8,8 GB; düzenleme ~176 sn; aynı tohum = aynı görsel. FLUX.2 [klein] 9B ve [dev] ticari DEĞİL (kullanılmaz). Alternatif: Z-Image-Turbo Q4 (5,9 GB, daha iyi fotogerçekçilik/yazı; diskte tek model)."
+not = "mflux ortamı ~1,15 GB (opencv<5 ister → ayrı uv aracı) + stüdyonun Python 3.13.16'sı 73 MB (.uv/python; uv gömülü SHA-256 9e01f63b… ile doğrular, python-build-standalone 20261003 SHA256SUMS ile aynı) + model 4,62 GB. Paketler sistem/kisitlar/mflux-0.21.0.txt'e sabit (56 paket, 2026-10-08; uv tool install kısıttaki --hash'i zorlamıyor, ölçüldü). 2026-10-08'e dek stüdyo dışındaki python.org 3.13.1'e bağlıydı; taşımadan önce/sonra aynı tohum piksel piksel aynı. `ls -L`: kopuk yorumlayıcı bağında denetim başarısız olur. Ölçüm: 1024² 4 adım ~84 sn, bellek tepesi 8,8 GB (2026-10-07); A/B 2026-10-08: 83–107 sn, `time -l` peak memory footprint 9,0–10,8 GB; düzenleme ~176 sn; aynı tohum = aynı görsel. FLUX.2 [klein] 9B ve [dev] ticari DEĞİL (kullanılmaz). KALIR (E2 kararı 2026-10-08; kullanıcı kuralı 'Z-Image'dan sonra gerek kalmıyorsa sil, gerek varsa dursun'): --referans düzenlemesinin tek sağlayıcısı (Z-Image-Edit yayımlanmadı) ve metinden görselde birincil (Z-Image'dan 3,3–3,7 kat hızlı). Yanında z-image-turbo (diskte iki model, 10,5 GB)."
+
+[[saglayici]]
+ad = "z-image-turbo"
+tur = "python-arac"
+lisans = "Z-Image-Turbo ağırlıkları Apache-2.0 (Tongyi-MAI/Z-Image-Turbo kartı f332072; mflux-community Q4 yeniden yüklemesi de apache-2.0, base_model Tongyi-MAI/Z-Image-Turbo, kart f427e25, 2026-10-08) · mflux MIT"
+ticari = "evet"
+kurulum = "arac/uv tool install --managed-python --python 3.13.16 -c sistem/kisitlar/mflux-0.21.0.txt 'mflux==0.21.0' && .uv/tools/mflux/bin/python -c \"from huggingface_hub import snapshot_download as s; s('mflux-community/z-image-turbo-mflux-q4', revision='f427e257d8e6ffa03edd4d9ac554a05809da456c')\""
+kontrol = "ls -L .uv/tools/mflux/bin/python arac/mflux-generate-z-image-turbo modeller/hf/hub/models--mflux-community--z-image-turbo-mflux-q4/snapshots/f427e257d8e6ffa03edd4d9ac554a05809da456c/transformer/0.safetensors"
+boyut_mb = 7130
+not = "model 5,90 GB (13 dosya; 6 LFS SHA-256 + 7 git blob HF API ile aynı) + mflux ortamı ~1,2 GB (flux2-klein ile ortak: ikisi kuruluyken ek yer 5,92 GB ölçüldü, kurulum 105 sn). Ağ kapalıyken çalıştı (sandbox-exec). 9 adım (mflux varsayılanı; Turbo yönlendirmesiz, --negative-prompt yok sayılır). A/B 2026-10-08 (FLUX.2 klein ile aynı 3 istem × 2 tohum, 1024², --low-ram, sırası değişen çiftler; sistem/devam/ham/gorsel-ab/): süre 275–383 sn (FLUX.2'nin 3,3–3,7 katı; adım başı ~29,5 sn, GPU %100), bellek tepesi 6,3 GB (FLUX.2 9,0–10,8), takas büyümedi; İngilizce afiş yazısı tesseract psm 11 ile 10/12 kelime (FLUX.2 6/12; gözle 2/2 afiş harfi harfine doğru, FLUX.2 0/2); Vision istem etiketleri ikisinde aynı; Apple estetik ort 0,65 (FLUX.2 0,61). Karar (kural ölçümden önce yazıldı): 1024² süre 4 dk'yı aştı → metinden görselde varsayılan FLUX.2; Z-Image yedek ve --model z-image (son teslim fotogerçekçi görsel, görselde İngilizce yazı). Düzenleme yok: Z-Image-Edit yayımlanmadı (HF Tongyi-MAI 2026-10-08; mflux'ta yalnız --image görselden görsele) → FLUX.2 kalır. filipstrand/Z-Image-Turbo-mflux-4bit kartında lisans yanlış (tongyi-qianwen): kullanılmaz."
 
 [[saglayici]]
 ad = "voxcpm2"
 tur = "python-arac"
-lisans = "VoxCPM2 kod ve ağırlık Apache-2.0 (OpenBMB; mlx-community 4-bit de apache-2.0) · mlx-audio MIT · doğrulama: SpeechBrain ECAPA Apache-2.0"
+lisans = "VoxCPM2 kod ve ağırlık Apache-2.0 (OpenBMB, kart 32279ef; mlx-community 8-bit de apache-2.0, base_model openbmb/VoxCPM2, kart + README 2026-10-08) · mlx-audio MIT · doğrulama: SpeechBrain ECAPA Apache-2.0"
 ticari = "evet"
-kurulum = "arac/uv tool install --python 3.12 --prerelease=allow 'mlx-audio[tts]==0.5.8' && .uv/tools/mlx-audio/bin/python -c \"from huggingface_hub import snapshot_download as s; s('mlx-community/VoxCPM2-4bit', revision='dc9e5c187858da5f4a13dc4c247e297339216381')\" && ortamlar/ses/bin/python -c \"from huggingface_hub import snapshot_download as s; s('speechbrain/spkrec-ecapa-voxceleb', revision='0f99f2d0ebe89ac095bcc5903c4dd8f72b367286')\""
-kontrol = "ls .uv/tools/mlx-audio/bin/python modeller/hf/hub/models--mlx-community--VoxCPM2-4bit/snapshots/dc9e5c187858da5f4a13dc4c247e297339216381/config.json"
-boyut_mb = 2900
-not = "4-bit 2,3 GB + mlx-audio ortamı 0,5 GB + ECAPA 89 MB. Ölçüm (5 Türkçe cümle): Whisper CER %0,0; aynı tarifle ayrı üretim konuşmacı benzerliği 0,29 → kimlikten 0,73–0,76. 8-bit (3,2 GB) gerek görülmedi. Gerektirir: ses-ortami (Whisper + speechbrain)."
+kurulum = "arac/uv tool install --python 3.12 --prerelease=allow 'mlx-audio[tts]==0.5.8' && .uv/tools/mlx-audio/bin/python -c \"from huggingface_hub import snapshot_download as s; s('mlx-community/VoxCPM2-8bit', revision='d52725898a0675703f7f9ddc5a4d1a3cdbb99032')\" && ortamlar/ses/bin/python -c \"from huggingface_hub import snapshot_download as s; s('speechbrain/spkrec-ecapa-voxceleb', revision='0f99f2d0ebe89ac095bcc5903c4dd8f72b367286')\""
+kontrol = "ls -L .uv/tools/mlx-audio/bin/python modeller/hf/hub/models--mlx-community--VoxCPM2-8bit/snapshots/d52725898a0675703f7f9ddc5a4d1a3cdbb99032/model.safetensors"
+boyut_mb = 3870
+not = "8-bit 3,23 GB (model.safetensors SHA-256 c07c59ac…, HF lfs.sha256 ile aynı; yalnız LM katmanları 8 bit) + mlx-audio ortamı 0,55 GB + ECAPA 89 MB. A/B 2026-10-08 (4-bit dc9e5c1 ile aynı iki kimlik, aynı tohumlar, 40'ar Türkçe cümle, yeniden üretimsiz): CER %0,74 (4-bit %0,97), kimliğe benzerlik ort 0,819 / en düşük 0,732 (4-bit 0,815 / 0,721; eşli fark +0,004, %95 aralık −0,003…+0,011), ilk geçişte kapıdan kalan 0 (4-bit 1); 1 sn ses ~2,5 sn (4-bit'ten ~%4 yavaş); bellek tepesi kimlik üretiminde 8,6 GB (4-bit 7,5), 10 cümlede 13–14 GB (ikisi de). 4-bit silindi. Aynı tarifle ayrı üretim konuşmacı benzerliği 0,29 (2026-10-07). Gerektirir: ses-ortami (Whisper + speechbrain)."

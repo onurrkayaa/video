@@ -18,13 +18,19 @@ YC = `sistem/devam/yavas-cekim/` (`ozet.jsonl`), NLE = `sistem/devam/ham/arastir
 | FCPXML uyarlayıcısı | ret | erimeyi düşürdü; 29,97 ve 23,976 fps'te çöktü | OTIO fcpx_xml eklentisinin yeni sürümü | NLE |
 | Apple süper çözünürlük (VTSuperResolution, medya-apple) | ret (daha önce çıkarıldı) | durağan görüntüde PSNR bikübikten kötü, yalnız 4x, alfa yazmıyor | yeni macOS → yeniden ölç | D |
 
+## 2026-10-07/08 kararları (görsel üreticiler, kullanıcı onayıyla iç diskte)
+| Araç | Karar | Neden / ölçüm | Yeniden bak | Kaynak |
+|---|---|---|---|---|
+| FLUX.2 [klein] 4B Q4 (mflux-community 794cd15, mflux 0.21.0) | `gorsel-uret` birincil; `--referans` düzenlemesinin tek sağlayıcısı; KALIR (kullanıcı kuralı: "Z-Image'dan sonra gerek kalmıyorsa sil, gerek varsa dursun") | Apache-2.0; 1024² 83–107 sn, bellek tepesi 9,0–10,8 GB; düzenleme Z-Image'da yok | Apache-2.0 bir düzenleme modeli (ör. Z-Image-Edit) mflux'ta çıkar ve aynı düzenleme fikstüründe ölçülürse → silme yeniden değerlendirilir | T, D |
+| Z-Image-Turbo 6B Q4 (mflux-community f427e25) | `gorsel-uret` yedek, `--model z-image`: görselde İngilizce yazı, dar bellek | Apache-2.0 (Tongyi-MAI kartı); A/B: İngilizce afiş 2/2 doğru (FLUX.2 0/2), bellek 6,3 GB, ama 1024² 275–383 sn (3,3–3,7 kat) → önceden yazılan kuralın 4 dk sınırını aştı, varsayılan olmadı | kullanıcı yazı/fotogerçekçiliği hıza yeğlerse varsayılan yapılır (kayıtta `saglayici`/`yedek` yer değiştirir); mflux'ta hızlanma ya da Q3/Q5 karşılaştırması | T, D, `sistem/devam/ham/gorsel-ab/` |
+
 ## Bu Mac'e sığmayanlar (16 GB RAM, fansız)
 
 Boş disk sabit değildir: karar anında `df -h` ya da `medya temizle` ile ölç.
 | Araç / sınıf | Karar | Neden | Yeniden bak | Kaynak |
 |---|---|---|---|---|
 | Yerel video difüzyonu (her model) | yok | çekirdek kurulum + bir proje (15–19 GB) boş alanı zaten doldurur; RAM ve takas | donanım ya da harici SSD değişti; ya da şunların hepsini birden karşılayan sürüm: izinli lisans, Apple Silicon portu, satıcının Apple Silicon'da ölçtüğü tepe bellek ≤ ~11 GB, yayımlanan boyutu (indirmeden) çekirdek + bir proje (15–19 GB) bütçesiyle birlikte kapı 3'ün disk koşulunu sağlıyor (o an ölçülen boş alanla). Yalnız disk koşulu tetik değildir; deneme yine kullanıcı kararı | EE §6–7 |
-| ACE-Step, FLUX.2 klein Q4, Z-Image Q4, SeedVR2, MOSS-SFX | yalnız harici SSD (kullanıcı kararı) | adet başına 4,6–9,5 GB (+ ortam) | harici disk | EE §6–7 |
+| ACE-Step, SeedVR2, MOSS-SFX | yalnız harici SSD (kullanıcı kararı) | adet başına 4,6–9,5 GB (+ ortam); FLUX.2 klein ve Z-Image-Turbo kullanıcı onayıyla iç diskte (yukarıda) | harici disk | EE §6–7 |
 | ComfyUI + comfy-mcp | kaçın | disk ve hız; ComfyUI GPL-3.0, comfy-mcp AGPL-3.0-or-later ya da ticari; partner düğümleri kredi + hesap | — | CCE Düzeltmeler |
 | İkinci Whisper kopyası (ggml ~1,6 GB, satıcı altyazı akışlarının kendi modelleri) | yok | `medya yaziya-dok` (MLX turbo) var, Türkçe sınandı | — | EE §3e, §7 |
 

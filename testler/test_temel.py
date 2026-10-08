@@ -26,8 +26,9 @@ def veri():
 
 @pytest.fixture
 def agir():
-    """Üretici modeller (FLUX.2 ~9 GB, VoxCPM2 ~7 GB bellek): 16 GB'lık Mac'te takası GB'larca büyütür (2026-10-07'de
-    6 GB takas dosyası diski 1,4 GB'a düşürdü). Yalnız istenince: medya test --agir (MEDYA_AGIR_TEST=1)."""
+    """Üretici modeller (FLUX.2 9–11 GB, Z-Image 6,3 GB, VoxCPM2 7–14 GB bellek): 16 GB'lık Mac'te takası GB'larca
+    büyütür (2026-10-07'de 6 GB takas dosyası diski 1,4 GB'a düşürdü). Yalnız istenince: medya test --agir
+    (MEDYA_AGIR_TEST=1)."""
     import os
     if os.environ.get("MEDYA_AGIR_TEST") != "1":
         pytest.skip("ağır üretici model sınaması: medya test --agir")
@@ -746,6 +747,121 @@ def test_remotion_sablonu_cizer_ve_lisanssiz(tmp_path):
         shutil.rmtree(hedef, ignore_errors=True)
 
 
+# Sayfanın WebGL sürücü adını PNG'nin ilk satırına karakter kodu olarak yazar (console.log çizim günlüğünde görünmedi).
+REMOTION_GL_BILGI = """import {useEffect, useRef, useState} from 'react';
+import {AbsoluteFill, Composition, continueRender, delayRender, registerRoot} from 'remotion';
+
+const GlBilgi: React.FC = () => {
+	const tuval = useRef<HTMLCanvasElement>(null);
+	const [bekle] = useState(() => delayRender('gl'));
+	useEffect(() => {
+		const gl = document.createElement('canvas').getContext('webgl2');
+		const ext = gl?.getExtension('WEBGL_debug_renderer_info');
+		const metin = gl && ext ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : 'webgl-yok';
+		const ctx = tuval.current!.getContext('2d')!;
+		const img = ctx.createImageData(256, 1);
+		for (let i = 0; i < Math.min(metin.length, 255); i++) img.data.set([metin.charCodeAt(i) & 255, 0, 0, 255], i * 4);
+		ctx.putImageData(img, 0, 0);
+		continueRender(bekle);
+	}, [bekle]);
+	return <AbsoluteFill style={{background: 'black'}}><canvas ref={tuval} width={256} height={2} /></AbsoluteFill>;
+};
+registerRoot(() => <Composition id="GlBilgi" component={GlBilgi} durationInFrames={1} fps={30} width={256} height={2} />);
+"""
+
+
+def _remotion_kopyasi(ad, paket):
+    """Şablonun ağaç içi kopyası (modüller stüdyo kökünden çözülsün) ve çizici; Remotion ya da ek paketi yoksa atla."""
+    import shutil
+    rm = KOK / "node_modules" / ".bin" / "remotion"
+    if not rm.exists() or not (KOK / "node_modules" / paket).exists():
+        pytest.skip(f"{paket} kurulu değil: medya kur remotion --yeniden")
+    hedef = KOK / "testler" / ".gecici" / ad
+    shutil.rmtree(hedef, ignore_errors=True)
+    shutil.copytree(KOK / "sablonlar" / "remotion", hedef)
+    return lambda *arg: _remotion_calistir(rm, hedef, arg), hedef
+
+
+def _remotion_calistir(rm, hedef, arg):
+    r = subprocess.run([str(rm), *arg, "--log=error"], cwd=hedef, capture_output=True, text=True, timeout=300)
+    assert r.returncode == 0, r.stderr[-1500:]
+
+
+def _remotion_videosu(yol, kare, w, h):
+    """Çizimin akış ölçüleri (30 fps, kare sayısı, bt709 tv) ve RGB kareleri."""
+    import numpy as np
+    from medya.ortak import ffmpeg, probe
+    p = probe(yol)
+    v = next(s for s in p["streams"] if s["codec_type"] == "video")
+    assert (v["width"], v["height"], v["r_frame_rate"], int(v["nb_frames"])) == (w, h, "30/1", kare)
+    assert abs(float(p["format"]["duration"]) - kare / 30) < 0.05
+    assert v.get("color_space") == "bt709" and v.get("color_range") == "tv"
+    r = subprocess.run([ffmpeg(), "-nostdin", "-v", "error", "-i", str(yol), "-pix_fmt", "rgb24", "-fps_mode",
+                        "passthrough", "-f", "rawvideo", "-"], capture_output=True, check=True)
+    return np.frombuffer(r.stdout, np.uint8).reshape(-1, h, w, 3).astype(float)
+
+
+def test_remotion_3b_ornegi_gpu_da_cizer():
+    """@remotion/three şablon örneği (Ornek3B). remotion.config.ts'deki gl 'angle' sayfanın WebGL'ini Apple GPU'suna
+    bağlar (ANGLE Metal). Ayarsız Remotion 4.0.533 SwiftShader'a (CPU) düşüyor; swiftshader, egl, vulkan ve angle-egl
+    seçeneklerinde WebGL hiç yok (2026-10-09, sistem/devam/remotion-3b/2026-10-09/). Çizim 270x480, 30 fps, 90 kare,
+    bt709. Düğüm 0. karede yok (yay girişi), sonra görünür ve ışıklı: kırmızı baskın piksel var, ışıksız malzeme siyah
+    kalırdı. Kareyle döner; tuval saydam (köşede CSS arka planı)."""
+    import shutil
+    import numpy as np
+    from PIL import Image
+    ayar = (KOK / "sablonlar" / "remotion" / "remotion.config.ts").read_text()
+    assert "Config.setChromiumOpenGlRenderer('angle')" in ayar
+    ciz, hedef = _remotion_kopyasi("remotion-3b-sinama", "@remotion/three")
+    try:
+        (hedef / "src" / "gl-bilgi.tsx").write_text(REMOTION_GL_BILGI)
+        ciz("still", "src/gl-bilgi.tsx", "GlBilgi", "out/gl.png")
+        satir = np.asarray(Image.open(hedef / "out" / "gl.png").convert("RGB"))[0, :, 0]
+        metin = "".join(map(chr, satir[:int(np.argmax(satir == 0))]))
+        assert "ANGLE Metal Renderer" in metin, f"3B çizim GPU'da değil: {metin!r} (gl ayarı ya da Chrome değişti mi?)"
+        ciz("render", "src/index.ts", "Ornek3B", "out/u.mp4", "--scale=0.25")
+        k = _remotion_videosu(hedef / "out" / "u.mp4", 90, 270, 480)
+        dugum = [float(((x[..., 0] - x[..., 2]) > 30).mean()) for x in k]      # kırmızı baskın = ışıklı düğüm
+        assert dugum[0] < 0.002 and min(dugum[45], dugum[89]) > 0.05, dugum[::15]
+        assert np.abs(k[30] - k[60]).mean() > 3                                 # döndü
+        assert k[45][2, 2, 2] - k[45][2, 2, 0] > 20                              # köşede mavi CSS arka planı
+    finally:
+        shutil.rmtree(hedef, ignore_errors=True)
+
+
+def test_remotion_lottie_ornegi_yerel_ve_olcusu_dogru():
+    """@remotion/lottie şablon örneği (OrnekLottie): public/lottie/ornek.json, stüdyoda kodla yazıldı; uzak adres yok.
+    Çizim 270x480, 30 fps, 60 kare, bt709; halka trim path ile çizilir (alanı 10 → 20 → 36. karede artar). Bilinen
+    cevap (59. kare, PNG, --scale=0.5): 512'lik Lottie 900 px'lik kutuya ölçeklenir, s = 900/512 × 0,5. Halka
+    (yarıçap 160, çizgi 28) π((174·s)² − (146·s)²), nokta (çap 120) π(60·s)². Kenar yumuşatması kapsama oranıyla
+    sayılır."""
+    import math
+    import shutil
+    import numpy as np
+    from PIL import Image
+    ciz, hedef = _remotion_kopyasi("remotion-lottie-sinama", "@remotion/lottie")
+    try:
+        assert "staticFile('lottie/ornek.json')" in (hedef / "src" / "OrnekLottie.tsx").read_text()
+        ciz("render", "src/index.ts", "OrnekLottie", "out/l.mp4", "--scale=0.25")
+        k = _remotion_videosu(hedef / "out" / "l.mp4", 60, 270, 480)
+        yy, xx = np.mgrid[0:480, 0:270]
+        halka = [float(np.clip((k[i][..., 1] - 42) / 155, 0, 1)[np.hypot(xx - 135, yy - 240) > 45].sum())
+                 for i in (10, 20, 36)]
+        assert halka[0] < halka[1] < halka[2], halka
+        ciz("still", "src/index.ts", "OrnekLottie", "out/l59.png", "--frame=59", "--scale=0.5")
+        x = np.asarray(Image.open(hedef / "out" / "l59.png").convert("RGB")).astype(float)
+        assert x.shape == (960, 540, 3) and tuple(x[5, 5]) == (14, 42, 31)        # arka plan #0e2a1f
+        yy, xx = np.mgrid[0:960, 0:540]
+        r = np.hypot(xx + 0.5 - 270, yy + 0.5 - 480)
+        s = 900 / 512 * 0.5
+        halka_alan = float(np.clip((x[..., 1] - 42) / (197 - 42), 0, 1)[r >= 90].sum())     # G: halka #6cc58d
+        nokta_alan = float(np.clip((x[..., 0] - 14) / (242 - 14), 0, 1)[r < 90].sum())      # R: nokta #f26b5b
+        assert abs(halka_alan / (math.pi * ((174 * s) ** 2 - (146 * s) ** 2)) - 1) < 0.02, halka_alan
+        assert abs(nokta_alan / (math.pi * (60 * s) ** 2) - 1) < 0.02, nokta_alan
+    finally:
+        shutil.rmtree(hedef, ignore_errors=True)
+
+
 HF_FIKSTUR = KOK / "testler" / "hyperframes-baslik"
 HF_BASVURU = KOK / "testler" / "hyperframes-baslik-basvuru.json"
 
@@ -1087,6 +1203,19 @@ def test_seslendir_cumle_bolme_ve_riza_kapisi():
         seslendir("Deneme cümlesi.", "/tmp/x.wav", referans="/tmp/yok.wav")     # --rizali olmadan klon yok
 
 
+def test_seslendir_modeli_kayittaki_8bit():
+    """2026-10-08: varsayılan VoxCPM2 8-bit oldu, 4-bit silindi. Kod başka bir modele bakarsa ağır sınama "kurulu değil"
+    diye ATLANIR (sessiz): kodun modeli, kaydın kurduğu ve denetlediği anlık görüntü olmalı; kuruluysa 8 bit."""
+    from medya.kayit import yukle
+    from medya.komutlar.seslendir import MODEL
+    s = yukle()[1]["voxcpm2"]
+    assert MODEL.parent.parent.name == "models--mlx-community--VoxCPM2-8bit"
+    assert f"s('mlx-community/VoxCPM2-8bit', revision='{MODEL.name}')" in s.kurulum
+    assert f"{MODEL.relative_to(KOK)}/" in s.kontrol
+    if MODEL.exists():
+        assert json.loads((MODEL / "config.json").read_text())["quantization"]["bits"] == 8
+
+
 def test_seslendir_turkce_anlasilir_ve_tutarli(tmp_path, agir):
     """Uçtan uca: kimlik üret → iki cümle → Whisper CER ve ECAPA benzerliği kapıdan geçer, zaman çizelgesi sıralı."""
     from medya.komutlar.seslendir import MODEL, seslendir
@@ -1104,15 +1233,77 @@ def test_seslendir_turkce_anlasilir_ve_tutarli(tmp_path, agir):
     assert (tmp_path / "vo-kimlik.wav").exists() and (tmp_path / "vo-kimlik.json").exists()
 
 
-def test_gorsel_uret_tohumla_ayni_ve_lisans_kaydi(tmp_path, agir):
-    """FLUX.2 klein: aynı istem + tohum = piksel piksel aynı görsel (ölçüldü); üretim kaydında lisans ve tohum."""
+def test_gorsel_uret_modelleri_kayitla_ayni():
+    """Kodun baktığı anlık görüntü, kaydın kurduğu (repo + commit) ve denetlediği yol olmalı; yoksa ağır sınama "kurulu
+    değil" diye sessizce ATLANIR (E1'deki VoxCPM2 dersi). İki model de gorsel-uret yeteneğine bağlı (birincil +
+    yedek)."""
+    from medya.kayit import yukle
+    from medya.komutlar.gorsel_uret import MODELLER
+    yetenekler, saglayicilar = yukle()
+    y = yetenekler["gorsel-uret"]
+    assert sorted([y.saglayici, *y.yedek]) == sorted(MODELLER)
+    for ad, m in MODELLER.items():
+        s = saglayicilar[ad]
+        repo = m["yol"].parent.parent.name.removeprefix("models--").replace("--", "/")
+        assert f"s('{repo}', revision='{m['yol'].name}')" in s.kurulum, ad
+        assert f"{m['yol'].relative_to(KOK)}/" in s.kontrol and f"arac/{m['uret'].name} " in s.kontrol, ad
+
+
+def test_gorsel_uret_referans_yalniz_flux2():
+    """Z-Image'ın düzenleme modeli yok (Z-Image-Edit yayımlanmadı, 2026-10-08): --referans her zaman FLUX.2'ye gider,
+    `--model z-image --referans` model çalışmadan hata verir. --model'siz sıra kayıttan (birincil, sonra yedek)."""
+    from medya.kayit import yukle
+    from medya.komutlar.gorsel_uret import gorsel_uret, model_sirasi
+    from medya.ortak import MedyaHatasi
+    assert model_sirasi(referans=["a.png"]) == model_sirasi("flux2", ["a.png"]) == ["flux2-klein"]
+    assert model_sirasi("z-image") == ["z-image-turbo"] and model_sirasi("flux2") == ["flux2-klein"]
+    y = yukle()[0]["gorsel-uret"]
+    assert model_sirasi() == [y.saglayici, *y.yedek]
+    with pytest.raises(MedyaHatasi, match="Z-Image"):
+        gorsel_uret("x", "/tmp/x.png", model="z-image", referans=["/tmp/yok.png"])
+    with pytest.raises(MedyaHatasi, match="bilinmeyen model"):
+        model_sirasi("flux1")
+
+
+def test_gorsel_uret_birincil_basarisizsa_yedege_duser(tmp_path, monkeypatch, capsys):
+    """--model'siz çağrıda birincilin üretimi hata verirse (ör. bellek) kayıttaki yedekle uyarıyla yeniden denenir;
+    --model verilince başka modele geçilmez. Model çalıştırılmaz (üretim sahte)."""
+    import medya.komutlar.gorsel_uret as G
+    from medya.kayit import Saglayici, yukle
+    from medya.ortak import MedyaHatasi
+    y = yukle()[0]["gorsel-uret"]
+    denenen = []
+
+    def sahte(ad, *a, **k):
+        denenen.append(ad)
+        if ad == y.saglayici:
+            raise MedyaHatasi(f"görsel üretimi başarısız ({ad})")
+        return [{"saglayici": ad}]
+
+    monkeypatch.setattr(G, "_uret", sahte)
+    monkeypatch.setattr(G, "disk_bekcisi", lambda *a: None)
+    monkeypatch.setattr(Saglayici, "kurulu_mu", lambda self: True)
+    assert G.gorsel_uret("x", str(tmp_path / "a.png"))[0]["saglayici"] == y.yedek[0]
+    assert denenen == [y.saglayici, *y.yedek] and "yeniden deneniyor" in capsys.readouterr().err
+    denenen.clear()
+    with pytest.raises(MedyaHatasi):
+        G.gorsel_uret("x", str(tmp_path / "b.png"), model={v: k for k, v in G.KISA.items()}[y.saglayici])
+    assert denenen == [y.saglayici]
+
+
+@pytest.mark.parametrize("model", ["flux2", "z-image"])
+def test_gorsel_uret_tohumla_ayni_ve_lisans_kaydi(tmp_path, agir, model):
+    """Her model: aynı istem + tohum = piksel piksel aynı görsel (FLUX.2 2026-10-07, Z-Image 2026-10-08 ölçüldü);
+    üretim kaydında sağlayıcı, lisans ve tohum."""
     import numpy as np
     from PIL import Image
-    from medya.komutlar.gorsel_uret import MODEL, gorsel_uret
-    if not MODEL.exists():
-        pytest.skip("FLUX.2 klein kurulu değil: medya kur flux2-klein")
-    a = gorsel_uret("A red bicycle leaning on a blue wall", str(tmp_path / "a.png"), boyut="256x256", adim=2, tohum=3)
-    gorsel_uret("A red bicycle leaning on a blue wall", str(tmp_path / "b.png"), boyut="256x256", adim=2, tohum=3)
+    from medya.komutlar.gorsel_uret import KISA, MODELLER, gorsel_uret
+    ad = KISA[model]
+    if not MODELLER[ad]["yol"].exists():
+        pytest.skip(f"{ad} kurulu değil: medya kur {ad}")
+    for f in ("a.png", "b.png"):
+        k = gorsel_uret("A red bicycle leaning on a blue wall", str(tmp_path / f), model=model, boyut="256x256",
+                        adim=2, tohum=3)[0]
+        assert k["saglayici"] == ad and "Apache-2.0" in k["lisans"] and k["tohum"] == 3 and k["adim"] == 2
     x, y = (np.asarray(Image.open(tmp_path / f).convert("RGB"), dtype=np.int16) for f in ("a.png", "b.png"))
     assert x.shape == (256, 256, 3) and x.std() > 10 and int(np.abs(x - y).max()) == 0
-    assert "Apache-2.0" in a[0]["lisans"] and a[0]["tohum"] == 3

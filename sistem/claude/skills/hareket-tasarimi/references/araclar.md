@@ -23,18 +23,23 @@ Kanıtlar: `sistem/arastirma/2026-10-05/animation-motion.md` (Şüpheci doğrula
 - **Proje:** `medya proje yeni <ad> --motor remotion` şablonu `calisma/remotion/` altına kopyalar. Bileşenler:
   - `remotion.config.ts`: HyperFrames'in Chrome'u, bt709, angle, eşzamanlılık 4.
   - Yerel Inter woff2 dosyaları, kopya olarak; symlink 404 verir.
-  - Yazısız `Ornek.tsx`.
+  - Yazısız `Ornek.tsx`; 3B ve Lottie örnekleri `Ornek3B.tsx`, `OrnekLottie.tsx` (`public/lottie/ornek.json`).
+    Kullanılmıyorsa `Kok.tsx` satırı ve dosyası silinir: 2B çizim paket yüzünden ~0,2 sn uzar (3 koşu ölçüldü).
 
   Komutlar proje klasöründen `$MEDYA/node_modules/.bin/remotion …` biçiminde çalıştırılır; `npx` kullanılmaz.
 - **Doğrulama:**
   - `remotion still src/index.ts <Id> ../../analiz/kare-N.png --frame=N` çıktısı Read ile incelenir.
   - Çizimden sonra `medya kontak` çalıştırılır.
-- **Son çizim:** `remotion render src/index.ts <Id> ../../cikti/x.mp4 --image-format=png --color-space=bt709`. WebGL varsa `--gl=angle` eklenir.
+- **Son çizim:** `remotion render src/index.ts <Id> ../../cikti/x.mp4 --image-format=png --color-space=bt709`. WebGL için `--gl` gerekmez, şablonun ayarı `angle`;
+  komut satırındaki bayrak ayarı ezer.
 - **Ölçülenler:**
   - Varsayılan renk uzayı BT.601'i etiketsiz yazar ve HD oynatıcıda renk kayar. Bu yüzden bt709 açıkça verilir.
   - png+bt709 VMAF 98,80, jpeg 96,97 (en kötü kare 92,98 → 95,06); süre ×1,24.
   - Çekim kareleri birebir çıktı (108/108); `<Audio>` örnek doğruluğunda; iki çizim aynı (150/150).
   - `--gl=angle` WebGL'de 3,6 kat hızlı.
+  - `angle` WebGL'i Apple GPU'sunda çalıştırır (ANGLE Metal, 2026-10-09). Ayarsız 4.0.533 CPU'ya (SwiftShader) düşer.
+    `swiftshader`, `egl`, `vulkan` ve `angle-egl`'de WebGL hiç yok. R3F sahnesi, 90 kare 1080x1920: angle 3,9 sn,
+    ayarsız 6,3 sn, swangle 15,2 sn. angle'ın iki koşusu 90/90 kare bit düzeyinde aynı.
   - Ara kare üretmez: 30 fps kaynak 0,5x'te 60 karede 30 eşsiz kare verdi. Ağır çekim önce `medya yavaslat` ile üretilir.
   - `trimBefore` ve `trimAfter` kompozisyon karesi cinsindendir.
 - **Ev kuralları** (kanca bir kısmını engeller):
@@ -44,7 +49,16 @@ Kanıtlar: `sistem/arastirma/2026-10-05/animation-motion.md` (Şüpheci doğrula
   - `@remotion/google-fonts`, `remotion.media` varlıkları, `@remotion/sfx`, ElevenLabs, Mapbox ve MapTiler kullanılmaz.
   - `create-video`, `remotion upgrade`, `npx skills` ve `@latest` kullanılmaz.
   - Studio kendiliğinden açılmaz: npm'e ve bugs.remotion.dev'e istek atar, yerel ağdan dinler. Kullanıcı isterse: `$MEDYA/node_modules/.bin/remotion studio --no-open`.
-- **Kurulu olmayan ekler (~62 MB):** `cd $MEDYA && npm i --save-exact @remotion/three@4.0.533 three@0.178.0 @react-three/fiber@9.2.0 @remotion/lottie@4.0.533 lottie-web@5.13.0`.
+- **3B ve Lottie ekleri (kurulu, 2026-10-09; 20 npm paketi, +62 MiB):** @remotion/three, three 0.178.0, @react-three/fiber
+  9.2.0, @remotion/lottie, lottie-web 5.13.0. Bunlar Remotion 4.0.533'ün kendi sınadığı sürümler; Remotion'la birlikte
+  yükseltilir (`yetenekler.toml` → remotion). `npx remotion add` kullanılmaz.
+  - 3B: `<ThreeCanvas width height>` ve ışık kullanılır. Hareket yalnız `useCurrentFrame()`'den gelir; R3F `useFrame`
+    çizimde titrer. İçerideki `<Sequence>`'lar `layout="none"` olur. Model ve doku yerel dosyadan (`public/`) gelir.
+  - Lottie: JSON `public/` altına kopyalanır, `staticFile` + `delayRender` ile yüklenir; lottiefiles adresi kullanılmaz.
+    1 Remotion karesi = 1 Lottie karesi, JSON'daki `fr` yok sayılır. `fr` fps'ten farklıysa `playbackRate={fr / fps}`
+    verilir (60 fps JSON, 30 fps kompozisyon, hız 2: 12. kare JSON'un 24. karesiyle piksel piksel aynı).
+  - Sınama: `medya test remotion` (3B'de sürücü ANGLE Metal mi, ışık, dönüş; Lottie'de bilinen alan ±%2).
+    Kanıt: `sistem/devam/remotion-3b/2026-10-09/`.
 
 ## Manim CE 0.21 — denklem ve matematik
 - **Ne zaman:** denklem, koordinat düzlemi, fonksiyon grafiği, Transform morfları. Denklemsiz algoritma ya da graf (ör. Dijkstra) HyperFrames'te SVG + GSAP ile yapılır.
@@ -69,7 +83,8 @@ Kanıtlar: `sistem/arastirma/2026-10-05/animation-motion.md` (Şüpheci doğrula
 - **0.21 notu:** Code nesnesinin renkleri artık Pygments stilinden gelir.
 
 ## Three.js — HyperFrames içinde hafif 3B
-- **Lisans ve boyut:** MIT. Kurulum: `cd $MEDYA && npm i --save-exact three@0.186.1` (20 MB). Remotion 3B ekleri kuruluysa onların `three@0.178.0` sürümü kullanılır; kökte tek sürüm olur.
+- **Lisans ve boyut:** MIT. Kökte `three@0.178.0` kurulu (Remotion 3B eki, 2026-10-09); ayrıca kurulmaz. Kökte başka
+  sürüme geçmek Remotion'un sınadığı sürümü bozar.
 - **Vendor kopyası:**
   ```
   mkdir -p kompozisyon/vendor/three/addons/loaders
@@ -78,7 +93,9 @@ Kanıtlar: `sistem/arastirma/2026-10-05/animation-motion.md` (Şüpheci doğrula
   grep -oE "from '[^']+'" kompozisyon/vendor/three/three.module.js | sort -u   # yalnız ./three.core.js beklenir
   ```
   importmap: `"three": "./vendor/three/three.module.js"`, `"three/addons/": "./vendor/three/addons/"`.
-  - 0.186.1 paketinde `.min.js` yapı dosyası yok; `three.module.js` (0,66 MB) `./three.core.js`'i (1,46 MB) içe aktarır. Çekirdek kopyalanmazsa 404 olur ve sahne boş çizilir (unpkg dosya listesi ve içe aktarma satırı okunarak doğrulandı).
+  - 0.178.0'da `three.module.js` (0,60 MB) yalnız `./three.core.js`'i (1,39 MB) içe aktarır. `.min.js` çifti de var
+    (0,34 + 0,38 MB); bu durumda importmap `three.module.min.js`'i gösterir. Çekirdek kopyalanmazsa 404 olur ve sahne
+    boş çizilir (yapı klasörü ve içe aktarma satırı okunarak doğrulandı, 2026-10-09).
   - Tarif stüdyoda **denenmedi**: ilk `snapshot --describe false` karesi Read ile açılıp tuvalin boş olmadığı denetlenir.
 - **SVG logodan 3B:** `SVGLoader` + `ExtrudeGeometry`. HDRI gerekiyorsa Poly Haven'den (CC0) bir kez indirilip projede tutulur.
 - Kurallar ve denetim için [hyperframes](hyperframes.md) → Adaptörler.
@@ -133,10 +150,12 @@ Kanıtlar: `sistem/arastirma/2026-10-05/animation-motion.md` (Şüpheci doğrula
 - **macOS uygulaması:** `screencapture -v`. Ekran Kaydı izni gerekir; izni yalnız kullanıcı verebilir.
 
 ## Lottie / dotLottie — uygulama içi animasyon
-- **Çalışma zamanı (MIT, ~33 MB):** `cd $MEDYA && npm i --save-exact lottie-web@5.13.0 @lottiefiles/dotlottie-web@0.80.0`. dist dosyaları `vendor/` altına kopyalanır.
+- **Çalışma zamanı (MIT):** lottie-web 5.13.0 kökte kurulu (Remotion Lottie eki, 2026-10-09). dotlottie-web gerekiyorsa
+  `cd $MEDYA && npm i --save-exact @lottiefiles/dotlottie-web@0.80.0` (7,4 MB). dist dosyaları `vendor/` altına kopyalanır.
 - **Uygulamalarda:** lottie-ios, lottie-android, lottie-react-native ya da dotLottie oynatıcıları.
 - **Yazım:**
-  - Şekil katmanlı Lottie JSON elle ya da kodla yazılır.
+  - Şekil katmanlı Lottie JSON elle ya da kodla yazılır. Örnek üretici (trim path ve ölçek anahtar kareleri):
+    `sistem/devam/remotion-3b/2026-10-09/lottie_uret.py`.
   - `python-lottie[gif]` arm64'te kurulamıyor.
   - After Effects, LottieFiles Creator ve Rive hesap ya da ücret ister; kullanılmaz.
 - **Denetim:**
@@ -171,7 +190,7 @@ img2webp -loop 0 -lossy -q 75 -d 40 kareler/frame_*.png -o x.webp
 |---|---|---|
 | HyperFrames | Apache-2.0 | evet |
 | GSAP 3.15 + eklentiler | Standard no-charge | evet (Webflow rakibi araç hariç) |
-| Remotion 4.x | Remotion License | yalnız kapı geçerse |
+| Remotion 4.x (+ @remotion/three, @remotion/lottie) | Remotion License (@remotion/three package.json'da MIT; çekirdeğe bağlı) | yalnız kapı geçerse |
 | Manim, Three.js, lottie-web, dotlottie-web | MIT | evet |
 | Blender | GPL (uygulama) | evet |
 | asciinema, agg | GPL-3 | evet (bağımsız CLI) |

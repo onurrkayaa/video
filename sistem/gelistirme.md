@@ -34,6 +34,14 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 - **O** Ağır ML disk koşulu (5 + 3 = 8 GB) kodda yok: `disk_bekcisi` görsel üretimini 3,0, seslendirmeyi 2,5 GB altında
   durduruyor (`medya/ortak.py:78`, `gorsel_uret.py:32`, `seslendir.py:132`). Tek VoxCPM2 sınaması 2 × 1 GiB takas açtı
   (2026-10-08, dersler.md).
+- **O** `medya seslendir` bellek tepesi: MLX önbelleği 10 cümlelik koşuda işçinin tepesini 13–14 GB'a çıkarıyor (MLX
+  etkin tepe 5,0–6,5 GB; 4-bit'te de aynıydı), takas koşularda 2,5 → 4,7 GB büyüdü. Aynı koşul
+  `mx.set_cache_limit(0)` ile: 6,1 GB, takas büyümedi, çıktı bit düzeyinde aynı, üretim %20 yavaş (127 → 153 sn /
+  51,8 sn ses; 2026-10-08). Ara sınır (1–2 GB) ölçülmedi. Öneri: `ses_uret_isci.py`'ye sınır, `/usr/bin/time -l` ile
+  tepe ve hız ölçümü.
+- **D** Türkçe normalleştirici (`medya/turkce.py`): sıra sayısı "3." "üç" okunuyor ("üçüncü" geçen cümlede her koşuda
+  %5,3 yalancı CER), "-yken" ile "iken" ayrı sayılıyor. Ayrıca `medya seslendir` kapısı, toplam CER > %3 olup hiçbir
+  cümle %8'i aşmayınca yeniden üretmeden kalıyor (2026-10-08 ağsız denemede 2 cümle, %4,6, çıkış 1).
 - **O** İndirmesiz komut paketi (kurulu araçlarla): `sabitle` (vidstab), `gurultu` (video gürültüsü: hqdn3d/nlmeans),
   `eski` (bwdif + büyütme), `dikey` (konu takipli 9:16), `renk-esle` (çekimler arası renk eşleme), `bosluk-kes`
   (konuşmalı videoda ölü sessizlikleri kesme), `gizlilik` (Vision yüz bulanıklaştırma), `plaka`, App Store ön ayarı.
@@ -93,14 +101,6 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 - **D** `medya yaziya-dok`: HyperFrames'in kelime biçimini (`[{text,start,end}]`) de yazsın. Bugün stüdyo JSON'u doğrudan
   içe aktarılmıyor ("Unrecognized JSON transcript format"), `.srt` içe aktarımı işaret düzeyinde (7 kelime → 2 öğe);
   kelime zamanı için tek satırlık dönüşüm gerekiyor (medya-studyo "Alt yazı istenirse"; ölçüldü 2026-10-08).
-- **D** `voxcpm2` sağlık denetimi yorumlayıcıya `ls` ile bakıyor (`ls .uv/tools/mlx-audio/bin/python`): kopuk bağda 0
-  döner (`flux2-klein` 2026-10-08'de `ls -L`'ye geçti). Bugün `test_python_ortamlari_studyonun_yorumlayicisinda`
-  yakalar, `medya yetenekler` yakalamaz.
-- **D** gorsel-uretim ve arac-radari belgelerinde FLUX.2 için eski durum kaldı: `gorsel-uretim/references/araclar.md`
-  "Üretici" başlığı ("çalıştırılmadı", "yalnız harici SSD", "bu Mac'te koşturulmadı"), `references/teknikler.md` §10
-  ("Üretici kurulu değil"), `arac-radari/references/bilinen-kararlar.md` ("FLUX.2 klein Q4 … yalnız harici SSD").
-  Sağlayıcı 2026-10-07'den beri iç diskte kurulu ve sınanıyor (`yetenekler.toml` flux2-klein); karar satırı kullanıcının
-  verdiği onayla güncellenmeli.
 
 ## Koruma kancası
 - **O** Kancalar sistem Python'una bağlı: `medya-koruma.py` ve `oturum-ozeti.py` `#!/usr/bin/env python3`,
@@ -161,21 +161,25 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 | lama-onnx | nesne silme | Apache-2.0 | 208 MB |
 | depth-anything-v2-small | 2.5D paralaks için derinlik | Apache-2.0 | 50 MB |
 | resvg | vektörleştirilmiş logoyu geri çizip denetleme | MPL-2.0 | 5 MB |
-| @remotion/three, three, R3F, @remotion/lottie, lottie-web | Remotion'da 3B ve Lottie | Remotion License + MIT | 62 MB |
-| three 0.186.1 (HyperFrames içinde) | hafif 3B: dönen logo, parçacık | MIT | 20 MB |
+| three (HyperFrames içinde) | hafif 3B: dönen logo, parçacık | MIT | 0: kökte 0.178.0 (Remotion eki, 2026-10-09); vendor tarifi denenmedi |
 | Manim Community 0.21 [typst] | matematik/algoritma açıklayıcı | MIT | ~350 MB (Homebrew'suz yol sınanmadı) |
 | asciinema 3.2.1 + agg 1.9.0 | gerçek terminal oturumu → README GIF'i | GPL-3 (çıktı serbest) | 21 MB |
-| lottie-web 5.13.0 + dotlottie-web 0.80.0 | uygulama içi Lottie oynatma/doğrulama | MIT | 33 MB |
+| dotlottie-web 0.80.0 (lottie-web 5.13.0 kökte, 2026-10-09) | uygulama içi Lottie oynatma/doğrulama | MIT | 7,4 MB |
 | Blender 5.2.2 LTS | gerçekçi 3B (Cycles Metal) | GPL (çıktı serbest) | ~1,3 GB |
-| VoxCPM2 8-bit | dış ses (4-bit CER %0 ölçüldü; doğallık için) | Apache-2.0 | +0,9 GB — kullanıcı dinleyip isterse |
-| Z-Image-Turbo Q4 | fotogerçekçilik/görselde yazı (FLUX.2 klein'ın yanına) | Apache-2.0 | 5,9 GB — disk yetince |
 | DaVinci Resolve Studio + yerleşik MCP | ajanın Resolve'u sürmesi | ücretli 295 $ | 6,7 GB — yalnız açık onayla |
 
 ## Ölçüm borçları
-- `medya seslendir`: doğallık ölçülemez (kullanıcı dinler); konuşmacı benzerliği eşiği (0,5) 5 cümlelik örnekten — uzun
-  metinlerde (≥ 30 cümle) ölç; isteğe bağlı MOS tahmincisi (UTMOS) değerlendir.
+- `medya seslendir`: doğallık ölçülemez (kullanıcı dinler); konuşmacı benzerliği eşiği (0,5): 2026-10-08'de 80 cümlede
+  (iki model, 10'ar cümlelik koşular) en düşük 0,72 — tek uzun metinde (≥ 30 cümle) kimlik kayması ölçülmedi;
+  isteğe bağlı MOS tahmincisi (UTMOS) değerlendir.
 - `medya gorsel-uret --referans`: düzenlemede kenar kalıntısı görüldü (mermerde ahşap dokusu izi) — maske/kompozit yolu.
+- `medya gorsel-uret --model z-image`: fotogerçekçilik farkı FLUX.2'ye karşı ölçülmedi (A/B görselleri
+  `sistem/devam/ham/gorsel-ab/`, kullanıcı bakar); `--low-ram`'sız süre ve bellek ölçülmedi (GPU %100, adım başı
+  ~29,5 sn: hesap sınırlı görünüyor); Türkçe harfli yazı denenmedi (kural gereği çizdirilmiyor).
 - Remotion'da gerçek telefon HEVC/HDR çekimi (yalnız sayısal modda, mahrem olmayan bir klip).
+- Remotion 3B/Lottie (2026-10-09): yalnız basit sahne ölçüldü (ışıklı tek düğüm, şekil katmanlı Lottie).
+  Ölçülmeyenler: doku ya da GLTF modelli ağır 3B sahne; Lottie'de görsel, yazı katmanı ve ifade (expression);
+  uzun 3B çizimde Chrome'un bellek tepesi ve ısıl kısılma. `/usr/bin/time -l` yalnız node'u ölçüyor.
 - HyperFrames 0.8.140 çizim düzeltmeleri için hedefli fikstür yok: GSAP ile kırpılan clip-path/inset öğe (#5010), geç
   başlayan `fromTo` (#5125), video üstünde hareket bulanıklığı (#5150), yavaş belge (#5168), 16 GB'ta ağır sahnede
   otomatik işçi sayısı ve takas (#5149). `testler/hyperframes-baslik` bunlara dokunmuyor (0.8.124 ile kare kare aynı);

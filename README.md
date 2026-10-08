@@ -16,7 +16,8 @@ Claude Code'u açıp (bu klasörde ya da herhangi bir yerde) isteğini yazman ye
 - "Duraklat" / "devam et" — uzun işi durdurur, kaldığı yeri `sistem/DURUM.md`'ye yazar; sonra oradan sürdürür.
 - "Bu metni sakin bir erkek sesiyle Türkçe seslendir." — yerel dış ses (VoxCPM2); aynı projede hep aynı ses.
   Kendi sesinle istersen 10 sn'lik temiz bir kayıt ver.
-- "Ürün fotoğrafımı mermer bir masaya koy" / "şu konseptte üç görsel üret" — yerel görsel üretimi (FLUX.2 klein).
+- "Ürün fotoğrafımı mermer bir masaya koy" / "şu konseptte üç görsel üret" — yerel görsel üretimi (FLUX.2 klein;
+  görselde İngilizce yazı gerekiyorsa daha yavaş ama yazıda daha doğru Z-Image-Turbo).
 - "Ne önerirsin?" / "Yeni çıkanları araştır, sistemi güncelleyelim." — baş ajan (yönetici) inceler, önerileri
   maliyetiyle sunar; onaylarsan uygular ve sınar.
 
@@ -41,8 +42,11 @@ gerektiğini söyler.
   planda bellek tepesi 1,9 GB, takas büyümedi. Yazı, hareketli grafik ve süslü geçiş gerekirse kompozisyon motoru devreye girer.
 - İki kompozisyon motoru: **HyperFrames** (HTML + GSAP; her iş için serbest, varsayılan) ve **Remotion** (React;
   kişisel işlerde, yalnız dosya teslim ettiğin serbest işlerde ve en çok 3 kişilik şirket işlerinde ücretsiz —
-  daha büyük şirkette ücretli lisans gerektiği için orada HyperFrames kullanılır).
-- Yerel üretim: görsel (FLUX.2 [klein] 4B, Apache-2.0) ve Türkçe dış ses (VoxCPM2, Apache-2.0) — hesap, bulut yok.
+  daha büyük şirkette ücretli lisans gerektiği için orada HyperFrames kullanılır). Remotion'da 3B sahne (Three.js) ve
+  Lottie animasyonu da var; 3B Mac'in GPU'sunda çizilir (90 karelik dikey 3B sahne 3,9 sn, ölçüldü).
+- Yerel üretim: görsel (FLUX.2 [klein] 4B ve Z-Image-Turbo, ikisi de Apache-2.0; aynı istem ve tohumlarla A/B'de
+  Z-Image İngilizce afiş yazısını 2/2 doğru yazdı, FLUX.2 0/2; Z-Image 3,3–3,7 kat yavaş) ve Türkçe dış ses (VoxCPM2
+  8-bit, Apache-2.0; 40 Türkçe cümlede CER %0,74) — hesap, bulut yok.
 - Elle ince ayar: DaVinci Resolve (ücretsiz, App Store) ve Kdenlive kurulu; ikisine devir kare kodlu sınamayla ölçüldü.
 - Ağır çekim: telefonun yüksek fps çekiminde ara kare üretmeden; değilse RIFE (1080p'ye kadar; gerçek kamerada en iyi
   ölçülen) ya da Apple ML (4K) → ffmpeg (biri takılırsa sıradakine geçer). 4K çekimden dikey (9:16) ağır çekim doğrudan

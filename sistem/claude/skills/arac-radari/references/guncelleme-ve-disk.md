@@ -76,6 +76,10 @@ commit + özet, `kur --zorla`.
 - 5.x'e geçiş ya da lisans metni değişikliği → önce lisans incelemesi ([bilinen kararlar](bilinen-kararlar.md)).
 - `react`, `react-dom`, `zod` yalnız Remotion yeni sürümü gerektirirse ve onunla birlikte yükseltilir; `npm outdated`
   satırı tek başına gerekçe değildir.
+- 3B/Lottie ekleri (`three`, `@react-three/fiber`, `lottie-web`; 2026-10-09'dan beri kurulu) Remotion'la birlikte,
+  yeni sürümün kendi sınadığı sürümlere geçer: `npm view @remotion/three@<s> devDependencies` ve `npm view
+  @remotion/lottie@<s> devDependencies`. Eş bağımlılık aralığı (`peerDependencies`) da denetlenir. Sonra `medya test
+  remotion`: GPU sürücüsü, ışık ve dönüş, Lottie'nin bilinen alanı.
 - Önce/sonra: `medya test` ve kancanın Remotion sınamaları (`medya test koruma`).
 
 ## 4. ffmpeg

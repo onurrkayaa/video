@@ -1,13 +1,13 @@
 """medya seslendir "<metin>"|metin.txt --cikti dis-ses.wav [--kimlik ses/anlatici] [--tarif "…"] [--referans kayit.wav --rizali]
 
-Dış ses (TTS): VoxCPM2 (OpenBMB; kod ve ağırlık Apache-2.0, 30 dil, Türkçe dahil), mlx-community 4-bit (2,3 GB),
-mlx-audio ile yerelde ve çevrimdışı. Ölçüm (2026-10-07, bu Mac): 5 Türkçe cümlede Whisper dökümüyle CER %0,0
-(İ/ı/ç/ğ/ş, sayılar dahil); cümle başına ~3–5 sn üretim.
+Dış ses (TTS): VoxCPM2 (OpenBMB; kod ve ağırlık Apache-2.0, 30 dil, Türkçe dahil), mlx-community 8-bit (3,2 GB),
+mlx-audio ile yerelde ve çevrimdışı. Ölçüm (2026-10-08, bu Mac; 4-bit'le aynı kimlik ve tohumla A/B, 40'ar Türkçe
+cümle, yeniden üretimsiz): Whisper dökümüyle CER %0,74 (4-bit %0,97; İ/ı/ç/ğ/ş, sayılar dahil); 1 sn ses ~2,5 sn'de.
 
 SES KİMLİĞİ (tutarlılık): VoxCPM2 aynı tarifle her çağrıda BAŞKA bir ses üretir — ayrı üretilen cümleler arası
 konuşmacı benzerliği ortalama 0,29 ölçüldü. Bu yüzden ses bir kez "kimlik" olarak üretilir (ya da senin kaydından
-alınır) ve bütün cümleler ondan üretilir: kimliğe benzerlik "klon" kipinde ort. 0,73 (en düşük 0,67), varsayılan
-"devam" kipinde (kimliğin metniyle birlikte) ort. 0,76 (en düşük 0,70), CER ikisinde %0 (5 cümle; küçük örnek).
+alınır) ve bütün cümleler ondan üretilir: kimliğe benzerlik varsayılan "devam" kipinde (kimliğin metniyle birlikte)
+ort. 0,82 (en düşük 0,73; 8-bit, 40 cümle); "klon" kipi 8-bit'te ölçülmedi (4-bit, 5 cümle: ort. 0,73, en düşük 0,67).
 Kimlik <önek>.wav + <önek>.json olarak saklanır;
 aynı projede sonraki dış sesler --kimlik ile aynı sesi kullanır.
   --tarif "A calm, warm male voice in his thirties"  yeni kimlik için ses tarifi (İngilizce tarif)
@@ -36,7 +36,7 @@ SES_PY = KOK / "ortamlar" / "ses" / "bin" / "python"
 URET = KOK / "medya" / "isciler" / "ses_uret_isci.py"
 DOGRULA = KOK / "medya" / "isciler" / "ses_dogrula_isci.py"
 HUB = KOK / "modeller" / "hf" / "hub"
-MODEL = HUB / "models--mlx-community--VoxCPM2-4bit" / "snapshots" / "dc9e5c187858da5f4a13dc4c247e297339216381"
+MODEL = HUB / "models--mlx-community--VoxCPM2-8bit" / "snapshots" / "d52725898a0675703f7f9ddc5a4d1a3cdbb99032"
 ECAPA = HUB / "models--speechbrain--spkrec-ecapa-voxceleb" / "snapshots" / "0f99f2d0ebe89ac095bcc5903c4dd8f72b367286"
 WHISPER = "mlx-community/whisper-large-v3-turbo"
 SR = 48000
@@ -106,7 +106,7 @@ def kimlik_hazirla(onek: Path, *, tarif: str | None, referans: str | None, refer
     onek.parent.mkdir(parents=True, exist_ok=True)
     x, _ = ses_oku(r["cumleler"][0]["wav"], sr=SR)
     _yaz_wav(_kirp(x), wav)
-    k = {"kaynak": "tarif", "tarif": t, "metin": ANKRAJ, "model": "VoxCPM2 4-bit (dc9e5c1)",
+    k = {"kaynak": "tarif", "tarif": t, "metin": ANKRAJ, "model": "VoxCPM2 8-bit (d527258)",
          "tarih": date.today().isoformat()}
     json_yaz(js, k)
     return {**k, "wav": str(wav)}
@@ -129,7 +129,7 @@ def seslendir(metin: str, cikti: str, *, kimlik: str | None = None, tarif: str |
                           "onaylıyorsan --rizali ekle (gerçek bir kişiyi taklit etmek yasak)")
     if not MODEL.exists():
         raise MedyaHatasi("VoxCPM2 modeli yok: medya kur voxcpm2")
-    disk_bekcisi(2.5, "seslendirme (VoxCPM2 ~7 GB bellek)")
+    disk_bekcisi(2.5, "seslendirme (VoxCPM2 bellek tepesi 7–14 GB)")
     cumleler = cumlelere_bol(metin)
     if not cumleler:
         raise MedyaHatasi("metin boş")
@@ -176,7 +176,7 @@ def seslendir(metin: str, cikti: str, *, kimlik: str | None = None, tarif: str |
         cikti_p.parent.mkdir(parents=True, exist_ok=True)
         _yaz_wav(np.concatenate(parca), cikti_p, hiz)
     rapor = {"cikti": str(cikti_p), "sure": round(t / hiz, 3), "kimlik": {kk: v for kk, v in k.items()},
-             "model": "VoxCPM2 4-bit (mlx-community, dc9e5c1) — Apache-2.0", "kip": kip, "hiz": hiz,
+             "model": "VoxCPM2 8-bit (mlx-community, d527258) — Apache-2.0", "kip": kip, "hiz": hiz,
              "cumleler": [{**z, **{a: olcum.get(f"{z['no'] - 1:03d}", {}).get(a) for a in
                                    ("cer", "benzerlik", "karakter_sn", "dokum", "degisen", "dusen", "eklenen", "tur")}}
                           for z in zaman]}

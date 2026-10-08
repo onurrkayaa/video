@@ -64,18 +64,12 @@ OpenGameArt'ta CC0 olmayanlar.
 ## Dış ses (Türkçe)
 1. **Kullanıcının kendi kaydı:** en doğal, lisans sorunu yok. Aynı yerde 10 sn oda sesi kaydettir. Sonra temizlik
    ([teknikler](teknikler.md) §2).
-2. **VoxCPM2** (OpenBMB, mlx-audio): kod ve ağırlık Apache-2.0, Türkçe dahil 30 dil; `--instruct` ile tariften ses
-   tasarlar (kimsenin sesi gerekmez). Satıcı ölçümü Türkçe WER %0,82. 4-bit 2,3 GB / 8-bit 3,2 GB → sor. Temel M2'de
-   gerçek zamandan yavaş (tahmin; M4 Pro'da RTF ~1,76).
-```
-arac/uv venv --python 3.12 ortamlar/tts
-arac/uv pip install --python ortamlar/tts/bin/python --no-build 'mlx-audio[tts]==0.5.7'
-ortamlar/tts/bin/mlx_audio.tts.generate --model mlx-community/VoxCPM2-4bit --text "$(cat plan/dis-ses.txt)" --instruct 'Calm, warm male voice in his thirties' --output_path calisma/ses/dis-ses --file_prefix vo-1
-```
-   Çözümleme: 55 paket, torch yok. `sts`/`server` ekleri derleyici ister (webrtcvad): ekleme. Bayraklar paketten:
-   `--instruct --ref_audio --ref_text --lang_code --output_path --file_prefix`; tohum bayrağı yok → her alımı sakla.
-   Klon yalnız rızayla (kullanıcının kendi sesi): `--ref_audio ben.wav --ref_text '<tam döküm>'`; başkasını taklit
-   VoxCPM2 koşullarına aykırı.
+2. **VoxCPM2** (OpenBMB, mlx-audio 0.5.8): kod ve ağırlık Apache-2.0, Türkçe dahil 30 dil; tariften ses tasarlar
+   (kimsenin sesi gerekmez). Kurulu, `medya seslendir` ile: mlx-community 8-bit (3,2 GB, sabit commit d527258).
+   2026-10-08 A/B (4-bit'le aynı kimlik ve tohum, 40'ar cümle): CER %0,74 / %0,97, benzerlik 0,82 / 0,82, ilk geçişte
+   kapıdan kalan 0 / 1 → 8-bit varsayılan, 4-bit silindi. Satıcı ölçümü Türkçe WER %0,82. Bu Mac'te 1 sn ses ~2,5 sn'de
+   (gerçek zamandan yavaş). `sts`/`server` ekleri derleyici ister (webrtcvad): ekleme. Klon yalnız rızayla (kullanıcının
+   kendi sesi): `--referans ben.wav --rizali`; başkasını taklit VoxCPM2 koşullarına aykırı.
 3. **Chatterbox Multilingual v3** (MIT, Türkçe var): aynı mlx-audio ile `--model mlx-community/chatterbox-multilingual-v3
    --lang_code tr --ref_audio <izinli kayıt>` (2,7 GB). PyTorch paketi (torch 2.6, numpy<2 sabitler) kullanılmaz.
 4. **Kokoro** (`hyperframes tts`): kullanılmaz, `medya-koruma` kancası engeller (2026-10-08). Türkçe yok (dil listesi en-us,

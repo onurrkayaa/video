@@ -2,7 +2,7 @@
 # Medya stüdyosu kurulum / onarım betiği — tekrar çalıştırılabilir (eksik olanı kurar, var olanı korur).
 #   zsh sistem/kur.sh            her şey
 #   zsh sistem/kur.sh --bagla    yalnız beceri ve ajan bağlantıları (~/.claude/skills, ~/.claude/agents)
-#   zsh sistem/kur.sh --modeller büyük üretici modeller (~8,6 GB, diske bak): FLUX.2 klein, VoxCPM2
+#   zsh sistem/kur.sh --modeller büyük üretici modeller (~15,6 GB, diske bak): FLUX.2 klein, Z-Image-Turbo, VoxCPM2
 # Homebrew gerekmez (Xcode lisansı kabul edilmemiş makinede de çalışır). Ücretli/hesaplı hiçbir şey kurmaz.
 set -e
 KOK="$(cd "$(dirname "$0")/.." && pwd)"
@@ -30,9 +30,9 @@ bagla() {
 }
 
 if [ "$1" = "--bagla" ]; then bagla; exit 0; fi
-if [ "$1" = "--modeller" ]; then          # büyük üretici modeller (~8,6 GB): görsel (FLUX.2 klein), dış ses (VoxCPM2)
+if [ "$1" = "--modeller" ]; then          # büyük üretici modeller (~15,6 GB): görsel (FLUX.2 klein, Z-Image-Turbo), dış ses (VoxCPM2)
   source "$KOK/ortam.sh"
-  medya kur flux2-klein && medya kur voxcpm2
+  medya kur flux2-klein && medya kur z-image-turbo && medya kur voxcpm2
   exit $?
 fi
 

@@ -99,7 +99,7 @@ ve `remotion-best-practices` (başındaki stüdyo kuralları önce gelir).
 ## Komutlar (`medya --help`, ayrıntı `medya <komut> --help`)
 | İnceleme | Dönüştürme | Üretim | Ses | Denetim | Sistem |
 |---|---|---|---|---|---|
-| `incele` `kontak` `sahneler` `analiz` `ses-turu` `ses-olay` `muzik` `yaziya-dok` | `sdr` `cfr` `yavaslat` `meta-temizle` `ayir` `arkaplan-sil` | `ciz` (plan → video, ffmpeg) `gorsel-uret` (FLUX.2 klein) `seslendir` (VoxCPM2) | `ses-temizle` `ustala` | `senkron` `denetle` `zamankodu` | `proje` `yetenekler` `kur` `test [--agir]` `temizle` |
+| `incele` `kontak` `sahneler` `analiz` `ses-turu` `ses-olay` `muzik` `yaziya-dok` | `sdr` `cfr` `yavaslat` `meta-temizle` `ayir` `arkaplan-sil` | `ciz` (plan → video, ffmpeg) `gorsel-uret` (FLUX.2 klein / Z-Image) `seslendir` (VoxCPM2) | `ses-temizle` `ustala` | `senkron` `denetle` `zamankodu` | `proje` `yetenekler` `kur` `test [--agir]` `temizle` |
 Teslim/devir: `nle` (kurgu planı → .otio Resolve / -kdenlive.otio / .edl). Kompozisyon/çizim: `hyperframes lint|check|snapshot --describe false|render`;
 Remotion: proje klasöründen `$MEDYA/node_modules/.bin/remotion still|render src/index.ts <Id> …`.
 Apple ML komutları bekçiyle çalışır: Neural Engine derleyicisi (`ANECompilerService`) takılıysa beklemeden hata
@@ -150,19 +150,22 @@ verir; çözüm kullanıcıda (`sudo killall ANECompilerService` ya da yeniden b
 - **Yeni makine / onarım:** `zsh sistem/kur.sh` (bağımlılıklar, Swift aracı, beceri ve ajan bağlantıları).
 - **Disk** (taban 5 GB; 2026-10-07 kurulumlardan sonra ~3–7 GB boş — takas boyutuna göre oynar): modeller `modeller/`,
   Python önbelleği `.uv/`; temizlik `medya temizle --uygula`. Büyük kurulumdan önce boyutu söyle ve sor.
-  **Takas:** FLUX.2 (~9 GB) / VoxCPM2 (~7 GB) bellek tepesi macOS takasını büyütür ve diskten yer alır (2026-10-07:
-  6 GB takas, boş disk 1,4 GB'a düştü). Ağır ML'yi sırayla çalıştır; `gorsel-uret`/`seslendir` diskte 3/2,5 GB altında
-  çalışmaz; yeniden başlatma takası boşaltır. Ağır sınamalar yalnız `medya test --agir`.
+  **Takas:** FLUX.2 (9–11 GB) / Z-Image (6,3 GB) / VoxCPM2 8-bit (kimlik 8,6 GB, 10 cümlede 13–14 GB: MLX önbelleği) bellek tepesi macOS
+  takasını büyütür ve diskten yer alır (2026-10-07: 6 GB takas, boş disk 1,4 GB'a düştü). Ağır ML'yi sırayla
+  çalıştır; `gorsel-uret`/`seslendir` diskte 3/2,5 GB altında çalışmaz; yeniden başlatma takası boşaltır. Ağır
+  sınamalar yalnız `medya test --agir`.
 
 ## Ortam gerçekleri (2026-10-08)
 Apple M2, 16 GB RAM, macOS 27. Homebrew kilitli (Xcode lisansı kabul edilmemiş; `sudo xcodebuild -license accept`
 kullanıcının kararı) → araçlar uv/npm/resmî ikili ile kurulur; Swift için `DEVELOPER_DIR=/Library/Developer/CommandLineTools`.
 Python 3.12 (`.venv`, uv; her ortam yalnız `.uv/python`'daki uv Python'unu kullanır: `UV_MANAGED_PYTHON=1`), ağır
 ses yığını `ortamlar/ses` (torch, Beat This!, Essentia, librosa, Demucs, mlx-whisper),
-ffmpeg-static 6.0 (`arac/ffmpeg`), HyperFrames 0.8.140, Remotion 4.0.533 (kök `node_modules`), OTIO 0.18.1,
-RIFE 20221029 (`arac/rife`), mflux 0.21.0 + FLUX.2 [klein] 4B Q4 (`.uv/tools/mflux`, Python 3.13.16, paketler
-`sistem/kisitlar/`'a sabit), mlx-audio 0.5.8 + VoxCPM2 4-bit
-(`.uv/tools/mlx-audio`), SpeechBrain ECAPA (ses doğrulama), Kdenlive 26.08.1 ve DaVinci Resolve 21.1.0 (`/Applications`). Satıcı becerileri
+ffmpeg-static 6.0 (`arac/ffmpeg`), HyperFrames 0.8.140, Remotion 4.0.533 (kök `node_modules`; 3B/Lottie ekleri three 0.178.0, R3F 9.2.0,
+lottie-web 5.13.0; 3B'yi şablonun gl `angle` ayarı GPU'da (Metal) çizer, ayarsız CPU'ya düşer), OTIO 0.18.1,
+RIFE 20221029 (`arac/rife`), mflux 0.21.0 + FLUX.2 [klein] 4B Q4 ve Z-Image-Turbo Q4 (`.uv/tools/mflux`, Python 3.13.16, paketler
+`sistem/kisitlar/`'a sabit; varsayılan FLUX.2 — Z-Image görselde İngilizce yazıda daha iyi ama ~3,5 kat yavaş, A/B 2026-10-08;
+düzenleme yalnız FLUX.2), mlx-audio 0.5.8 + VoxCPM2 8-bit
+(`.uv/tools/mlx-audio`; 4-bit'le A/B 2026-10-08, 4-bit silindi), SpeechBrain ECAPA (ses doğrulama), Kdenlive 26.08.1 ve DaVinci Resolve 21.1.0 (`/Applications`). Satıcı becerileri
 depoda tutulmaz, sabit commit'ten üretilir: `python3 sistem/claude/satici/satici.py kur` + `bagla --uygula`. Döngüde ffmpeg'e `-nostdin`; zsh'de değişken sözcüklere
 bölünmez (bayrakları açık yaz); ffmpeg `psnr` süzgeci farklı zaman damgalı akışlarda kare kaydırır (kareleri
 doğrudan çözüp karşılaştır).

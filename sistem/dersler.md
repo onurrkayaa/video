@@ -3,6 +3,101 @@
 Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders ilgili beceriye taşınır (taşındıysa
 "→ beceri" notu). En yeni üstte.
 
+## 2026-10-09 — Remotion 3B/Lottie ekleri (E3): kuruldu, gl ayarı ölçüldü
+- **Kurulum:** `medya kur remotion --yeniden` (kayıttaki satıra beş paket eklendi): @remotion/three ve @remotion/lottie
+  4.0.533, three 0.178.0, @react-three/fiber 9.2.0, lottie-web 5.13.0. Sürümler Remotion 4.0.533'ün kendi
+  devDependencies'inden alındı; en yeniler (three 0.186.1, R3F 9.8.1) sınanmadığı için alınmadı. Eş bağımlılıklar npm
+  view ile uyumlu, `npm ls` çıkışı 0. Kilit dosyasında 20 paket eklendi; silinen ve değişen yok, yalnız kök girdisi
+  değişti. 20 paketin bütünlük özeti (sha512) npm kayıt defteriyle aynı. node_modules 422,5 → 484,7 MiB (+62,2 MiB), kurulum
+  2,4 sn. Paketlerin hiçbirinde kurulum betiği yok.
+- **gl ayarı (ana ajan notu: ölçülerek doğrula):** sürücü adı sayfadan alındı. Sayfadaki `console.log` `remotion still
+  --log=verbose` çıktısında görünmedi (tek deneme); ad PNG'nin ilk satırına karakter kodu olarak yazdırılıp okundu. Şablonun `angle`
+  ayarında WebGL Apple M2 GPU'sunda (ANGLE Metal). Ayarsız Remotion 4.0.533 (gl null) ve swangle'da SwiftShader, yani
+  CPU. swiftshader, egl, vulkan ve angle-egl'de WebGL hiç yok. Komut satırındaki `--gl` ayarı eziyor. Ornek3B (90 kare,
+  1080x1920 mp4), 3'er dönüşümlü koşu: angle 3,88–3,97 sn, ayarsız 6,30–6,34 sn, swangle 15,2 sn. angle'ın iki
+  koşusu 90/90 kare bit düzeyinde aynı; angle ile swangle arasında PSNR en düşük 61,3 dB.
+- **Lottie:** @remotion/lottie Remotion karesini doğrudan Lottie karesi yapıyor (`goToAndStop(kare, true)`). JSON'un
+  `fr`'sini 30'dan 60'a çevirmek aynı karede aynı görüntüyü verdi. 60 fps JSON 30 fps kompozisyonda
+  `playbackRate={2}` ile doğru hızda: 12. kare, 24. Lottie karesiyle piksel piksel aynı.
+- **Şablon:** `Ornek3B` (ışıklı düğüm, yay girişi, kareyle tam tur) ve `OrnekLottie` (`public/lottie/ornek.json`,
+  stüdyoda kodla yazıldı: trim path halka + yaylanan nokta). İkisi de yazısız. `Kok.tsx`'te kayıtlıyken 2B `Ornek`
+  çizimi 2,81–2,87 sn'den 3,04–3,05 sn'ye çıktı (paket yükü). Ağ kapalıyken (yalnız localhost açık, sandbox-exec)
+  iki örnek de çizildi.
+- **Sınama:** `test_remotion_3b_ornegi_gpu_da_cizer` sürücü adında ANGLE Metal, ışık, dönüş, yay girişi ve saydam
+  tuvali denetler. `test_remotion_lottie_ornegi_yerel_ve_olcusu_dogru` halkanın ilerlemesine ve son karenin bilinen
+  alanına bakar: halka 0,998, nokta 0,994 (sınır ±%2). Dokuz mutasyonun dokuzu da sınamayı kırdı. Bunlar: gl swangle,
+  gl satırı yok, ışık yok, dönüş yok, yay girişi yok, Lottie kutusu 800 px, çizgi 25, trim animasyonsuz, uzak
+  adres. Tam `medya test` 308 geçti, 3 atlandı (`--agir`; E2 kapanışında 306). Kanıt: `sistem/devam/remotion-3b/2026-10-09/`.
+  → remotion-ev-kurallari başlığı, hareket-tasarimi, arac-radari (yükseltme), `yetenekler.toml`.
+
+## 2026-10-08 — Z-Image-Turbo (E2): kuruldu, yedek oldu; FLUX.2 kaldı
+- **Kurulum:** `mflux-community/z-image-turbo-mflux-q4` sabit commit f427e257d8e6…, 13 dosya 5,90 GB; `medya kur
+  z-image-turbo` 105 sn (uv adımı "already installed": mflux ortamı flux2-klein ile ortak, değişmedi); boş disk
+  46,68 → 40,76 GB. 6 LFS dosyasının SHA-256'sı ve 7 küçük dosyanın git blob kimliği HF API ile aynı. Lisans: kart ve
+  README apache-2.0, base_model Tongyi-MAI/Z-Image-Turbo (ana kart f332072: apache-2.0). Ağ kapalıyken (sandbox-exec)
+  üretti. Tokenizer FLUX.2 ile aynı blob (paylaşılan depo, 11 MB); metin kodlayıcılar farklı (yer paylaşımı yok).
+- **A/B (karar kuralı ölçümden önce yazıldı: `sistem/devam/ham/gorsel-ab/KARAR-KURALI.md`):** 3 istem (ürün, manzara,
+  İngilizce afiş) × 2 tohum × 2 model, 1024², `--low-ram`, sırası değişen çiftler; mflux süreci `/usr/bin/time -l` ile.
+
+  | | FLUX.2 [klein] 4B Q4 | Z-Image-Turbo 6B Q4 |
+  |---|---|---|
+  | süre (6'şar koşu) | 83–107 sn (ort 97) | 275–383 sn (ort 344); çift içi oran 3,3–3,7 |
+  | bellek tepesi (peak memory footprint) | 9,0–10,8 GB | 6,3 GB |
+  | takas | bir koşuda +0,38 GB | büyümedi |
+  | İngilizce afiş, gözle | 0/2 doğru ("SUM MER", "MUIC", "NIGHT") | 2/2 harfi harfine doğru |
+  | tesseract psm 11 / psm 6 (12 kelime) | 6 / 3 | 10 / 4 |
+  | Vision istem etiketi | mug/tableware, lake/water | aynı |
+  | Apple estetik ort | 0,61 | 0,65 |
+
+  Kural sonucu: Z-Image yazıda, istem uyumunda ve bellekte geçti; "1024² ≤ 4 dk" koşulunda kaldı → varsayılan FLUX.2,
+  Z-Image yedek ve `--model z-image`. Fotogerçekçilik farkı ölçülmedi (görseller git dışı, kullanıcı bakar). A/B boyunca
+  boş disk en az 41,75 GB, takas 2,8–3,2 GB.
+- **FLUX.2 kaldı (kullanıcı kuralı "gerek varsa dursun"):** referanslı düzenleme yalnız FLUX.2'de. Tongyi-MAI'nin HF'deki
+  modelleri 2026-10-08'de Z-Image-Turbo, Z-Image (taban), MAI-UI; Z-Image-Edit kartta "To be released". mflux 0.21.0'da
+  Z-Image için yalnız `--image` (görselden görsele) var, talimatlı düzenleme yok.
+- **Isıl kısılma:** 44 dk sürekli GPU yükünde süre ilk koşudan sonuncuya FLUX.2'de %28,6, Z-Image'da %39,5 uzadı
+  (fansız M2). Seri üretimin süresini ilk görselden tahmin etme.
+- **Bellek ölçümü:** `/usr/bin/time -l medya …` `peak memory footprint` olarak yalnız doğrudan alt süreci verir (20 MB);
+  MLX'in Metal belleği RSS'ye girmiyor (RSS FLUX.2 2,5, Z-Image 3,0–4,1 GB; ayak izi 9,0–10,8 / 6,3 GB). Üreteci doğrudan
+  sar. FLUX.2'nin kayıttaki 8,8 GB'ının (2026-10-07) yöntemi yazılmamış; bu yöntemle 9,0–10,8 GB.
+- **Sınama:** `medya test --agir gorsel` 6/6 (iki modelde de aynı tohum piksel piksel aynı görsel), tam `medya test`
+  306 geçti, 3 atlandı; yeni hafif sınamalar mutasyonla denendi (kod/kayıt commit kayması, `--referans`'ın Z-Image'a
+  gitmesi, yedeğe düşmenin kaldırılması: hepsi kırıldı). → `medya gorsel-uret`, `yetenekler.toml`, gorsel-uretim,
+  arac-radari bilinen kararlar.
+
+## 2026-10-08 — VoxCPM2 8-bit (E1): A/B ile varsayılan oldu, 4-bit silindi
+- **Kurulum:** `mlx-community/VoxCPM2-8bit` sabit commit d52725898a06…, 3,23 GB, 57 sn; `model.safetensors` SHA-256
+  HF `lfs.sha256` ile aynı (c07c59ac…), küçük dosyaların git blob kimlikleri API ile aynı; config'te tek fark
+  `quantization.bits` 4 → 8 (yalnız LM katmanları). Lisans: kart + README apache-2.0, ana kart (openbmb/VoxCPM2,
+  32279ef) "Apache-2.0, free for commercial use". mlx-audio 0.5.8 ağ kapalıyken yükledi ve konuştu.
+- **A/B (karar kuralı ölçümden önce yazıldı):** iki kimlik (aynı tarif ve tohum; birini 4-bit, birini 8-bit tasarladı)
+  × iki model × iki tohum takımı × 10 Türkçe cümle, yeniden üretimsiz, ABBA sırası. Her cümleden önce
+  `mx.random.seed`: aynı koşul bit düzeyinde aynı çıktıyı verdi (yinelenebilir A/B).
+
+  | | 4-bit | 8-bit |
+  |---|---|---|
+  | toplam CER (40 cümle) | %0,97 | %0,74 |
+  | en kötü cümle CER | %11,7 | %5,3 |
+  | benzerlik ort / en düşük | 0,815 / 0,721 | 0,819 / 0,732 |
+  | ilk geçişte kapıdan kalan cümle | 1 | 0 |
+  | 1 sn ses için üretim | 2,38 sn | 2,47 sn |
+  | bellek tepesi: kimlik / 10 cümle | 7,5 / 13,5–13,9 GB | 8,6 / 13,1–14,0 GB |
+
+  Eşli benzerlik farkı (8 − 4) +0,004, %95 önyükleme aralığı −0,003…+0,011: fark gürültü içinde; 8-bit "kötü değil",
+  "daha iyi" kanıtlanmadı. Satıcı tablosundaki RTF 0,90 / 0,85 (donanım belirtilmemiş); bu Mac'te 0,42 / 0,40. KAPI:
+  `medya test --agir seslendir` 8-bit'le iki kez geçti (biri ağ kapalıyken). 4-bit silindi: +2,30 GB. Dinleme
+  örnekleri git dışı: `sistem/devam/ham/ses-ab/` (doğallık ölçülmedi). → `medya seslendir`, `yetenekler.toml`.
+- **CER'in yarısı ölçüm hatası:** "üçüncü" → Whisper "3.", normalleştirici "üç": sekiz koşunun hepsinde aynı cümlede
+  %5,3. Kalan hatalar cümle başında: aynı tohumda (3006) iki modelin dökümünde de fazladan hece ("Nes öğretmenimiz",
+  "Daç da ödetmenimiz") — "devam" kipinde başlangıç kararsızlığı olabilir, dinlenmedi. → ses-tasarimi, gelistirme.md.
+- **Bellek tepesinin yarısı MLX önbelleği:** 10 cümlede işçi 13–14 GB (MLX etkin tepesi 5,0–6,5 GB); aynı koşul
+  `mx.set_cache_limit(0)` ile 6,1 GB, çıktı bit düzeyinde aynı, üretim %20 yavaş. A/B boyunca takas 2,5 → 4,7 GB, boş
+  disk en az 43,3 GB. CLAUDE.md'deki "VoxCPM2 ~7 GB" kısa işler içindi. → CLAUDE.md, gelistirme.md (O).
+- **Paylaşılan blob deposu (huggingface_hub 1.x):** model klasörünü silmek yer açmaz; ağırlık
+  `modeller/hf/hub/blobs/<2 hane>/<xet>` altında, model klasöründe yalnız bağ var. `scan_cache_dir().delete_revisions(
+  <commit>)` önce kuru (`expected_freed_size`, blobun `.refs` manifesti), sonra `.execute()`: başvurusu kalmayan blobu
+  süpürür (bugün 3 blob, 2,30 GB).
+
 ## 2026-10-08 — `medya ciz` (O6): planı HyperFrames'siz, kare dökmeden çizmek
 - **Açık GOP'lu HEVC'de "iki karenin ortasına ara" yetmez.** mov araması DTS'e göre: anahtar karenin hemen önündeki
   kareye (`-ss` o karenin ortası) aranınca ffmpeg sonraki anahtar kareye iniyor, onun öncü kareleri çözülemiyor ve çıktı

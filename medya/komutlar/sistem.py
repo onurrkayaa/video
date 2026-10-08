@@ -90,5 +90,6 @@ def kaydet(alt, ad):
         p = alt.add_parser(ad, help="doğruluk sınamaları")
         p.add_argument("yetenek", nargs="?")
         p.add_argument("--agir", action="store_true",
-                       help="ağır üretici model sınamalarını da koş (FLUX.2 ~9 GB, VoxCPM2 ~7 GB bellek; takas büyütür)")
+                       help="ağır üretici model sınamalarını da koş (FLUX.2 9–11 GB, Z-Image 6,3 GB, VoxCPM2 "
+                            "7–14 GB bellek; takas büyütür)")
         p.set_defaults(islev=test_)

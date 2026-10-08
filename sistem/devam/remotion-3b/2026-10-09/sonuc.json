@@ -1,0 +1,172 @@
+{
+ "tarih": "2026-10-09 00:57",
+ "chrome": "mac_arm-152.0.7977.30",
+ "gl": {
+  "sablon (angle)": {
+   "kod": 0,
+   "sure_sn": 1.13,
+   "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) | ANGLE (Apple, ANGLE Metal Renderer: Apple M2, Unspecified Version)"
+  },
+  "ayarsiz (null)": {
+   "kod": 0,
+   "sure_sn": 1.1,
+   "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) | ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "swangle": {
+   "kod": 0,
+   "sure_sn": 1.24,
+   "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) | ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "swiftshader": {
+   "kod": 0,
+   "sure_sn": 1.11,
+   "webgl": "webgl-yok"
+  },
+  "egl": {
+   "kod": 0,
+   "sure_sn": 1.11,
+   "webgl": "webgl-yok"
+  },
+  "vulkan": {
+   "kod": 0,
+   "sure_sn": 1.11,
+   "webgl": "webgl-yok"
+  },
+  "angle-egl": {
+   "kod": 0,
+   "sure_sn": 1.11,
+   "webgl": "webgl-yok"
+  }
+ },
+ "ornek3b_mp4_90_kare": {
+  "sablon (angle)": {
+   "kod": 0,
+   "sure_sn": 3.91
+  },
+  "ayarsiz (null)": {
+   "kod": 0,
+   "sure_sn": 6.33
+  },
+  "swangle": {
+   "kod": 0,
+   "sure_sn": 15.15
+  }
+ },
+ "belirlenimcilik": {
+  "kare": [
+   90,
+   90,
+   90
+  ],
+  "angle_iki_kosu_ayni_kare": 90,
+  "angle_iki_kosu_en_buyuk_fark": 0,
+  "angle_swangle_psnr_en_dusuk": 61.26,
+  "angle_swangle_psnr_ort": 63.93,
+  "angle_swangle_en_buyuk_fark": 95,
+  "nesne_orani_kare_0_45_89": [
+   0.0,
+   0.123,
+   0.205
+  ],
+  "kose_rgb": [
+   16,
+   37,
+   62
+  ],
+  "kare_45_std": 31.7,
+  "kare_44_45_ort_fark": 2.04
+ },
+ "dizi_sure": {
+  "angle-1": {
+   "kod": 0,
+   "sure_sn": 5.35
+  },
+  "angle-2": {
+   "kod": 0,
+   "sure_sn": 5.33
+  },
+  "swangle": {
+   "kod": 0,
+   "sure_sn": 14.97
+  }
+ },
+ "ornek_2b_cizim_sn": {
+  "eski": [
+   2.87,
+   2.82,
+   2.81
+  ],
+  "yeni": [
+   3.04,
+   3.05,
+   3.04
+  ]
+ },
+ "lottie_fr": {
+  "fr30": {
+   "kod": 0,
+   "sure_sn": 1.35
+  },
+  "fr60": {
+   "kod": 0,
+   "sure_sn": 1.36
+  },
+  "ayni_goruntu": true
+ },
+ "lottie_mp4_60_kare": {
+  "kod": 0,
+  "sure_sn": 2.81
+ },
+ "agsiz": {
+  "curl_disari": {
+   "kod": 7,
+   "http": "000"
+  },
+  "ornek3b_still": {
+   "kod": 0,
+   "sure_sn": 1.51
+  },
+  "lottie_still": {
+   "kod": 0,
+   "sure_sn": 1.38
+  }
+ },
+ "ornek3b_mp4_tekrar": {
+  "not": "olc.py'den sonra kabukta, dönüşümlü 3 koşu (şablon kopyası; 'null' = gl satırı silinmiş remotion.config.ts); 90 kare 1080x1920 mp4, paketleme ve tarayıcı açılışı dahil",
+  "angle_sn": [
+   3.974,
+   3.892,
+   3.876
+  ],
+  "null_sn": [
+   6.304,
+   6.307,
+   6.337
+  ]
+ },
+ "kurulum": {
+  "komut": "medya kur remotion --yeniden (yetenekler.toml kurulum satırı)",
+  "eklenen_npm_paketi": 20,
+  "node_modules_kib": [
+   432600,
+   496284
+  ],
+  "sure_sn": 2.36,
+  "npm_ls_cikis": 0,
+  "lisans": {
+   "@remotion/three": "MIT (package.json; LICENSE dosyası yok)",
+   "@remotion/lottie": "Remotion License (LICENSE.md)",
+   "three@0.178.0": "MIT (LICENSE)",
+   "@react-three/fiber@9.2.0": "MIT (package.json)",
+   "lottie-web@5.13.0": "MIT (LICENSE.md)"
+  },
+  "kurulum_betigi": "yeni 20 paketin hiçbirinde (pre/post)install yok (npm view scripts)",
+  "ag_istegi": "@remotion/three, @remotion/lottie, @react-three/fiber dist'inde fetch/XMLHttpRequest/sendBeacon yok; URL'ler yalnız hata iletisindeki belge bağlantıları",
+  "kilit_dosyasi": "package-lock.json: 20 paket eklendi, 0 silindi; değişen yalnız kök girdisi; 20 paketin integrity'si npm view dist.integrity ile aynı"
+ },
+ "lottie_playbackrate": {
+  "not": "kabukta: JSON'un fr'si 60'a çevrilip <Lottie playbackRate={2}> (= fr / fps) verildi, 30 fps kompozisyon",
+  "fr60_hiz2_kare12_esit_fr30_kare24": true,
+  "en_buyuk_fark": 0
+ }
+}

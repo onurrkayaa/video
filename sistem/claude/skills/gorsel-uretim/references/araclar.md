@@ -24,9 +24,38 @@ Apple ML komutları (`analiz`, `arkaplan-sil`) Neural Engine derleyicisi takıl�
 elle maske, `disa_aktar.py --merkez x,y`, `kolaj.py --merkez x,y …` ile sürdürün ve raporda yazın. Yüzlü kolaj/kırpım
 analizsiz (elle merkezle) teslim edilmez; edilecekse hücreleri kullanıcı kontrol eder (sayısal modda özellikle).
 
+### Üretici (kurulu): `medya gorsel-uret` — FLUX.2 [klein] ve Z-Image-Turbo
+Kayıt `yetenekler.toml` (`flux2-klein` birincil, `z-image-turbo` yedek); iki modelin ağırlığı da Apache-2.0, mflux
+0.21.0 (MIT), stüdyonun Python 3.13.16'sı, ağsız çalışır. Model klasörleri sabit commit'te (yerel anlık görüntü yolu).
+```zsh
+medya gorsel-uret "<istem>" --cikti calisma/gorsel/k1.png --adet 3 --tohum 11          # varsayılan: flux2
+medya gorsel-uret "<istem>" --cikti calisma/gorsel/afis.png --model z-image --tohum 11   # görselde İngilizce yazı
+medya gorsel-uret "<istem>" --cikti calisma/gorsel/sahne.png --referans calisma/gorsel/urun.png   # düzenleme: hep flux2
+```
+| A/B 2026-10-08 (1024², aynı 3 istem × 2 tohum, `--low-ram`) | FLUX.2 [klein] 4B Q4 (`flux2`) | Z-Image-Turbo 6B Q4 (`z-image`) |
+|---|---|---|
+| model, adım | 4,62 GB (794cd15), 4 | 5,90 GB (f427e25), 9 |
+| süre | 83–107 sn | 275–383 sn (3,3–3,7 kat) |
+| bellek tepesi (`time -l` peak memory footprint) | 9,0–10,8 GB | 6,3 GB |
+| İngilizce afiş yazısı | 0/2 afiş doğru ("SUM MER", "MUIC", "NIGHT"); OCR 6/12 kelime | 2/2 afiş harfi harfine doğru; OCR 10/12 kelime |
+| istem etiketi (Vision) / estetik ort (Apple) | aynı / 0,61 | aynı / 0,65 |
+| düzenleme (`--referans`) | var (~176 sn) | yok (Z-Image-Edit yayımlanmadı) |
+- Seçim: konsept taraması ve düzenleme `flux2` (varsayılan); görselde İngilizce yazı ya da bellek darsa `--model
+  z-image` (~3,5 kat süre). Fotogerçekçilik farkı ölçülmedi: görseller `sistem/devam/ham/gorsel-ab/`, kullanıcı bakar.
+  Kural 4 değişmedi: teslim edilen yazı HTML'de; Türkçe harf modele çizdirilmez.
+- Aynı model + istem + tohum = piksel piksel aynı görsel (iki model; `medya test gorsel --agir`). Varsayılan adım
+  sayıları damıtıldıkları sayı (`--adim` verilmezse flux2 4, z-image 9). Olumsuz istem yok (klein'da bayrak yok,
+  yönlendirmesiz Z-Image `--negative-prompt`'u yok sayar) → istemi olumlu yaz.
+- Sürekli üretimde ısıl kısılma (fansız M2): 44 dk'lık A/B'de süre ilk koşudan sonuncuya %28,6 (flux2) ve %39,5 (z-image) uzadı.
+- mflux'ı doğrudan çağırma: `--model` verilmezse upstream depo iner (FLUX.2 23,7 GB, Z-Image ~33 GB); `medya
+  gorsel-uret` sabit sürümlü yerel kopyayı kullanır, yanına istem/tohum/sağlayıcı/lisans kaydı (`.json`) yazar.
+- Ortam paketleri kısıt dosyasına sabit (2026-10-08): taşımadan önce/sonra aynı tohum piksel piksel aynı çıktı.
+  `uv tool upgrade` yapma; paket değişecekse kısıt dosyasını yenile ve `medya test gorsel --agir` koş (aynı tohum
+  başka görsel verebilir).
+
 ## İsteğe bağlı kurulumlar: önce boyut ve lisansı söyle, onay al
 
-Hepsi 2026-10-05'te geçici bir klasöre kurulup bu Mac'te çalıştırıldı (üretici hariç); stüdyoya kurulmadı.
+Hepsi 2026-10-05'te geçici bir klasöre kurulup bu Mac'te çalıştırıldı; stüdyoya kurulmadı.
 Bir iş için **tek seferlik** kullanım: kullanıcı onayıyla aşağıdaki yollara (`arac/`, `ortamlar/gorsel`, `modeller/`)
 kurulabilir; ne kurulduğu, boyutu ve lisansı projenin `KARARLAR.md`'sine yazılır. Kalıcı benimseme (kayıt satırı,
 `medya kur`, sınama) yalnız `arac-radari` becerisiyle.
@@ -88,24 +117,6 @@ ortamlar/gorsel/bin/python $G/derinlik.py GIRDI.png --model modeller/derinlik/da
 curl -fL -o /tmp/resvg.zip https://github.com/linebender/resvg/releases/download/v0.48.1/resvg-macos-aarch64.zip && [ "$(shasum -a 256 /tmp/resvg.zip | cut -d' ' -f1)" = 06440eb5aa14a28cbfc7e40ae39e1ffa71adc051b89fbaa913b4f1d9b905d09f ] && unzip -q -o /tmp/resvg.zip resvg -d arac && rm /tmp/resvg.zip
 arac/resvg --version                                                              # kontrol
 ```
-
-### Üretici: mflux 0.21.0 + FLUX.2 [klein] 4B Q4 (model 4,62 GB + ortam ~1 GB, Apache-2.0) — çalıştırılmadı
-**Disk kararı** (`arac-radari` bilinen kararlar): yalnız **harici SSD**'de (`export HF_HOME=/Volumes/<disk>/hf`);
-iç diskte boş alan ~11 GB, kurulum sınırı (5 GB) zorlar. İç diske yalnız kullanıcı açıkça isterse.
-```zsh
-medya kur flux2-klein   # yetenekler.toml: stüdyonun Python 3.13.16'sı + sistem/kisitlar/mflux-0.21.0.txt (elle uv kurma)
-mflux-generate-flux2 --model mflux-community/flux2-klein-4b-mflux-q4 --base-model flux2-klein-4b \
-  --prompt-file plan/k1.txt --width 1024 --height 1024 --steps 4 --seed 11 23 37 \
-  --low-ram --no-exif --make-conf --output "calisma/gorsel/k1-{seed}.png"
-```
-- Bayraklar 0.21.0 kaynağından okundu; bu Mac'te koşturulmadı → ilk iş `--help` ve 512² deneme, `/usr/bin/time -l`.
-- `--model` verilmezse upstream 23,7 GB'lık depo seçilir. Klein damıtılmış: 4 adım; `--negative-prompt` yok →
-  istemi olumlu yaz. `--no-exif` istemin dosyaya gömülmesini önler; `--make-conf` tohum/istem yan dosyası yazar.
-- İndirmeden sonra `export HF_HUB_OFFLINE=1`; model revizyonunu (HF `sha`) KARARLAR.md'ye yaz.
-- Fotogerçekçi alternatif: Z-Image-Turbo Q4 5,90 GB Apache-2.0 (denenmedi). Diskte aynı anda tek model.
-- Ortam paketleri kısıt dosyasına sabit (2026-10-08): taşımadan önce/sonra aynı tohum piksel piksel aynı çıktı.
-  `uv tool upgrade` yapma; paket değişecekse kısıt dosyasını yenile ve `medya test gorsel --agir` koş (aynı tohum
-  başka görsel verebilir).
 
 ## Kaçınılacaklar (lisans ve kural tuzakları)
 | Ne | Neden |
