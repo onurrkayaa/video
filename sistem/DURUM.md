@@ -62,6 +62,8 @@ engel değil: 48,8 GB boş (13,2 GB'tan; yeri O3 sırasında başka bir süreç 
 - O2 disk payı: tamam. O7 mflux stüdyonun Python'una (CPython 3.13.16, 56 paket sabit): tamam.
 - Kapanış: `medya test` 172 geçti, 2 atlandı. Ağır sınamalar dalga içinde geçti (`medya test gorsel --agir`, VoxCPM2).
 
+Ana ajan (2026-10-08 akşam, dalga 3 sonrası): O3 B1–B5 belge bulguları düzeltildi; O6 açık GOP HEVC sınaması eklendi (`test_ciz_acik_gop_hevc_anahtar_kare_onu`; ARAMA_PAYI=0 mutasyonunda kırılıyor, düzeltmeyle geçiyor); "PNG Y sabit −1,9" ifadesi ölçüme göre düzeltildi (~%1,7 kazanç sıkışması); ciz.py belge dizgesi davranışla uyumlu; HyperFrames son çizim yönergesi ölçüme göre güncellendi (CLAUDE.md, kurgu-zanaati, kompozisyon.md, medya-hareket, medya-uretim.js: gerçek çekimde `medya ciz`; HyperFrames'te ≤ 1080p kaynakta PNG, 4K'da JPEG + `--workers 1`). `medya test` 302 geçti, 2 atlandı.
+
 ## Kalanlar (doğrulama bulguları; uygulanmadı)
 Dalga 3'te kapananlar (eski listeden): `--describe 0|no`, önek değerinden sonra yönlendirme (`timeout 600 >x`), ön
 süzgeçte satır devamı, O4'ün iki sabit sürüm yolu (`npm i -D hyperframes@latest`, `npx hyperframes@latest …`), `npx -p`
@@ -90,35 +92,16 @@ kaçağı, 4K RIFE ölçüm borcu. Satır numaraları bu commit'teki dosyalara g
     `feedback`'i ve transcribe/init/tts/models install kurallarını anmıyor. gelistirme.md D: `-E`'siz tam sürüm
     package.json'a `^` yazar, git/URL kaynağı tanınmıyor, `hyperframes capture` için `--skip-vision` istenmiyor.
 - O3 yavaslat (belge; kodun davranışını değiştirmez):
-  - B1 dersler.md:93-94 "720p sentetikte … en düşük 28,7 dB, yenide > 40": ölçütü yazılı değil, kanıt `olc_720.json`
-    (25,49 / 39,34) ile çelişiyor. Doğrulayıcı sınamanın ölçütüyle (640x360) 28,73 / 41,14 üretti.
-  - B2 gelistirme.md:175 "4K kaynakta RIFE'nin (UHD kipi) süre/disk ölçümü" açık duruyor; dersler.md:67 kapandı diyor.
-  - B3 dersler.md:284-285 silinmiş gelistirme maddesine gönderme yapıyor; düzeltme notu yok (1x 4K da inmeli).
-  - B4 CLAUDE.md:81 "RIFE önce, 3,6 kat hızlı": tabanı tam 4K RIFE (deneme kesiti; sentetikte 2,6 kat); bugünkü 4K
-    varsayılanı Apple'ın süresi ölçülmedi.
-  - B5 yavaslat.py:51 "aynı renkte görünür" bt601 etiketli ve etiketsiz SD kaynakta yaklaşık (gelistirme.md D).
   - Ölçülmedi: öznel kalite; gerçek HyperFrames çiziminin disk tepesi (borudan taklit edildi); büyük hareketli gerçek
     çekimde kırp-önce kalitesi; 4K'da Apple varsayılanının süresi.
 - O6 medya ciz:
-  - ORTA · Açık GOP HEVC düzeltmesini (ciz.py:49 `ARAMA_PAYI`) hiçbir sınama korumuyor: 0 yapılınca 8 sınama yine geçiyor,
-    sentetik x265 açık GOP'ta 16 konumun 8'i 1–4 kare geç geliyor. Sınama kaynakları B karesiz H.264. Hazır betik:
-    `sistem/devam/ham/2026-10-08-dalga3-dogrulama/o6/hevc_mut.py` (fikstür `libx265 open-gop=1:bframes=4:keyint=240`).
   - ORTA · Süreç: 4K HyperFrames PNG karşılaştırması, doğrulama düzeltmesinin "PNG yalnız ≤ 10 sn, ≤ 1080p" sınırına
     aykırı ve takas/disk bekçisi olmadan koşuldu: takas 15,9 GB'a çıktı, SIGABRT. Yetim Chrome süreçleri ve 3,5 GB'lık
     `work-…` klasörü temizlendi; takas dosyası 2 → 4 GiB büyüdü (dalga 3 kapanışında 2,8 GiB kullanımda).
-  - DÜŞÜK-ORTA · "PNG kipi Y'yi sabit ~1,9 düzey düşürüyor" (CLAUDE.md:115-116; gelistirme.md ve dersler.md'de "her
-    parlaklıkta"): kanıt dosyası yok. Doğrulayıcının sentetik 1080p bt709 ölçümünde fark sabit değil, parlaklıkla büyüyor
-    (doğrusal uyum ~%1,7 kazanç sıkışması; Y kutu ortalamaları 16–60: +0,8, 60–180: −1,6 … −2,0, 180–236: −3,6; JPEG
-    kipinde de +2,5 … −1,8, nötr değil): `…/dalga3-dogrulama/o6/ydz/sonuc.json`.
-  - DÜŞÜK-ORTA · ciz.py:12-13 "sözleşmede olmayan alanlar → hata" diyor; çekimde `yazi`, üst düzeyde `yazilar`,
-    `muzik.kazanc_db` ve tanınmayan `ses` değeri uyarısız çiziliyor; negatif `muzik.bas` sessizce 0 (ciz.py:593). Örnek
-    planlar: `…/dalga3-dogrulama/o6/sinama/plan/`.
   - DÜŞÜK · Erimedeki `gecis.egri` (ciz.py:691) ve `kendi` sesin 8 ms'lik geçişi (ciz.py:48 `SES_GECIS`) sınanmıyor:
     doğrusal ya da geçişsiz mutant bütün sınamaları geçiyor.
   - DÜŞÜK · `kisma.py --bas` işareti (gelistirme.md Y): `muzik.bas ≠ 0` iken kısma yanlış yere düşer; `ciz
     --yalniz-konusma` "aynı bas" diyor (ciz.py:751), sınama `bas: 0` ile bu durumu atlıyor.
-  - DÜŞÜK · HyperFrames'te gerçek çekimin son çizimi için "PNG" yönergesi üç yerde duruyor (CLAUDE.md HyperFrames notları,
-    kurgu-zanaati SKILL.md:45, medya-uretim.js çizim istemi); ciz kapsamı dışındaki 4K işte (yazı, dip, J/L) aynı çöküş olabilir.
   - Önemsiz: "`medya test ciz` 11" aslında 12 sınama seçiyor; yetenekler.toml'daki "Ken Burns ≤ 0,02 px" CRF 1 ölçümü
     (CRF 16'da 0,055–0,062); 300 sn'lik uzun plan sessizdi (uzun işte ses yolu sınanmadı); medya-uretim.js'de atlanan
     aşamanın özeti hâlâ `calisma/kompozisyon/` diyor.
@@ -196,7 +179,6 @@ kaçağı, 4K RIFE ölçüm borcu. Satır numaraları bu commit'teki dosyalara g
   (Talimat gereği dokunulmadı.)
 - O6 · `siyah-dip`/`beyaz-dip` sözleşmesi: dip kesimin iki yanında mı, `sure_kare` toplam mı, ilk çekim siyahtan mı
   açılır? Karar verilince iki motora aynı tanımla eklenir (bugün HyperFrames kompozisyonunda da tanımsız).
-- O6 · CLAUDE.md'deki "gerçek çekimli son çizimde `--video-frame-format png`" önerisinin değişmesi (Öneri 4).
 - Disk ve takas (O2 + O6) · dalga 4'ten önce Mac'i yeniden başlatmak (takas dosyaları 4 GiB, 2,8 GiB kullanımda);
   `~/.cache/huggingface` (0,48 GB, stüdyo dışı, sahibi belirsiz); `sleepimage` 2 GiB (`hibernatemode 3`, `sudo pmset`).
 - O1 (isteğe bağlı, genel ayar) · `~/.claude/settings.json` → `skillOverrides`'a iki anahtar: `"embedded-captions": "user-invocable-only"` ve

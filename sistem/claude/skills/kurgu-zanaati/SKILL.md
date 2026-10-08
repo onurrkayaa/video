@@ -42,7 +42,7 @@ telifli şarkı ve kişilerin rızası; iş videosunda ticari lisanslı müzik.
 2. Künye, kontak, sahneler, analiz, ses-olay; müzik kesiti + analiz (önerilen `bas: 0`).
 3. Seçki → stringout (sıralı kontak + tablo) → **kullanıcı onayı** → kaba → ince kurgu: [teknikler](references/teknikler.md).
 4. Ara klipler `calisma/klipler/`e (sdr, cfr, yavaslat, rampa, sabit); asıllara dokunma.
-5. `plan/kurgu.json` → `plan_denetle` GEÇTİ → motor: plan yalnız `medya ciz` kapsamındaysa `medya ciz` (taslak `--crf 28 --preset veryfast`), yazı/grafik/süslü geçiş/dip/J-L/fotoğraf varsa kompozisyon ([kompozisyon](references/kompozisyon.md)) → taslak → ölç → `zamankodu` taslağıyla notlar → son çizim (HyperFrames'te `--video-frame-format png`).
+5. `plan/kurgu.json` → `plan_denetle` GEÇTİ → motor: plan yalnız `medya ciz` kapsamındaysa `medya ciz` (taslak `--crf 28 --preset veryfast`), yazı/grafik/süslü geçiş/dip/J-L/fotoğraf varsa kompozisyon ([kompozisyon](references/kompozisyon.md)) → taslak → ölç → `zamankodu` taslağıyla notlar → son çizim (HyperFrames'te ≤ 1080p kaynakta `--video-frame-format png`; 4K kaynakta PNG çöktü → JPEG + `--workers 1`).
 6. Bitirme: görüntü düzeltmesi → ses onarımı → `medya ustala` → `medya meta-temizle` EN SON → `medya denetle`.
 
 ## Kesin kurallar

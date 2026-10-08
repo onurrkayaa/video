@@ -21,10 +21,13 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
   `--bas <plan muzik.bas>` diyor; betiğin kendi tanımına göre doğrusu −`muzik.bas`. `muzik.bas` 0,5 iken `--bas 0.5`
   kısmayı 1 sn erken koydu (ölçüldü 2026-10-08, dersler.md). Önerilen `bas: 0`'da etkisiz. Düzeltme + sınama.
 - **O** HyperFrames 0.8.140 PNG kipi (`--video-frame-format png`, CLAUDE.md'nin gerçek çekim son çizim önerisi):
-  1080p bt709 8 bit gerçek çekimde Y her parlaklıkta sabit −1,9 düzey (JPEG kipi +0,04, ciz +0,02; nedeni ayrılmadı);
+  Y'de kazanç sıkışması: 1080p bt709 gerçek çekimde ortalama −1,9 düzey (O6); sentetik bt709 rampada Y=50 −0,5,
+  128 −1,8, 200 −3,1, yani sabit kayma değil ~%1,7 sıkışma (dalga 3 doğrulaması; JPEG de nötr değil: +1,4 / +0,06 /
+  −1,2; ciz +0,02); nedeni ayrılmadı;
   4K kaynakta 5 işçiyle takas 0,9 → 15,9 GB, SIGABRT; çöken çizimin Chrome süreçleri kapanmadı, `work-…` klasörü
-  (3,5 GB) çıktı klasöründe kaldı (2026-10-08). Öneri gözden geçirilmeli (gerçek çekimde `medya ciz`; HyperFrames'te
-  JPEG + `--workers 1` ölçüldü: 35,8 sn, 0,37 GB).
+  (3,5 GB) çıktı klasöründe kaldı (2026-10-08). Öneri güncellendi (CLAUDE.md, kurgu-zanaati, medya-uretim: gerçek
+  çekimde `medya ciz`; HyperFrames'te ≤ 1080p kaynakta PNG, 4K'da JPEG + `--workers 1`); nedeni ve 4K PNG + 1 işçi
+  ölçülmedi.
 - **Y** `medya temizle --uygula`: `uv cache clean`'e `--cache-dir` açıkça verilsin. Hedef bugün `UV_CACHE_DIR`'den
   geliyor; ortam yüklenmeden çalışırsa stüdyo dışı `~/.cache/uv`'yi siler, yol bekçisi yalnız `.uv/cache`'i denetliyor
   (`env -u UV_CACHE_DIR arac/uv cache dir` → `~/.cache/uv`, 2026-10-08; o gün 16 KB). Sınama: alt süreç argümanı.
@@ -172,7 +175,6 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 - `medya seslendir`: doğallık ölçülemez (kullanıcı dinler); konuşmacı benzerliği eşiği (0,5) 5 cümlelik örnekten — uzun
   metinlerde (≥ 30 cümle) ölç; isteğe bağlı MOS tahmincisi (UTMOS) değerlendir.
 - `medya gorsel-uret --referans`: düzenlemede kenar kalıntısı görüldü (mermerde ahşap dokusu izi) — maske/kompozit yolu.
-- 4K kaynakta RIFE'nin (UHD kipi) süre/disk ölçümü; şimdilik 4K'da Apple önce (`yavaslat` docstring'i).
 - Remotion'da gerçek telefon HEVC/HDR çekimi (yalnız sayısal modda, mahrem olmayan bir klip).
 - HyperFrames 0.8.140 çizim düzeltmeleri için hedefli fikstür yok: GSAP ile kırpılan clip-path/inset öğe (#5010), geç
   başlayan `fromTo` (#5125), video üstünde hareket bulanıklığı (#5150), yavaş belge (#5168), 16 GB'ta ağır sahnede

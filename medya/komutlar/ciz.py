@@ -10,7 +10,8 @@ Kapsam: kesim (eslesme = kesim), erime (örtüşme), kadraj (cover + `kadraj.ilg
 kendi sesi (`ses: kendi`) + müzik (`muzik.dosya`, `muzik.bas`). Kısma: `--yalniz-konusma` konuşma katmanını yazar →
 ses-tasarimi `kisma.py` → kısılmış WAV `muzik.dosya` olur (ciz kendi kısma mantığını yazmaz).
 Kapsam dışı (hata verir, HyperFrames önerir; sessizce kesime çevirmez): savurma, yakinlasma, isik, flas, siyah-dip,
-beyaz-dip, j-kesim/l-kesim, paralaks, kadraj.mod pan/takip/dolgu, fotoğraf, HDR kaynak, sözleşmede olmayan alanlar.
+beyaz-dip, j-kesim/l-kesim, paralaks, kadraj.mod pan/takip/dolgu, fotoğraf, HDR kaynak, `gecis`/`kadraj`/`hareket`
+içindeki bilinmeyen anahtarlar. Öteki bilinmeyen alanlar (ör. `yazi`) çizilmez ama hata da vermez — `plan_denetle` uyarır.
 
 Kare kuralı (HyperFrames ile aynı): çıktı karesi n'de çekimin medya anı t = klip_bas|kaynak_bas + (n − bas_n)·hız/fps;
 gösterilen kaynak karesi, zamanı ≤ t olan son kare. Kare zamanları ffmpeg 6.0'ın paket zaman damgalarından kesir olarak

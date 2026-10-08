@@ -317,3 +317,39 @@ def test_ciz_hiz_klip_ve_donuk_kaynak(tmp_path, sinama):
     a, r = oku(cikti, []), oku(don, ["-ss", "0.5"])
     psnr = 10 * np.log10(255 ** 2 / np.mean((a - r) ** 2))
     assert a.shape == (15, 1280, 720) and psnr > 40, psnr
+
+
+def test_ciz_acik_gop_hevc_anahtar_kare_onu(tmp_path, monkeypatch):
+    """iPhone'un varsayılan biçimi açık GOP HEVC'dir (B kareli): anahtar karenin hemen önündeki bir kareye `-ss` ile
+    doğrudan aranınca çözücü sonraki anahtar kareye iner (O6'da gerçek çekimde 34 konumun 10'u 2 kare geç ölçüldü).
+    ciz bu yüzden ARAMA_PAYI kadar önce arar ve kareyi pts'ten seçer. Sentetik x265 open-gop/bframes=4/keyint=240
+    kaynakta ciz'in verdiği kareler tam çözümle birebir aynı olmalı; ARAMA_PAYI=0 mutasyonu bu sınamayı kırar (dalga 3
+    doğrulaması: 16 konumun 8'i 1–4 kare geç)."""
+    import hashlib
+    import medya.komutlar.ciz as ciz
+    y = tmp_path / "acikgop.mov"
+    subprocess.run([FF, "-nostdin", "-v", "error", "-f", "lavfi", "-i", "testsrc2=size=640x360:rate=60", "-t", "10",
+                    "-c:v", "libx265", "-preset", "ultrafast", "-x265-params",
+                    "open-gop=1:bframes=4:keyint=240:min-keyint=240:scenecut=0:log-level=error", "-pix_fmt", "yuv420p",
+                    "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709",
+                    "-tag:v", "hvc1", str(y)], check=True)
+    tam = [l.split(",")[-1].strip() for l in subprocess.run(
+        [FF, "-nostdin", "-v", "error", "-i", str(y), "-map", "0:v:0", "-pix_fmt", "yuv420p", "-fps_mode", "passthrough",
+         "-f", "framemd5", "-"], capture_output=True, text=True, check=True).stdout.splitlines()
+        if l and not l.startswith("#")]
+
+    def kareler(i0: int) -> list[str]:
+        plan = {"fps": 60, "boyut": [640, 360], "cekimler": [{"no": 1, "kaynak": str(y), "kaynak_bas": i0 / 60,
+                "cikti_bas": 0, "cikti_son": 5 / 60, "hiz": 1, "ses": "sessiz"}]}
+        x = ciz.plani_hazirla(plan, tmp_path).cekimler[0]
+        x.baslat()
+        try:
+            return [hashlib.md5(x.sonraki()).hexdigest() for _ in range(5)]
+        finally:
+            x.kapat()
+
+    konumlar = (0, 100, 236, 237, 238, 239, 240, 241, 476, 477, 478, 479, 480, 481)
+    assert len(tam) == 600
+    uyumsuz = {i0: [tam.index(o) if o in tam else None for o in oz]
+               for i0 in konumlar if (oz := kareler(i0)) != tam[i0:i0 + 5]}
+    assert not uyumsuz, uyumsuz

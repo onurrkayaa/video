@@ -26,11 +26,13 @@ Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders il
   | Çizim | Süre | Disk tepesi | RSS tepesi | VMAF ort / en az | Y-PSNR | Y kayması |
   |---|---|---|---|---|---|---|
   | `medya ciz` | 5,8 sn | 0,02 GB | 0,97 GB | 96,21 / 94,69 | 47,1 dB | +0,02 |
-  | HyperFrames PNG | 34,6 sn | 1,11 GB | 3,2 GB | 95,98 / 94,48 | 40,9 dB | −1,9 düzey (her parlaklıkta) |
+  | HyperFrames PNG | 34,6 sn | 1,11 GB | 3,2 GB | 95,98 / 94,48 | 40,9 dB | ort. −1,9 düzey (sabit değil, aşağıda) |
   | HyperFrames JPEG (varsayılan) | 18,4 sn | 0,18 GB | 2,6 GB | 94,77 / 93,56 | 45,3 dB | +0,04 |
 
-  Üçü de kareye hizalı (−1/0/+1 kaymada en iyi 0). VMAF farkı ciz − HF PNG +0,23 (ölçütün ≥ −0,3). PNG kipinin sabit Y
-  kayması VMAF'ta görünmüyor, PSNR'de görünüyor (nedeni ayrılmadı → gelistirme.md).
+  Üçü de kareye hizalı (−1/0/+1 kaymada en iyi 0). VMAF farkı ciz − HF PNG +0,23 (ölçütün ≥ −0,3). PNG kipinin Y
+  kayması VMAF'ta görünmüyor, PSNR'de görünüyor. Dalga 3 doğrulaması sentetik bt709 rampada bunun sabit kayma değil
+  ~%1,7 kazanç sıkışması olduğunu ölçtü (Y=50 −0,5, 128 −1,8, 200 −3,1; JPEG +1,4 / +0,06 / −1,2); nedeni ayrılmadı →
+  gelistirme.md.
 - **4K → 1080x1920 dikey 10 sn (2 Ken Burns + erime):** `medya ciz` 12,6 sn, disk 0,02 GB, RSS 1,45 GB (çözücü
   `-threads 4`: 2,36 → 1,70 GB, kareler bit bit aynı; iki çekim kuralı 1,51; x264 `-threads 8` 1,45). HyperFrames PNG (5 işçi) 100 sn sonra SIGABRT ile çöktü:
   4096x2160 8 bit RGB PNG kare başı 11,3 MB (312 kare 3,5 GB, çizimin yanındaki `work-…` klasöründe kaldı), takas 0,9 →
@@ -91,7 +93,7 @@ Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders il
 - **Ara kare yolu 60 fps kaynağı 30'a indiriyordu** (0,25x'te gerçek karelerin yarısı atılıp × 4). Artık kaynağın tam
   böleni olan en yüksek hız (60 × 2). Yarı ölçekli eşdeğerde (30 fps → 15 fps çıktı, 0,25x; gerçek 60 fps karelerine
   karşı) tüm kareler: gerçek çekimde 40,57 → 41,26 dB (en kötü %5: 39,47 → 40,72), sentetikte 35,68 → 36,69. 720p
-  sentetikte eski yolda gerçek kare olması gereken konumlarda en düşük 28,7 dB, yenide > 40.
+  sentetikte eski yolda gerçek kare olması gereken konumlarda en düşük 28,7 dB, yenide 41,1 (sınamanın ölçütü: 640x360 gri, 0,5 sn, hareket60'a karşı; 1280x720'de 26,7 / 40,0, olc_720.json'daki 1 sn'lik koşu 25,5 / 39,3).
 - **Sayı düzeltmesi:** "kaydırmada en kötü %5 kare 28,8 / 26,2" birincil veriyle tutmuyordu; `ozet.jsonl` 27,28 / 26,23
   (46 ara karenin en kötü 2'si). Aşağıdaki 2026-10-05 dersinde ve `yavaslat.py`'de düzeltildi.
 - Kanıt (betikler + JSON): `sistem/devam/yavas-cekim/2026-10-08-kirp/` — `olc_hf` (geçici alan), `olc_1x4k` (1x 4K),
@@ -282,7 +284,8 @@ Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders il
 - **`medya senkron` çizimdeki sesin kaymasını görmüyordu:** kesimler vuruşta olsa da ses kaymışsa "vurusta" derdi.
   Artık müzik WAV'ına çapraz ilintiyle hiza ölçülüyor (kapsayıcı düzeyi kayma dahil); 40 ms kayma → kayik.
 - **HyperFrames 4K ProRes ağır çekimi kare başı ~33 MB PNG'ye açıyor** → disk doldu (ENOSPC), vekil klip gerekti.
-  Ağır çekimi teslim boyutunda üret (gelistirme.md: `yavaslat --kirp/--olcek`).
+  Ağır çekimi teslim boyutunda üret (`yavaslat --kirp/--olcek`, 2026-10-08'de eklendi). Düzeltme (2026-10-08 ölçümü):
+  tek başına yetmez — 1x 4K HEVC çekimler de PNG'de 11,8 MB/kare (237 kare 2,8 GB) tutuyor; gerçek çekimde `medya ciz`.
 - **Reels güvenli alanı kadraj seçiminde baştan düşünülmeli:** B çekiminin öznesi alt %35'te (arayüzün altında) kaldı.
 - **Sessiz yedeğe düşme:** cv2 silinmişti, `sahneler` haftalarca fark edilmeden ffmpeg yedeğiyle çalışabilirdi →
   "birincil sağlayıcı kurulu" sınaması eklendi.

@@ -94,7 +94,8 @@ const cizim = ATLA.includes('cizim') ? { ozet: ONCEKI + ' — cikti/*-final.mp4'
   : await agent(`${rol('medya-hareket')}\nGÖREV: medya-ses'in çıktılarını (calisma/ses/) kompozisyona (medya ciz'de plan muzik.dosya'ya) bağla, ` +
   `son çizimi 'caffeinate -i' ile yap (cikti/<proje-adı>.mp4; medya ciz'de varsayılan ayarlar; HyperFrames'te --quality standard (delivery 1080x1920'de ` +
   `H.264 seviye 5.0 verir, dikey teslim kapısından kalır); --video-bitrate BRIEF'teki platforma uygun; gerçek ` +
-  `çekimli işte --video-frame-format png; Remotion'da --image-format=png --color-space=bt709), ardından 'medya ustala' ile ` +
+  `çekimli işte ≤ 1080p kaynakta --video-frame-format png, 4K kaynakta PNG çöküyor (takas 15,9 GB, ölçüldü) → JPEG + ` +
+  `--workers 1; Remotion'da --image-format=png --color-space=bt709), ardından 'medya ustala' ile ` +
   `ses düzeyini platform hedefine getir ` +
   `(cikti/<proje-adı>-ustalik.mp4) ve EN SON 'medya meta-temizle' (cikti/<proje-adı>-final.mp4; konum etiketi ` +
   `kalmaz, faststart). plan/kurgu.json varsa 'medya nle plan/kurgu.json --bicim hepsi' ile kurgu programı dosyalarını ` +

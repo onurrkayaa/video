@@ -78,7 +78,8 @@ ve `remotion-best-practices` (başındaki stüdyo kuralları önce gelir).
   `--image-format=png --color-space=bt709`.
 - İki motor da ara kare üretmez: ağır çekim önce `medya yavaslat` (gerçek yüksek fps → doğal; hazır kare ≤2000 px'te
   RIFE, üstünde Apple → diğeri → minterpolate; gerçek kamerada RIFE en iyi ölçüldü). 4K'dan dikey: `--kirp x,y,gen,yük
-  --olcek 1080x1920` (ara kareden önce kırpar; RIFE önce, 3,6 kat hızlı).
+  --olcek 1080x1920` (ara kareden önce kırpar; ≤ 2000 px'e inince RIFE önce: tam 4K RIFE'ye göre deneme kesitinde 3,6,
+  sentetikte 2,6 kat hızlı).
 - **DaVinci Resolve 21.1 (ücretsiz, App Store) kurulu:** API ile yönetilemez (dış betik yalnız Studio'da). Yol: `medya nle`
   → `kurgu.otio` (Resolve; ölçüldü: kare-kesin) ya da `kurgu-kdenlive.otio` (Kdenlive 26.08 içe aktarım hatalarına
   uyarlanmış; "SON — sil" kliplerini sil, erimeleri U ile ekle). Kum havuzu: medya `projeler/` (Media Storage'a eklendi)
@@ -111,9 +112,11 @@ verir; çözüm kullanıcıda (`sudo killall ANECompilerService` ya da yeniden b
   ağır çekim karesi 7,8 GB geçici alan), H.264 1080x1920 PNG'de 2,5 MB, taslak JPEG'de 0,22 MB. `.mov` ProRes yalnız
   NLE devrine.
 - Varsayılan çizim kalitesi (CRF 16) uzun/grenli videoda devasa (4:48 → 2,5 GB); teslimde `--video-bitrate`.
-- Gerçek çekimli **son** çizimde `--video-frame-format png`: varsayılan JPEG ara kareler VMAF 95,0; PNG 96,6 (ffmpeg doğrudan 96,8), en kötü kare 94,4 → 95,7; bedeli ~2 kat çizim süresi. Taslakta varsayılan yeter.
-  2026-10-08 (O6): 1080p gerçek çekimde VMAF JPEG 94,8 / PNG 96,0 / `medya ciz` 96,2, ama PNG kipi Y'yi sabit ~1,9
-  düzey düşürüyor; 4K kaynakta (5 işçi) takas 0,9 → 15,9 GB'a çıkıp çöktü → gerçek çekimde önce `medya ciz`.
+- Gerçek çekim kurgusunun son çizimi önce `medya ciz` (2026-10-08, 1080p gerçek çekim, kayıpsız başvuruya karşı VMAF:
+  ciz 96,2 · HyperFrames PNG 96,0 · JPEG 94,8; ciz 6 kat hızlı, disk tepesi 0,02 GB). HyperFrames gerekiyorsa (yazı,
+  grafik, süslü geçiş): ≤ 1080p kaynakta son çizim `--video-frame-format png` (~2 kat süre; Y'de ~%1,7 kazanç sıkışması
+  ölçüldü, JPEG de nötr değil); 4K kaynakta PNG ÇÖKTÜ (5 işçi, takas 0,9 → 15,9 GB) → JPEG + `--workers 1` (35,8 sn,
+  0,37 GB) ya da klipleri önce teslim boyutuna indir. Taslakta varsayılan yeter.
 - Lint 0 hata; tek duraklatılmış GSAP zaman çizelgesi; Math.random/Date yok; yazı tipleri yerel woff2 (latin-ext).
 - Türkçe yazı (istenirse): `<html lang="tr">` şart — ölçüldü: `lang="en"` ile büyük harf "ISTANBUL", `tr` ile "İSTANBUL"; JS'te `toLocaleUpperCase('tr-TR')`.
 

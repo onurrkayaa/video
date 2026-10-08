@@ -34,7 +34,8 @@ HyperFrames'in `hyperframes-core` becerisine bak. HyperFrames bir motordur: onun
 - Ön izleme kareleri: `hyperframes snapshot calisma/kompozisyon --at … --describe false --output analiz/snapshot-<n>`
   → contact-sheet'i Read ile aç ve incele (taşma, üst üste binme, boş kare, yanlış kadraj).
 - Çizim: `cikti/<ad>-taslak.mp4` (`--quality draft`), son: `cikti/<ad>.mp4` (`--video-bitrate` hedefe göre;
-  varsayılan CRF 16 uzun ve grenli videoda devasa olur; gerçek çekimde `--video-frame-format png`).
+  varsayılan CRF 16 uzun ve grenli videoda devasa olur; gerçek çekimde ≤ 1080p kaynakta `--video-frame-format png`,
+  4K kaynakta PNG çöktü → JPEG + `--workers 1`).
 - Remotion: `$MEDYA/node_modules/.bin/remotion still src/index.ts <Id> analiz/k.png --frame=N` ile bak; son çizim
   `remotion render src/index.ts <Id> ../../cikti/<ad>.mp4 --image-format=png --color-space=bt709` (bt709 ŞART).
 

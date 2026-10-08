@@ -48,7 +48,8 @@ RIFE_MODEL = ARAC / "rife" / "rife-v4.6"
 def _giris_matrisi(v: dict) -> str:
     """SDR kaynağın renk matrisi (scale in_color_matrix). Etiketliyse etiket okunur ('auto'); etiketsizse HyperFrames'in
     1x çekimlere uyguladığı tahmin (chromeGuessForUntaggedMatrix, 0.8.140 chunk-TPECLKPA.js:11413): ≥ 720 satır ve
-    vp9/av1 değilse BT.709, değilse BT.601. Ağır çekim aynı kameranın 1x çekimleriyle aynı renkte görünür."""
+    vp9/av1 değilse BT.709, değilse BT.601. Etiketli BT.709 ve etiketsiz HD kaynakta ağır çekim aynı kameranın 1x
+    çekimleriyle aynı renkte görünür; BT.601 etiketli ve etiketsiz SD'de yaklaşık (2026-10-08: %75 beyaz 189 → 185–187)."""
     m = v["renk"]["matris"]
     if m and m != "unknown":
         return "auto"

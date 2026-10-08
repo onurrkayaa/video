@@ -61,8 +61,11 @@ hyperframes check calisma/kompozisyon --at-transitions
 hyperframes snapshot calisma/kompozisyon --describe false --at 4.27,6.9,7.2 --output analiz/snap   # → Read (izin varsa)
 df -h .                                                                 # çizimden önce
 hyperframes render calisma/kompozisyon --sdr -q draft --frames-cache-dir off -o calisma/taslak.mp4
-# SON (gerçek çekim): PNG ara kare (VMAF 95,0 → 96,6; ~2 kat süre); bit hızı hedefi teslim-denetimi'nden
+# SON (gerçek çekim, ≤ 1080p kaynak): PNG ara kare (VMAF 95,0 → 96,6; ~2 kat süre); bit hızı hedefi teslim-denetimi'nden
 caffeinate -i hyperframes render calisma/kompozisyon --sdr -q delivery --video-frame-format png --frames-cache-dir off --video-bitrate 12M -o calisma/usta.mp4
+# 4K kaynakta PNG çöktü (5 işçi, takas 0,9 → 15,9 GB; 2026-10-08) → JPEG + tek işçi (35,8 sn, 0,37 GB) ya da klipleri önce
+# teslim boyutuna indir; yazısız gerçek çekim kurgusunda zaten `medya ciz` (VMAF 96,2, disk 0,02 GB)
+caffeinate -i hyperframes render calisma/kompozisyon --sdr -q delivery --workers 1 --frames-cache-dir off --video-bitrate 12M -o calisma/usta.mp4
 ```
 - `-q delivery` yalnız USTA içindir (sonra `teslim-denetimi` → `teslim.py kodla` platforma kodlar). Doğrudan teslim
   çiziminde `-q standard`: delivery 1080x1920'de H.264 seviye 5.0 verir, dikey teslim kapısından KALIR (uçtan uca sınama).
