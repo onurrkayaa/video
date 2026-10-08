@@ -1,8 +1,17 @@
-"""medya nle <plan.json> [--bicim otio|edl|hepsi] [--muzik analiz/muzik.json] — kurgu planını
+"""medya nle <plan.json> [--bicim otio|kdenlive|edl|hepsi] [--muzik analiz/muzik.json] — kurgu planını
 profesyonel kurgu programına aktarır: kullanıcı kurguyu orada elle sürdürsün (ince ayar, renk, ses).
 
-  .otio    DaVinci Resolve 18.5+ (File > Import > Timeline), Kdenlive 25.04+ — çok iz, erime, işaretler (önerilen)
-  .edl     CMX 3600 — yalnız görüntü izi (kesim + erime); bütün programlar açar
+  .otio           DaVinci Resolve (File > Import > Timeline…) — çok iz, erime, işaretler. Sınandı (Resolve 21.1,
+                  2026-10-08, kare kodlu medya, testler/nle_olc.py): kesimler 0 kare, 12 karelik erime yerinde, 60 fps
+                  kaynak kare-kesin, 24 fps kaynakta ±1 kare (Resolve giriş noktasını zaman çizelgesi ızgarasına
+                  aşağı yuvarlıyor), ses ≤ 1 ms.
+  -kdenlive.otio  Kdenlive (File > OpenTimelineIO Import…) için uyarlanmış .otio. Kdenlive 26.08 içe aktarımının iki
+                  hatası ölçüldü: (1) her izin SON klibi giriş noktasını kaybediyor (0'dan başlıyor) → her izin sonuna
+                  1 karelik "SON — sil" klibi eklenir, içe aktardıktan sonra silinir; (2) erime uygulanamıyor ve
+                  sonraki klibin giriş noktasını sıfırlıyor → erime yazılmaz: örtüşmenin ortasında kesim + işaret
+                  (Kdenlive'da klibi seç, U). Ayrıca zaman çizelgesi hızı `duration().rate`'ten okunduğu için bütün
+                  aralıklar zaman çizelgesi hızında yazılır (yoksa proje en yüksek kaynak hızında, ör. 60 fps açılıyor).
+  .edl            CMX 3600 — yalnız görüntü izi (kesim + erime); bütün programlar açar
   (FCPXML yok: otio-fcpx-xml-adapter 1.0.0 geri okumada erimeyi düşürüp araya boşluk koydu, süre 10 → 12 sn — sınandı)
 
 Plan: plan/kurgu.json (kurgu-zanaati biçimi). Çekimde `klip`/`klip_bas` (hazırlanmış ara klip: sdr, cfr,
@@ -12,7 +21,8 @@ kurgu programlarının dili olan "kesim + iki yana taşan geçiş"e çevrilir. A
 renk, özel geçişler, pişmemiş hız değişimi) klip notu + işaret olur ve uyarılır.
 
 Bu dışa aktarım çizimin yerini tutmaz: teslim kompozisyondan çizilir; NLE dosyası elle devam etmek içindir.
-Kurgu programı bu Mac'te kurulu değilse içe aktarma sınanamaz — dosya yalnız OTIO ile geri okunarak doğrulanır.
+Komut dosyayı OTIO ile geri okuyarak doğrular; programın içe aktarımını uçtan uca ölçmek için kare kodlu sınama
+projesi: testler/nle_sinama.py (üret) + testler/nle_olc.py (programın çizimini plana karşı ölç).
 Uyum (araştırma + şüpheci doğrulama, 2026-10-05): medya yolu DÜZ mutlak yol (Resolve 20.2 'file://' adresini
 reddetti, Kdenlive çözmüyor); yolunda # % ? olan medya cikti/nle/medya/ altına güvenli adla bağlanır; işaret metni
 'comment'a da yazılır (Kdenlive onu gösterir); EDL'de makara = kaynak dosya (A001…), ASCII ad, NON-DROP başlığı.
@@ -30,7 +40,7 @@ KESIM = {"", "kesim", "kesme", "cut", "j-kesim", "l-kesim"}
 GORSEL = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif", ".tif", ".tiff"}
 NTSC = {23.976: 24000 / 1001, 29.97: 30000 / 1001, 47.952: 48000 / 1001, 59.94: 60000 / 1001,
         119.88: 120000 / 1001}
-BICIMLER = {"otio": ("otio_json", ".otio"), "edl": ("cmx_3600", ".edl")}
+BICIMLER = {"otio": ("otio_json", ".otio"), "kdenlive": ("otio_json", "-kdenlive.otio"), "edl": ("cmx_3600", ".edl")}
 
 
 TR_ASCII = str.maketrans("çğıİöşüÇĞÖŞÜâîûÂÎÛ—–’", "cgiIosuCGOSUaiuAIU--'")
@@ -76,8 +86,10 @@ class _Medya:
 
 
 def zaman_cizelgesi(plan: dict, kok: Path, muzik: dict | None = None, bas_tc: str = "00:00:00:00",
-                    medya_klasoru: Path | None = None):
-    """Plan → OTIO Timeline. Dönüş: (timeline, uyarılar). medya_klasoru: yolunda # % ? olan medya buraya bağlanır."""
+                    medya_klasoru: Path | None = None, kdenlive: bool = False):
+    """Plan → OTIO Timeline. Dönüş: (timeline, uyarılar). medya_klasoru: yolunda # % ? olan medya buraya bağlanır.
+    kdenlive: Kdenlive 26.08 içe aktarımına uyarlanmış zaman çizelgesi (modül belgesi: zaman çizelgesi hızı, erime yok,
+    iz sonu "SON — sil" klibi)."""
     import opentimelineio as otio
 
     RT, TR = otio.opentime.RationalTime, otio.opentime.TimeRange
@@ -95,8 +107,10 @@ def zaman_cizelgesi(plan: dict, kok: Path, muzik: dict | None = None, bas_tc: st
         return onbellek[p]
 
     def an(m: _Medya, sn: float):
-        """Medyanın kendi saatinde bir an (kendi kare hızı + başlangıç zaman kodu)."""
-        h = m.fps or fps
+        """Medyanın kendi saatinde bir an (kendi kare hızı + başlangıç zaman kodu). Kdenlive kipinde zaman çizelgesi
+        hızında: Kdenlive başlangıcı bu hıza çevirip medyanın zaman kodunu da bu hızda okuyup çıkarıyor
+        (src/otio/otioimport.cpp, 26.08), aynı hesapla yazınca kayma kalmaz."""
+        h = fps if kdenlive else (m.fps or fps)
         t = RT(round(sn * h), h)
         return otio.opentime.from_timecode(m.tc, h) + t if m.tc else t
 
@@ -120,9 +134,10 @@ def zaman_cizelgesi(plan: dict, kok: Path, muzik: dict | None = None, bas_tc: st
 
     def referans(m: _Medya):
         r = otio.schema.ExternalReference(target_url=str(guvenli_yol(m.yol)))   # düz mutlak yol (file:// değil)
-        if m.sure:
+        if m.sure:                                   # medyanın kendi aralığı: kendi hızında (Resolve bunu yazıyor)
             h = m.fps or fps
-            r.available_range = TR(an(m, 0), RT(round(m.sure * h), h))
+            bas = otio.opentime.from_timecode(m.tc, h) if m.tc else RT(0, h)
+            r.available_range = TR(bas, RT(round(m.sure * h), h))
         return r
 
     def isaret(ad: str, kare_: int, renk) -> object:
@@ -194,12 +209,16 @@ def zaman_cizelgesi(plan: dict, kok: Path, muzik: dict | None = None, bas_tc: st
     for i, x in enumerate(P):
         if x["bas"] > imlec:
             V.append(otio.schema.Gap(source_range=TR(RT(0, fps), RT(x["bas"] - imlec, fps))))
-        if i in gecisler:
+        if i in gecisler and not kdenlive:
             gi, go = gecisler[i]
             V.append(otio.schema.Transition(name="erime", transition_type=otio.schema.TransitionTypes.SMPTE_Dissolve,
                                             in_offset=RT(gi, fps), out_offset=RT(go, fps)))
+        elif i in gecisler:
+            L = sum(gecisler[i])
+            x["notlar"].insert(0, f"erime {L} kare buraya: Kdenlive'da klibi seç, U (ya da birleşime çift tıkla), "
+                                  f"süreyi {L} kare yap")
         m, sure = x["m"], x["son"] - x["bas"]
-        h = m.fps or fps
+        h = fps if kdenlive else (m.fps or fps)
         kaynak = TR(an(m, x["k_bas"]) if not m.gorsel else RT(0, fps), RT(round(sure / fps * h), h))
         klip = otio.schema.Clip(name=f"{x['no']:02d} {m.yol.name}" if isinstance(x["no"], int) else str(x["no"]),
                                 media_reference=referans(m), source_range=kaynak)
@@ -214,7 +233,7 @@ def zaman_cizelgesi(plan: dict, kok: Path, muzik: dict | None = None, bas_tc: st
         imlec = x["son"]
     toplam = imlec
 
-    izler = [V]
+    izler, iz_medya = [V], [P[-1]["m"]]
     # 4) müzik izi: müzik dosyasının `bas` anı zaman çizelgesinin 0'ına denk gelir
     mz = plan.get("muzik") or {}
     if mz.get("dosya"):
@@ -225,6 +244,7 @@ def zaman_cizelgesi(plan: dict, kok: Path, muzik: dict | None = None, bas_tc: st
         A.append(otio.schema.Clip(name=m.yol.name, media_reference=referans(m),
                                   source_range=TR(RT(round(bas * fps), fps), RT(sure, fps))))
         izler.append(A)
+        iz_medya.append(m)
         if sure < toplam:
             uyarilar.append(f"müzik {toplam - sure} kare erken bitiyor")
     # 5) çekim sesi izleri: ses = kendi olanlar asıl kaynaktan; örtüşen sesler ayrı ize (elle çapraz geçiş için)
@@ -249,12 +269,26 @@ def zaman_cizelgesi(plan: dict, kok: Path, muzik: dict | None = None, bas_tc: st
         for b0, s0, m, kb, no in iz:
             if b0 > imlec:
                 A.append(otio.schema.Gap(source_range=TR(RT(0, fps), RT(b0 - imlec, fps))))
-            h = m.fps or fps
+            h = fps if kdenlive else (m.fps or fps)
             A.append(otio.schema.Clip(name=f"{no} ses", media_reference=referans(m),
                                       source_range=TR(an(m, kb), RT(round((s0 - b0) / fps * h), h))))
             imlec = s0
         izler.append(A)
+        iz_medya.append(iz[-1][2])
 
+    if kdenlive:                                     # iz sonu düzeltmesi: son klibin giriş noktası kaybolmasın
+        for iz, m in zip(izler, iz_medya):
+            uzunluk = round(iz.duration().rescaled_to(fps).value)
+            if uzunluk < toplam:
+                iz.append(otio.schema.Gap(source_range=TR(RT(0, fps), RT(toplam - uzunluk, fps))))
+            bas0 = an(m, 0) if not m.gorsel else RT(0, fps)          # kaydırma 0: düzeltme klibi kendisi bozulmaz
+            iz.append(otio.schema.Clip(name="SON — sil", media_reference=referans(m), source_range=TR(bas0, RT(1, fps))))
+            # (işaret konmaz: Kdenlive klip işaretini kutudaki klibe yazar, aynı medyanın her örneğinde görünür)
+        if gecisler:
+            uyarilar.append(f"Kdenlive: {len(gecisler)} erime kesim + işaret olarak yazıldı (Kdenlive 26.08 OTIO'dan "
+                            "erime uygulayamıyor, sonraki klibi kaydırıyor — ölçüldü): işaretlerde klibi seç, U")
+        uyarilar.append("Kdenlive: her izin sonunda 1 karelik 'SON — sil' klibi var — içe aktardıktan sonra sil "
+                        "(yoksa son klibin giriş noktası kayboluyor — ölçüldü)")
     tl = otio.schema.Timeline(name=plan.get("ad") or kok.name, global_start_time=otio.opentime.from_timecode(bas_tc, fps))
     tl.tracks.extend(izler)
     # 6) ölçü başı işaretleri (müzik analizi verildiyse): kurgu programında vuruşa elle kesmek için
@@ -305,7 +339,15 @@ def nle_(args) -> int:
     bicimler = list(BICIMLER) if args.bicim == "hepsi" else [args.bicim]
     for b in bicimler:
         ad, uzanti = BICIMLER[b]
-        hedef = cikti.with_suffix(uzanti)
+        hedef = cikti.with_name(cikti.name + uzanti) if uzanti.startswith("-") else cikti.with_suffix(uzanti)
+        if b == "kdenlive":
+            tl_k, uy_k = zaman_cizelgesi(plan, kok, muzik, args.bas_zaman_kodu, medya_klasoru=cikti.parent / "medya",
+                                         kdenlive=True)
+            otio.adapters.write_to_file(tl_k, str(hedef), adapter_name=ad)
+            uyarilar += [u for u in uy_k if u.startswith("Kdenlive")]
+            print(f"✓ {hedef}  ({_dogrula(hedef, ad, beklenen, fps)}; zaman çizelgesi hızı "
+                  f"{otio.adapters.read_from_file(str(hedef)).duration().rate:g})")
+            continue
         if b == "edl":                                   # EDL tek görüntü izi taşır; yalnız ASCII
             yalniz = otio.schema.Timeline(name=ascii_metin(tl.name), global_start_time=tl.global_start_time)
             iz = tl.tracks[0].deepcopy()
@@ -324,14 +366,15 @@ def nle_(args) -> int:
         print(f"✓ {hedef}  ({_dogrula(hedef, ad, beklenen, fps)})")
     for u in uyarilar:
         uyar(u)
-    bilgi("Kurgu programında: File > Import > Timeline (Resolve) / Dosya > İçe aktar (Kdenlive). Medya yolları "
-          f"mutlak; dosyaları taşırsan yeniden bağla. Çözünürlük OTIO'da taşınmaz: zaman çizelgesini "
-          f"{plan.get('boyut') or '?'} ve {plan['fps']} fps olarak ayarla.")
+    bilgi("Resolve: File > Import > Timeline… → .otio; açılan pencerede 'Set timeline resolution' "
+          f"{plan.get('boyut') or '?'} ve kare hızı {plan['fps']} olsun (OTIO çözünürlük taşımaz). Kdenlive: "
+          "File > OpenTimelineIO Import… → -kdenlive.otio (çözünürlüğü ilk klipten alır), sonra 'SON — sil' "
+          "kliplerini sil. Medya yolları mutlak; dosyaları taşırsan yeniden bağla.")
     return 0
 
 
 def kaydet(alt, ad):
-    p = alt.add_parser(ad, help="kurgu planını kurgu programına aktarır (.otio / .edl)",
+    p = alt.add_parser(ad, help="kurgu planını kurgu programına aktarır (.otio / -kdenlive.otio / .edl)",
                        description=__doc__.split("\n\n")[0])
     p.add_argument("plan", help="plan/kurgu.json")
     p.add_argument("--bicim", default="otio", choices=[*BICIMLER, "hepsi"])

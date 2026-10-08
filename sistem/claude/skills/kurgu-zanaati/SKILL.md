@@ -33,7 +33,7 @@ telifli şarkı ve kişilerin rızası; iş videosunda ticari lisanslı müzik.
 | Titreme | `$P $K/titreme.py X` (önce/sonra) |
 | Plan denetimi | `$P $K/plan_denetle.py plan/kurgu.json [--html …] [--denetim …]` |
 | Geri bildirim taslağı | `medya zamankodu calisma/taslak.mp4 --cikti calisma/taslak-tc.mp4` |
-| Resolve/Kdenlive | `medya nle plan/kurgu.json --bicim hepsi` → `cikti/nle/` |
+| Resolve / Kdenlive | `medya nle plan/kurgu.json --bicim hepsi` → `cikti/nle/kurgu.otio` (Resolve) · `kurgu-kdenlive.otio` (Kdenlive) |
 
 ## Akış
 1. `medya proje yeni "<ad>" --tur video --kaynak <dosyalar>`; BRIEF.

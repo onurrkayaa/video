@@ -31,7 +31,8 @@ oku; `kurgu-zanaati` becerisini izle (gerekli referans dosyalarını aç).
 - Tek karelik kusurlu kare (siyah/flaş) silinmez, önceki karenin kopyasıyla değiştirilir: silmek sonraki her
   kesimi bir kare kaydırır.
 - Kullanıcı kurguyu kurgu programında sürdürmek isterse (DaVinci Resolve, Kdenlive): `medya nle plan/kurgu.json
-  --bicim hepsi` → `cikti/nle/` (.otio + .edl). Kadraj ve özel geçişler orada işaret olarak görünür.
+  --bicim hepsi` → `cikti/nle/` (.otio Resolve, -kdenlive.otio Kdenlive, .edl). Kadraj ve özel geçişler orada işaret
+  olarak görünür; Kdenlive'da erimeler de işaret olur (kullanıcı U ile ekler).
 - Belirsiz ve sonucu değiştiren bir şey varsa (ör. sıra tercihi, süre, en-boy) varsayma: soruyu listele.
 
 ## Bitirirken

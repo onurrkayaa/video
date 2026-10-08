@@ -123,8 +123,10 @@ hayalet var mı şeride bak. Apple zamansal gürültü süzgeci bu Mac'te destek
   plan alanı uydurma. Bu ses NLE'ye taşınmaz.
 - Müzik altta, ducking, konuşma temizliği (`medya ses-temizle`) → `ses-tasarimi`. İsim/ünvan yazısı yalnız istenirse.
 - Görüntüdeki müşterilerin rızası ve ticari lisanslı müzik kullanıcıya hatırlatılır.
-- Kullanıcı Resolve'da sürdürecekse: `medya nle plan/kurgu.json --bicim hepsi` → `cikti/nle/<ad>.otio` (Resolve 18.5+,
-  Kdenlive 25.04+) + `.edl`. Erimeler taşınır; kadraj/hareket/diğer geçişler/pişmemiş hız kırmızı işaret + klip notu
+- Kullanıcı Resolve'da sürdürecekse: `medya nle plan/kurgu.json --bicim hepsi` → `cikti/nle/<ad>.otio` (Resolve),
+  `<ad>-kdenlive.otio` (Kdenlive) + `.edl`. Resolve'a erimeler taşınır (Kdenlive'a kesim + işaret; içe aktarım adımları
+  medya-studyo → motor-ve-nle); kadraj/hareket/diğer geçişler/pişmemiş hız kırmızı işaret + klip notu
   olur. OTIO'da müzik tam seviyede (ducking/seviye taşınmaz), b-roll altı konuşma ve J/L taşması yok: ducking, ses
-  temizliği, ustalık Resolve'da yeniden yapılır; HyperFrames çıktısı ayrı bir teslimdir. Resolve/Kdenlive içe aktarımı
-  sınanmadı: kullanıcıya söyle. Medya yolları mutlak; dosyalar taşınırsa yeniden bağla.
+  temizliği, ustalık Resolve'da yeniden yapılır; HyperFrames çıktısı ayrı bir teslimdir. İçe aktarım kare kodlu sınamayla
+  ölçüldü (2026-10-08): Resolve kare-kesin (24 fps kaynakta ±1 kare), Kdenlive -kdenlive.otio ile doğru. Medya yolları
+  mutlak; dosyalar taşınırsa yeniden bağla.

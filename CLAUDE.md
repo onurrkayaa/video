@@ -69,10 +69,12 @@ ve `remotion-best-practices` (başındaki stüdyo kuralları önce gelir).
   `--image-format=png --color-space=bt709`.
 - İki motor da ara kare üretmez: ağır çekim önce `medya yavaslat` (gerçek yüksek fps → ≤2000 px'te RIFE, 4K'da Apple →
   diğeri → minterpolate; gerçek kamerada RIFE en iyi ölçüldü).
-- **DaVinci Resolve:** ücretsiz sürüm ajan tarafından yönetilemez (dış betik yalnız Studio'da; 21.1'de Python da
-  kaldırıldı). Ücretsiz yol: `medya nle` → `.otio` → kullanıcı Resolve ya da Kdenlive'da açar. "Claude Resolve'da
-  kurguluyor" yolu Studio'nun yerleşik MCP'sidir (295 $) — ücretsiz kural gereği kapalı, yalnız kullanıcı açıkça
-  isterse (`yetenekler.toml` → `resolve-studio-mcp`).
+- **DaVinci Resolve 21.1 (ücretsiz, App Store) kurulu:** API ile yönetilemez (dış betik yalnız Studio'da). Yol: `medya nle`
+  → `kurgu.otio` (Resolve; ölçüldü: kare-kesin) ya da `kurgu-kdenlive.otio` (Kdenlive 26.08 içe aktarım hatalarına
+  uyarlanmış; "SON — sil" kliplerini sil, erimeleri U ile ekle). Kum havuzu: medya `projeler/` (Media Storage'a eklendi)
+  ya da `~/Movies` altında olmalı. Erişilebilirlik izniyle menü/pencere otomasyonu çalışıyor (kırılgan; yalnız sınama ya
+  da istek). "Claude Resolve'da kurguluyor" yolu Studio'nun yerleşik MCP'sidir (295 $) — ücretsiz kural gereği kapalı,
+  yalnız kullanıcı açıkça isterse (`yetenekler.toml` → `resolve-studio-mcp`).
 
 ## Bir işe başlarken
 1. Ortam: bu klasörde oturum başında otomatik yüklenir; değilse `source /Users/onurkaya/Projects/video/ortam.sh`.
@@ -87,7 +89,7 @@ ve `remotion-best-practices` (başındaki stüdyo kuralları önce gelir).
 | İnceleme | Dönüştürme | Üretim | Ses | Denetim | Sistem |
 |---|---|---|---|---|---|
 | `incele` `kontak` `sahneler` `analiz` `ses-turu` `ses-olay` `muzik` `yaziya-dok` | `sdr` `cfr` `yavaslat` `meta-temizle` `ayir` `arkaplan-sil` | `gorsel-uret` (FLUX.2 klein) `seslendir` (VoxCPM2) | `ses-temizle` `ustala` | `senkron` `denetle` `zamankodu` | `proje` `yetenekler` `kur` `test [--agir]` `temizle` |
-Teslim/devir: `nle` (kurgu planı → .otio / .edl). Kompozisyon/çizim: `hyperframes lint|check|snapshot --describe false|render`;
+Teslim/devir: `nle` (kurgu planı → .otio Resolve / -kdenlive.otio / .edl). Kompozisyon/çizim: `hyperframes lint|check|snapshot --describe false|render`;
 Remotion: proje klasöründen `$MEDYA/node_modules/.bin/remotion still|render src/index.ts <Id> …`.
 Apple ML komutları bekçiyle çalışır: Neural Engine derleyicisi (`ANECompilerService`) takılıysa beklemeden hata
 verir; çözüm kullanıcıda (`sudo killall ANECompilerService` ya da yeniden başlatma).
@@ -140,7 +142,7 @@ kullanıcının kararı) → araçlar uv/npm/resmî ikili ile kurulur; Swift iç
 Python 3.12 (`.venv`, uv), ağır ses yığını `ortamlar/ses` (torch, Beat This!, Essentia, librosa, Demucs, mlx-whisper),
 ffmpeg-static 6.0 (`arac/ffmpeg`), HyperFrames 0.8.124, Remotion 4.0.533 (kök `node_modules`), OTIO 0.18.1,
 RIFE 20221029 (`arac/rife`), mflux 0.21.0 + FLUX.2 [klein] 4B Q4 (`.uv/tools/mflux`), mlx-audio 0.5.8 + VoxCPM2 4-bit
-(`.uv/tools/mlx-audio`), SpeechBrain ECAPA (ses doğrulama), Kdenlive 26.08.1 (`/Applications`). Satıcı becerileri
+(`.uv/tools/mlx-audio`), SpeechBrain ECAPA (ses doğrulama), Kdenlive 26.08.1 ve DaVinci Resolve 21.1.0 (`/Applications`). Satıcı becerileri
 (lisanssız) depoda tutulmaz: `sistem/claude/satici/satici.py kur`. Döngüde ffmpeg'e `-nostdin`; zsh'de değişken sözcüklere
 bölünmez (bayrakları açık yaz); ffmpeg `psnr` süzgeci farklı zaman damgalı akışlarda kare kaydırır (kareleri
 doğrudan çözüp karşılaştır).

@@ -430,6 +430,42 @@ def test_nle_komutu_edl_ascii_ve_ndf(tmp_path):
     edl = (tmp_path / "cikti" / "nle" / "kurgu.edl").read_text()
     assert edl.isascii() and "FCM: NON-DROP FRAME" in edl and ";" not in edl.split("FCM", 1)[1].replace("*", "")
     assert "A001" in edl and "SAVURMA" in edl
+    assert (tmp_path / "cikti" / "nle" / "kurgu-kdenlive.otio").exists()
+
+
+def test_nle_kdenlive_uyarlamasi(tmp_path):
+    """Kdenlive 26.08 OTIO içe aktarımının ölçülen iki hatasına karşı (2026-10-08, testler/nle_olc.py): zaman çizelgesi
+    hızı tek (proje fps'i duration().rate'ten), erime yok (kesim + işaret), her izin sonunda 1 karelik 'SON — sil'
+    klibi (son klibin giriş noktası kaybolmasın). Kesim yerleri ve Kdenlive'ın hesaplayacağı kaydırma Resolve
+    sürümüyle aynı olmalı."""
+    import opentimelineio as otio
+    from medya.komutlar.nle import zaman_cizelgesi
+    k = str(VERI / "kesimli.mp4")
+    plan = {"fps": 30, "muzik": {"dosya": str(VERI / "muzik_net.wav"), "bas": 1.0}, "cekimler": [
+        {"no": 1, "kaynak": k, "kaynak_bas": 0.5, "cikti_bas": 0.0, "cikti_son": 3.3, "ses": "muzik"},
+        {"no": 2, "kaynak": k, "kaynak_bas": 3.0, "cikti_bas": 2.9, "cikti_son": 5.0, "ses": "kendi",
+         "gecis": {"tur": "erime", "sure_kare": 12}},
+        {"no": 3, "kaynak": str(VERI / "hareket60.mp4"), "kaynak_bas": 0.25, "cikti_bas": 5.0, "cikti_son": 6.5,
+         "ses": "muzik"}]}
+    tl, _ = zaman_cizelgesi(plan, tmp_path)
+    tk, uyarilar = zaman_cizelgesi(plan, tmp_path, kdenlive=True)
+    assert tl.duration().rate == 60 and tk.duration().rate == 30        # karışık hız Kdenlive'da 60 fps proje açar
+    assert not any(isinstance(x, otio.schema.Transition) for iz in tk.tracks for x in iz)
+    toplam = round(tl.tracks[0].duration().rescaled_to(30).value)
+    for iz in tk.tracks:
+        son = iz[-1]
+        assert son.name == "SON — sil" and son.source_range.duration.value == 1
+        assert round(iz.range_of_child_at_index(len(iz) - 1).start_time.rescaled_to(30).value) == toplam
+        for c in iz.find_clips():
+            assert c.source_range.start_time.rate == 30 and c.source_range.duration.rate == 30
+    gercek = lambda t: [c for iz in t.tracks for c in iz.find_clips() if c.name != "SON — sil"]
+    for a, b in zip(gercek(tl), gercek(tk)):                          # aynı kesim yerleri, aynı kaydırma
+        assert round(a.range_in_parent().start_time.rescaled_to(30).value) == \
+            round(b.range_in_parent().start_time.rescaled_to(30).value)
+        assert round(a.source_range.start_time.to_seconds() * 30) == b.source_range.start_time.value
+    gelen = gercek(tk)[1]
+    assert any("erime 12 kare" in m.name for m in gelen.markers)
+    assert any("SON — sil" in u for u in uyarilar) and any("erime" in u for u in uyarilar)
 
 
 def test_ane_tikanikligi_teshisi():

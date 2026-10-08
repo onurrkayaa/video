@@ -171,7 +171,7 @@ saglayici = "deepfilternet"
 ad = "nle"
 alan = "teslim"
 komut = "medya nle"
-aciklama = "kurgu planını kurgu programına aktarma: .otio (DaVinci Resolve 18.5+, Kdenlive 25.04+), .edl (CMX 3600)"
+aciklama = "kurgu planını kurgu programına aktarma: .otio (DaVinci Resolve), -kdenlive.otio (Kdenlive 26.08 uyarlaması), .edl (CMX 3600) — ikisi de kare kodlu sınamayla ölçüldü"
 saglayici = "otio"
 
 [[yetenek]]
@@ -276,7 +276,7 @@ ticari = "evet"
 kurulum = "arac/uv sync --all-extras"
 kontrol = ".venv/bin/python -c 'import opentimelineio, otio_cmx3600_adapter'"
 boyut_mb = 8
-not = "ASWF zaman çizelgesi değiş tokuşu. Medya yolu düz mutlak yol (Resolve file:// reddetti). FCPXML uyarlayıcısı bilerek yok (erimeyi düşürdü, 29,97'de çöktü). Resolve/Kdenlive içe aktarması bu Mac'te sınanmadı (kurulu değil)."
+not = "ASWF zaman çizelgesi değiş tokuşu. Medya yolu düz mutlak yol (Resolve file:// reddetti). FCPXML uyarlayıcısı bilerek yok (erimeyi düşürdü, 29,97'de çöktü). İçe aktarım ölçüldü (2026-10-08, testler/nle_sinama.py + nle_olc.py): Resolve 21.1 ← .otio kare-kesin (24 fps kaynak ±1 kare), ses ≤ 2 ms; Kdenlive 26.08 ← -kdenlive.otio geçti (erime kesim + işaret olur), düz .otio Kdenlive'da bozuluyor (son klip ve erime sonrası klip 0'dan başlıyor, proje 60 fps)."
 
 [[saglayici]]
 ad = "rife"
@@ -299,7 +299,8 @@ boyut_mb = 235
 not = "Proje: medya proje yeni … --motor remotion (sablonlar/remotion: HyperFrames'in Chrome'u, bt709, angle). Lisans anahtarı, Studio'yu kendiliğinden açma, web-renderer/lambda/cloudrun/google-fonts YASAK (kanca engeller). 5.x'e lisans incelemesiz yükseltme yok. Beceri: remotion-best-practices (sabit commit)."
 
 # ---------------------------------------------------------------- kurgu programları (elle ince ayar; kullanıcı kurar)
-# Ajan bunları SÜREMEZ: medya nle ile .otio/.edl üretir, kullanıcı içe aktarır (araştırma 2026-10-05).
+# Ajan bunları API ile süremez (ücretsiz Resolve'da dış betik yok): medya nle .otio/.edl üretir, kullanıcı içe aktarır.
+# macOS erişilebilirlik izniyle menüler + dosya/Qt pencereleri sürülebiliyor (2026-10-08 ölçümü böyle yapıldı; kırılgan, ekranı kullanır).
 [[saglayici]]
 ad = "kdenlive"
 tur = "uygulama"
@@ -310,19 +311,19 @@ kontrol = "ls /Applications/kdenlive.app"
 boyut_mb = 620
 etkin = true
 onay = "kullanıcı onayladı ve kuruldu (2026-10-07)"
-not = "26.08.1, KDE noterli. .otio'yu yerel açar/yazar (OTIO 0.18.1 içinde). Telemetri kitaplığı bulunmadı (ölçüldü). Hız/efekt/kadraj/ses düzeyi aktarılmaz."
+not = "26.08.1, KDE noterli. File > OpenTimelineIO Import… — medya nle'nin -kdenlive.otio dosyasıyla (ölçüldü 2026-10-08: giriş noktaları, kesimler, ses doğru). Düz .otio'da içe aktarım hataları: proje fps'i duration().rate'ten (karışık hızda 60), her izin son klibinin ve erimeden sonraki klibin giriş noktası 0 (otioimport.cpp), erime düşüyor. İçe aktardıktan sonra 'SON — sil' kliplerini sil, erimeleri işaretlerde U ile ekle. Pencere açmadan çizim: Contents/MacOS/melt <proje>.kdenlive -consumer avformat:… (MLT en yakın kareyi alır; son kare kapsayıcı, +1 kare). Telemetri kitaplığı bulunmadı (ölçüldü). Hız/efekt/kadraj/ses düzeyi aktarılmaz."
 
 [[saglayici]]
 ad = "resolve-ucretsiz"
 tur = "uygulama"
 lisans = "Blackmagic EULA, ücretsiz sürüm (Blackmagic personeli: ticari işte kullanılabilir)"
 ticari = "evet"
-kurulum = "Kullanıcı kurar: Mac App Store 'DaVinci Resolve' (id 571213070; Apple ID gerekir) ya da blackmagicdesign.com (kayıt formu: kişisel bilgi — kullanıcının kararı). Sonra Tercihler > System > General: güncelleme denetimi, beta bildirimleri ve 'Send report when application quits unexpectedly' kapatılır."
-kontrol = "ls '/Applications/DaVinci Resolve/DaVinci Resolve.app'"
-boyut_mb = 2512
-etkin = false
-onay = "kullanıcı kararı (2,5 GB; App Store hesabı ya da kayıt formu)"
-not = "21.1.1. medya nle .otio dosyasını içe aktarır (File > Import > Timeline). Ajan YÖNETEMEZ: dışarıdan betik yalnız Studio'da, 21.1'de ücretsiz sürümden Python betikleri de kaldırıldı. Çıktı UHD ve ≤60 fps ile sınırlı."
+kurulum = "Kullanıcı kurar: Mac App Store 'DaVinci Resolve' (id 571213070; Apple ID gerekir). Sonra Tercihler > System > Media Storage > Add: /Users/onurkaya/Projects/video/projeler (kum havuzu: yoksa proje medyası okunamaz). App Store sürümünde güncelleme/kullanım verisi/çökme raporu seçeneği yok (System ve User sayfalarının hepsi tarandı, 2026-10-08); Blackmagic Cloud ve İnternet hesaplarına giriş yapılmaz."
+kontrol = "ls '/Applications/DaVinci Resolve.app'"
+boyut_mb = 2900
+etkin = true
+onay = "kullanıcı kurdu (2026-10-08, App Store)"
+not = "21.1.0 (21.1.00015, App Store, kum havuzlu: yalnız seçilen dosyalar, ~/Movies ve Media Storage konumları). File > Import > Timeline… → .otio; pencerede 'Set timeline resolution' elle (OTIO çözünürlük taşımaz), fps OTIO'dan doğru. Ölçüldü (2026-10-08): kesim 0 kare, 12 karelik erime yerinde, 60 fps kaynak kare-kesin, 24 fps ±1 kare (giriş noktası zaman çizelgesi ızgarasına aşağı yuvarlanıyor), ses ≤ 2 ms; geri verdiği .otio aynı aralıkları taşıyor; projeler/ Media Storage'a eklenince medya doğrudan açıldı. API ile YÖNETİLEMEZ (dış betik yalnız Studio'da; konsol özel arayüz). Erişilebilirlik izniyle menü/pencere otomasyonu çalışıyor (içe/dışa aktarma, Quick Export). Ağ: çalışırken yalnız *:49153 dinleme soketi, dış bağlantı yok. Çıktı UHD ve ≤60 fps ile sınırlı."
 
 [[saglayici]]
 ad = "resolve-studio-mcp"

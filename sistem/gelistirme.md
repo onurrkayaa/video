@@ -9,6 +9,9 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
   ProRes'i kare başı ~33 MB PNG'ye açıyor; uçtan uca denemede disk doldu, vekil klip gerekti).
 - **Y** `medya ciz` (ffmpeg EDL çizicisi): uzun ve çekim ağırlıklı kurgularda planı doğrudan ffmpeg'le çiz (kesim,
   xfade, ölçek/kırpma, ses miksi); HyperFrames 45 dk'lık işte ~1,9 saat sürüyor (kapsam incelemesi, doğrulanmadı).
+  Ölçüt hazır: `testler/nle_olc.py` (Resolve çizimi geçiyor). Dikkat (ölçüldü 2026-10-08): elle kurulan
+  `concat → xfade → concat` zinciri erimeden sonra 1 kare kaydı (gelen klip 1 kare erken içerik, sonraki kesim 1 kare
+  geç, toplam +1 kare) — zaman tabanlarını kare ızgarasına oturtup 0 kareye indirmeden yayımlama.
 - **O** İndirmesiz komut paketi (kurulu araçlarla): `sabitle` (vidstab), `gurultu` (video gürültüsü: hqdn3d/nlmeans),
   `eski` (bwdif + büyütme), `dikey` (konu takipli 9:16), `renk-esle` (çekimler arası renk eşleme), `bosluk-kes`
   (konuşmalı videoda ölü sessizlikleri kesme), `gizlilik` (Vision yüz bulanıklaştırma), `plaka`, App Store ön ayarı.
@@ -20,7 +23,13 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
   yalnız gerçek yüksek fps kaynakta).
 - **O** Yeniden kadraj yolu: `medya analiz` konu kutularından yumuşatılmış kırpma/anahtar kare JSON'u (16:9 → 9:16).
 - **O** `medya nle`: müzik seviyesi/kısma ve J/L kesim sesi taşınsın; `--paket` (.otioz), `--pisir` (hareket ve hızı
-  pişmiş ara klipler); Resolve_OTIO efekt üst verisi (Dynamic Zoom, faders) — Resolve kurulunca denenerek.
+  pişmiş ara klipler); Resolve_OTIO efekt üst verisi (Dynamic Zoom, faders) — her biri `testler/nle_olc.py` ile Resolve
+  ve Kdenlive'da ölçülerek (sınama medyası: `testler/nle_sinama.py`).
+- **D** `medya nle`: başlangıç zaman kodlu gerçek kamera medyası (TC kare alanı zaman çizelgesi fps'inden büyük, ör.
+  60 fps kamera) Resolve ve Kdenlive'da sınanmadı; `-kdenlive.otio` TC'yi Kdenlive'ın hesabıyla yazıyor.
+- **D** Kdenlive OTIO içe aktarım hataları (son klibin kaydırması kayboluyor; erime isteği başarısız olup sonraki klibi
+  sıfırlıyor; proje fps'i `duration().rate`'ten) KDE'ye bildirilebilir — hesap gerekir, kullanıcının kararı. Düzelirse
+  `-kdenlive.otio` uyarlaması sadeleşir.
 - **O** Plan sözleşmesine görüntüden ayrı ses kaynağı alanı (b-roll altında röportaj sesi, J/L).
 - **D** `medya denetle`: planın `hiz<1` aralıklarında yinelenen kare oranı (`yinelenen.py`).
 - **D** `medya kontak`: HDR kaynakta ton eşlemeli kareler (bugün soluk görünür).
@@ -52,7 +61,6 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 | asciinema 3.2.1 + agg 1.9.0 | gerçek terminal oturumu → README GIF'i | GPL-3 (çıktı serbest) | 21 MB |
 | lottie-web 5.13.0 + dotlottie-web 0.80.0 | uygulama içi Lottie oynatma/doğrulama | MIT | 33 MB |
 | Blender 5.2.2 LTS | gerçekçi 3B (Cycles Metal) | GPL (çıktı serbest) | ~1,3 GB |
-| DaVinci Resolve 21.1.1 (ücretsiz) | daha güçlü renk/ses ince ayarı (.otio) | Blackmagic EULA | 2,5 GB — disk yetince (Kdenlive kurulu) |
 | VoxCPM2 8-bit | dış ses (4-bit CER %0 ölçüldü; doğallık için) | Apache-2.0 | +0,9 GB — kullanıcı dinleyip isterse |
 | Z-Image-Turbo Q4 | fotogerçekçilik/görselde yazı (FLUX.2 klein'ın yanına) | Apache-2.0 | 5,9 GB — disk yetince |
 | DaVinci Resolve Studio + yerleşik MCP | ajanın Resolve'u sürmesi | ücretli 295 $ | 6,7 GB — yalnız açık onayla |
@@ -62,5 +70,4 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
   metinlerde (≥ 30 cümle) ölç; isteğe bağlı MOS tahmincisi (UTMOS) değerlendir.
 - `medya gorsel-uret --referans`: düzenlemede kenar kalıntısı görüldü (mermerde ahşap dokusu izi) — maske/kompozit yolu.
 - 4K kaynakta RIFE'nin (UHD kipi) süre/disk ölçümü; şimdilik 4K'da Apple önce (`yavaslat` docstring'i).
-- `medya nle` çıktısının Resolve ve Kdenlive'da gerçekten içe aktarılması (program kurulunca; kare sayaçlı sınama medyası).
 - Remotion'da gerçek telefon HEVC/HDR çekimi (yalnız sayısal modda, mahrem olmayan bir klip).

@@ -39,10 +39,10 @@ gerektiğini söyler.
   kişisel işlerde, yalnız dosya teslim ettiğin serbest işlerde ve en çok 3 kişilik şirket işlerinde ücretsiz —
   daha büyük şirkette ücretli lisans gerektiği için orada HyperFrames kullanılır).
 - Yerel üretim: görsel (FLUX.2 [klein] 4B, Apache-2.0) ve Türkçe dış ses (VoxCPM2, Apache-2.0) — hesap, bulut yok.
-- Elle ince ayar: Kdenlive kurulu (kurgunun `.otio` dosyasını açar).
+- Elle ince ayar: DaVinci Resolve (ücretsiz, App Store) ve Kdenlive kurulu; ikisine devir kare kodlu sınamayla ölçüldü.
 - Ağır çekim: gerçek yüksek fps → RIFE (1080p'ye kadar; gerçek kamerada en iyi ölçülen) ya da Apple ML (4K) → ffmpeg
   (biri takılırsa sıradakine geçer).
-- Kurgu programına devir: `medya nle` (.otio: DaVinci Resolve 18.5+, Kdenlive; .edl). "Claude DaVinci'yi yönetsin"
+- Kurgu programına devir: `medya nle` (.otio: DaVinci Resolve; -kdenlive.otio: Kdenlive; .edl). "Claude DaVinci'yi yönetsin"
   yalnız ücretli Resolve Studio'nun MCP'siyle olur (295 $) — istemedikçe kapalı.
 - Baş ajan (yönetici: öneriler, aylık inceleme, güncelleme) ve uzman ajanlar (analist, kurgucu, hareket, ses, görsel,
   denetçi, gözcü); iş akışları (üretim, denetim, radar, yönetim, güncelleme).

@@ -26,13 +26,21 @@
 HyperFrames'te `data-playback-rate` 1'in altına inerse kareler tekrarlanır. Bu yüzden ağır çekim önce `medya yavaslat` ile üretilir. Ayrıntısı kurgu-zanaati'nde.
 
 ## Kurgu programına devir (NLE)
-- **Komut:** proje klasöründe `medya nle plan/kurgu.json --bicim otio|edl|hepsi` çalıştır. Çıktı `cikti/nle/` altına yazılır. `medya-uretim` bu adımı zaten yapar.
-- **.otio dosyası:** DaVinci Resolve 18.5+ ve Kdenlive 25.04+ kesimleri açar; erimeler Kdenlive 26.08+ ile gelir (25.04 notları: geçişler aktarılmaz).
-- **.edl dosyası:** CMX 3600 biçimindedir.
-- **Aktarılanlar:** kesimler, erimeler ve işaretler.
-- **Aktarılmayanlar:** hız (ağır çekim önce `medya yavaslat` ile klibe gömülür), kadraj ve zoom, renk, ses düzeyi. Bunlar işaret olarak gelir ya da ara klibe gömülür.
+- **Komut:** proje klasöründe `medya nle plan/kurgu.json --bicim otio|kdenlive|edl|hepsi`. Çıktı `cikti/nle/`: `kurgu.otio` (Resolve), `kurgu-kdenlive.otio` (Kdenlive), `kurgu.edl` (CMX 3600). `medya-uretim` bu adımı zaten yapar.
+- **Ölçüldü (2026-10-08):** kare kodlu sınama medyası (`testler/nle_sinama.py`: karışık 30/60/24 fps, 12 karelik erime, çekim sesi, numaralı müzik tonları) programda çizildi, `testler/nle_olc.py` her kareyi ve sesi plana karşı ölçtü.
 
-**Ajan ücretsiz Resolve'u yönetemez.** Dış betik desteği yalnız Studio sürümünde var. Resolve 21.1 ücretsiz sürümden Python betiklerini de kaldırdı. Kullanıcı kurguyu programda kendi sürdürür.
+| Program ← dosya | Sonuç |
+|---|---|
+| DaVinci Resolve 21.1 ← `kurgu.otio` | GEÇTİ: kesimler 0 kare, erime yerinde, 60 fps kaynak kare-kesin, 24 fps ±1 kare (giriş noktası zaman çizelgesi ızgarasına aşağı yuvarlanıyor), müzik ve çekim sesi ≤ 2 ms |
+| Kdenlive 26.08.1 ← `kurgu-kdenlive.otio` | GEÇTİ, erime yerine kesim + işaret: proje 30 fps, bütün giriş noktaları doğru, ses ≤ 1,5 ms |
+| Kdenlive 26.08.1 ← `kurgu.otio` | KALDI: proje 60 fps, her izin son klibi ve erimeden sonraki klip 0'dan başladı (müzik 0,5 sn, çekim sesi 1 sn erken), erime düştü (src/otio/otioimport.cpp) |
+
+- **Resolve'da:** File > Import > Timeline… → `kurgu.otio` → "Set timeline resolution" plan boyutu (OTIO çözünürlük taşımaz); kare hızı ve "Automatically set project settings" OTIO'dan doğru gelir → Ok. App Store sürümü kum havuzlu: `projeler/` Tercihler > System > Media Storage'a eklendi (2026-10-08), proje medyası doğrudan açılır. Medya başka bir klasördeyse o klasörü de ekle.
+- **Kdenlive'da:** File > OpenTimelineIO Import… → `kurgu-kdenlive.otio` (çözünürlük ilk klipten gelir). Sonra her izin sonundaki 1 karelik "SON — sil" kliplerini sil. Kırmızı "erime N kare" işaretlerinde klibi seç → U ya da birleşime çift tıkla; süreyi N kare yap.
+- **Aktarılmayanlar:** hız (ağır çekim önce `medya yavaslat` ile klibe gömülür), kadraj ve zoom, renk, ses düzeyi. Bunlar işaret olarak gelir ya da ara klibe gömülür.
+- **Zaman kodlu kamera medyası:** `-kdenlive.otio` başlangıç TC'sini Kdenlive'ın hesabıyla (zaman çizelgesi hızında) yazar. TC'li gerçek kamera medyası sınanmadı.
+
+**Ajan ücretsiz Resolve'u API ile yönetemez.** Dış betik yalnız Studio'da var; Resolve 21.1 ücretsiz sürümden Python betiklerini de kaldırdı; konsol erişilebilirlikte görünmeyen özel arayüz. macOS erişilebilirlik izniyle (VS Code'a verildi, 2026-10-08) menüler, dosya pencereleri ve Qt pencereleri sürülebiliyor: içe aktarma, Export Timeline, Quick Export, Tercihler. Ölçüm böyle yapıldı; kırılgan ve ekranı/fareyi kullanır, yalnız sınamada ya da kullanıcı isterse. Kurguyu programda kullanıcı sürdürür.
 
 **"Claude DaVinci'de kurgulasın" isteği:** bunun için ücretli DaVinci Resolve Studio gerekir (295 $). Resolve 21.1'deki yerleşik MCP, File > Setup AI Assistants menüsünden kurulur.
 - Kayıt defterinde `resolve-studio-mcp` olarak `etkin = false` durur.
@@ -40,5 +48,5 @@ HyperFrames'te `data-playback-rate` 1'in altına inerse kareler tekrarlanır. Bu
 - Bu yolla kareler modele gider; gizlilik kuralı geçerli.
 
 **Kdenlive ve ücretsiz Resolve:** kullanıcının uygulamalarıdır (`yetenekler.toml`'da `tur = "uygulama"`).
-- **Kdenlive 26.08.1 KURULU** (2026-10-07, `/Applications/kdenlive.app`, KDE noterli, SHA doğrulandı): .otio'yu Dosya > İçe Aktar ile açar.
-- Ücretsiz Resolve (daha güçlü renk/ses; 2,5 GB, App Store hesabı ya da kayıt formu): disk yetince kullanıcı App Store'dan kurar.
+- **Kdenlive 26.08.1 KURULU** (2026-10-07, `/Applications/kdenlive.app`, KDE noterli, SHA doğrulandı).
+- **DaVinci Resolve 21.1.0 KURULU** (2026-10-08, App Store, `/Applications/DaVinci Resolve.app`, 2,9 GB; daha güçlü renk/ses). Tercihlerde güncelleme, kullanım verisi ya da çökme raporu seçeneği yok (App Store sürümü; bütün sayfalar tarandı). Blackmagic Cloud ve İnternet hesaplarına giriş yapılmadı. Çalışırken yalnız *:49153 dinleme soketi görüldü, dış bağlantı yok.

@@ -1,7 +1,7 @@
 export const meta = {
   name: 'medya-guncelle',
   description: 'Onaylanan yönetici önerilerini sırayla uygular: sabit sürümlü kurulum, kayıt, uyarlayıcı, doğruluk sınaması, beceri/belge güncellemesi; her öneriyi bağımsız doğrular, sonda tam sınama',
-  whenToUse: "Kullanıcı bir medya-yonetim raporundaki önerileri onayladığında. args: {oneriler_json: 'sistem/yonetim/<tarih>-oneriler.json', onaylanan: ['O1', 'O3'], commit?: false, push?: false} — commit/push yalnız kullanıcı isterse.",
+  whenToUse: "Kullanıcı bir medya-yonetim raporundaki önerileri onayladığında. args: {oneriler_json: 'sistem/yonetim/<tarih>-oneriler.json', onaylanan: ['O1', 'O3'], notlar?: {O3: 'öneri metnine göre öncelikli bağlam/düzeltme'}, commit?: false, push?: false} — commit/push yalnız kullanıcı isterse.",
   phases: [
     { title: 'Uygula', detail: 'öneri başına (sırayla): disk denetimi, kurulum, kayıt, uyarlayıcı, sınama, belgeler' },
     { title: 'Doğrula', detail: 'öneri başına bağımsız doğrulayıcı (+ bir düzeltme turu)' },
@@ -15,6 +15,8 @@ if (!args || !args.oneriler_json || !args.onaylanan || !args.onaylanan.length) {
   throw new Error("args: {oneriler_json, onaylanan: ['O1', …]} gerekli")
 }
 const OJ = args.oneriler_json.startsWith('/') ? args.oneriler_json : `${KOK}/${args.oneriler_json}`
+const NOT = (kimlik) => (args.notlar && args.notlar[kimlik]) ? `\nANA AJAN NOTU (kullanıcı onaylı bağlam; öneri ` +
+  `metniyle çelişirse bu geçerli): ${args.notlar[kimlik]}` : ''
 const ROL = `ROLÜN: önce ${KOK}/sistem/claude/agents/medya-yonetici.md dosyasını, sonra ${KOK}/sistem/claude/skills/` +
   `arac-radari/SKILL.md becerisini (benimseme adımları) oku. Her komuttan önce: source ${KOK}/ortam.sh.`
 
@@ -33,13 +35,13 @@ const uygula = (kimlik, ek = '') => agent(`${ROL}\nGÖREV: ${OJ} içindeki ${kim
   `DUR (durum=durdu) ve neyin silinebileceğini yaz — kendin silme; (2) sabit sürüm/commit + SHA ile kur (Homebrew ` +
   `yok); (3) yetenekler.toml [[saglayici]] (+ gerekirse [[yetenek]]); (4) medya/komutlar uyarlayıcısı ya da güncellemesi; ` +
   `(5) testler/ altına doğruluk sınaması (ağır model ise 'agir' fikstürü); (6) ilgili beceri, CLAUDE.md, README, ` +
-  `sistem/gelistirme.md, sistem/dersler.md. Ölç; ölçmediğini iddia etme. Git commit/push YAPMA.${ek}`,
+  `sistem/gelistirme.md, sistem/dersler.md. Ölç; ölçmediğini iddia etme. Git commit/push YAPMA.${NOT(kimlik)}${ek}`,
   { label: `uygula:${kimlik}`, phase: 'Uygula', schema: UYG })
 const dogrula = (kimlik, u) => agent(`Bağımsız, şüpheci doğrulayıcısın; ${KOK}/CLAUDE.md kurallarını bil. source ` +
   `${KOK}/ortam.sh. ${OJ} içindeki ${kimlik} önerisi uygulandı; uygulayıcının iddiaları: ${JSON.stringify(u)}. ` +
   `Doğrula: ilgili 'medya test -k …' (ağır modelse 'medya test --agir -k …'), 'medya yetenekler --saglayicilar', ` +
   `kurulan sürüm/SHA, lisans ve telemetri, belgelerin tutarlılığı (CLAUDE.md, README, beceri, yetenekler.toml), ` +
-  `disk tabanı. Dosya DEĞİŞTİRME. Kanıtsız iddia = bulgu.`, { label: `dogrula:${kimlik}`, phase: 'Doğrula', schema: DOG })
+  `disk tabanı. Dosya DEĞİŞTİRME. Kanıtsız iddia = bulgu.${NOT(kimlik)}`, { label: `dogrula:${kimlik}`, phase: 'Doğrula', schema: DOG })
 
 const sonuc = []
 for (const kimlik of args.onaylanan) {

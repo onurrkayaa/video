@@ -3,6 +3,29 @@
 Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders ilgili beceriye taşınır (taşındıysa
 "→ beceri" notu). En yeni üstte.
 
+## 2026-10-08 — kurgu programına devir ölçümü (Resolve 21.1, Kdenlive 26.08)
+- **Sınama sinyali periyodikse kaymayı göremez.** İlk ölçümde müzik tıkları 0,5 sn'de bir, çekim bip'leri saniyede birdi;
+  Kdenlive müziği 0,5 sn, çekim sesini 1 sn erken başlattığı hâlde ölçüm "0,5 ms" dedi. Sinyaller numaralandı (k. müzik
+  tonu 1500 + 100·k Hz, kaynak saniyesi s'de s+1 bip) ve kasıtlı kaydırılmış başvuruyla doğrulandı (+501 / +1001 ms
+  yakalandı). Ölçüm aracını önce bilerek bozulmuş girdiyle sına. → testler/nle_sinama.py, nle_olc.py.
+- **Kdenlive 26.08 OTIO içe aktarımı (src/otio/otioimport.cpp):** proje fps'ini `timeline.duration().rate`'ten alıyor
+  (kaynak hızında yazılan aralıklar 60 fps proje açtırdı); her izin SON klibinin giriş noktası kayboluyor (tek klipli
+  dosyada bile); erime isteği (luma mix) başarısız olup sonraki klibi 0'a çekiyor. Kaynak kod okunup tek değişkenli
+  dosyalarla ayrıldı. Çözüm `-kdenlive.otio`: aralıklar zaman çizelgesi hızında, iz sonuna 1 karelik "SON — sil" klibi,
+  erime yerine kesim + işaret. Uyarlanmış dosya ölçümde geçti. → medya nle, motor-ve-nle.
+- **Resolve 21.1 düz .otio'yu kare-kesin açtı.** 24 fps kaynağın 0,25 sn giriş noktasını 30 fps ızgarasına aşağı yuvarladı
+  (7,5 → 7 kare): 60 karenin 24'ü bir kaynak karesi erken, tamamı bu yuvarlamayla açıklanıyor. MLT (Kdenlive) ise en
+  yakın kareyi alıyor. Ölçüt ±1 kare.
+- **App Store Resolve kum havuzlu:** yalnız seçilen dosyalar, `~/Movies` ve Tercihler > Media Storage'a eklenen klasörler
+  okunur. `projeler/` eklenince .otio stüdyo klasöründen doğrudan açıldı. Tercihlerde güncelleme/kullanım verisi/çökme
+  raporu seçeneği yok.
+- **Ücretsiz Resolve erişilebilirlikle sürülebiliyor:** menüler, NSOpen/SavePanel (⌘⇧G + metin alanına değer yaz) ve
+  Qt pencereleri (içe aktarma, Quick Export, Tercihler) AX ağacında görünüyor; sayfa düğmeleri gibi özel çizimler
+  `click at` ile değil CGEvent ile tıklanıyor (System Events tıklaması Qt listesinde işlemedi). Konsol görünmüyor (ekran
+  kaydı izni yokken kör). Kırılgan; ölçüm için yeterli.
+- Kdenlive projesini pencere açmadan çizmek: `kdenlive.app/Contents/MacOS/melt proje.kdenlive -consumer avformat:…`
+  (son kare kapsayıcı: +1 kare).
+
 ## 2026-10-07 — üretici modeller (FLUX.2 klein, VoxCPM2) ve depo
 - **Bellek tepesi diski de yer:** FLUX.2 (8,8 GB) ve VoxCPM2 (7 GB) art arda çalışınca macOS takası 6 GB'a çıktı; takas
   dosyaları diskten yer aldı, boş disk 6,9 → 1,4 GB. Yeniden başlatınca geri gelir. Önlem: `disk_bekcisi` (görsel
