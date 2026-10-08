@@ -8,6 +8,10 @@ sistem değişmez: işler **yetenek** adıyla çağrılır (`medya <komut>`), ar
 - Ücretli hizmet, hesap açma, kredi, bulut çizim yok. HyperFrames'in `cloud`, `lambda`, `cloudrun`, `auth`,
   `publish`, `usage`, `feedback` komutları, `heygen` CLI'si ve `hyperframes media-use resolve` (HeyGen kataloğu)
   kullanılmaz — `medya-koruma` kancası bunları engeller; engellenince yolunu değiştir, kancayı aşmaya çalışma.
+- Sormadan indirme ve sabit sürüm: ses/video girdili `hyperframes transcribe`, dökümlü `init --video|--audio`,
+  `tts`, `models install`, `upgrade`, `skills` (`skills check` dışında) ve satıcı betikleri (embedded-captions
+  `prepare.sh`/`transcribe.cjs`/`matte.cjs`, media-use `transcribe.mjs`) kullanılmaz — sormadan model indirir ya da
+  sabit sürümü/kaynağı bozar; kanca engeller. Döküm/alt yazı `medya yaziya-dok --dil tr --srt`, dış ses `medya seslendir`.
 - Analiz verisi kapalı (`HYPERFRAMES_NO_TELEMETRY=1`, `DO_NOT_TRACK=1`, `HF_HUB_DISABLE_TELEMETRY=1`).
   `hyperframes snapshot` daima `--describe false` (yoksa kareler Google'a gidebilir).
 - E-posta ya da kişisel bilgi hiçbir dış isteğe girmez. Bot korumaları aşılmaz.
@@ -40,7 +44,7 @@ sistem değişmez: işler **yetenek** adıyla çağrılır (`medya <komut>`), ar
 |---|---|---|
 | Yetenek | `medya/` (CLI), `yetenekler.toml` (kayıt), `medya/isciler/` (ağır ortam işçileri), `arac/medya-apple` (Swift: VideoToolbox, Vision, SoundAnalysis), `arac/rife` (ağır çekim yedeği) | Araçtan bağımsız komutlar; sağlayıcı değişince komut aynı kalır; asılan/başarısız sağlayıcı yedeğine düşer |
 | Motor | HyperFrames (HTML+GSAP, varsayılan) · Remotion 4.0.533 (React/TSX, **lisans kapısıyla**) · ffmpeg | Kompozisyon ve çizim |
-| Bilgi | Beceriler `sistem/claude/skills/` (→ `~/.claude/skills/` bağlantı; satıcı becerileri sabit commit'le, `sistem/claude/satici/KAYNAKLAR.md`), bilgi tabanı `sistem/arastirma/<tarih>/`, dersler `sistem/dersler.md` | Zanaat, karar kuralları, araç seçimleri ve gerekçeleri |
+| Bilgi | Beceriler `sistem/claude/skills/` (→ `~/.claude/skills/` bağlantı; satıcı becerileri sabit commit'le, `sistem/claude/satici/KAYNAKLAR.md`; HyperFrames becerileri henüz sabit değil: GitHub HEAD, commit kaydı yok), bilgi tabanı `sistem/arastirma/<tarih>/`, dersler `sistem/dersler.md` | Zanaat, karar kuralları, araç seçimleri ve gerekçeleri |
 | Ajan | Ajanlar `sistem/claude/agents/` (→ `~/.claude/agents/`), iş akışları `.claude/workflows/`, kanca `sistem/claude/hooks/medya-koruma.py` | Uzman roller, uçtan uca boru hattı, kuralların zorlanması |
 
 **Baş ajan:** `medya-yonetici` — bütün sistemi görür; öncelikli, maliyeti belli, kanıtlı öneriler hazırlar; kurmaz,

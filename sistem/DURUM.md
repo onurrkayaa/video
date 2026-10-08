@@ -74,12 +74,7 @@ Dalga 2'den önce önerilen: O1 düzeltme turu (aşağıda "Öneriler" 1).
   VoxCPM2, 2026-10-08 geçti).
 
 ## Kullanıcının kararını bekleyenler
-- O1 · CLAUDE.md'ye iki ekleme. (a) "Kesin kurallar"a sormadan indiren ya da sabit sürümü bozan satıcı komutları maddesi.
-  (b) Mimari "Bilgi" satırına "HyperFrames becerileri henüz sabit değil". Yama hazır: `sistem/devam/ham/o1-claude-md.patch`
-  (SHA-256 `2af8dd1b…`; 12:40'ta `git apply --check` temiz). Alt ajan, kullanıcının doğrudan onayı olmadan kuralları
-  değiştirmedi. Onaylanırsa: `git apply sistem/devam/ham/o1-claude-md.patch`. Uygulanana dek CLAUDE.md'nin yasak
-  listesi kancanın gerisinde kalıyor; "satıcı becerileri sabit commit'le" ifadesi de KAYNAKLAR.md ile çelişiyor.
-- O1 · `~/.claude/settings.json` → `skillOverrides`'a iki anahtar: `"embedded-captions": "user-invocable-only"` ve
+- O1 (isteğe bağlı, genel ayar) · `~/.claude/settings.json` → `skillOverrides`'a iki anahtar: `"embedded-captions": "user-invocable-only"` ve
   `"talking-head-recut": "user-invocable-only"`. Başka hiçbir şey değişmez; kuru birleştirme yapıldı, dosyaya yazılmadı.
 - O7 · Kancaların yorumlayıcısı: `medya-koruma.py` ve `oturum-ozeti.py` PATH'teki `python3` ile çalışıyor. O kalkarsa geriye
   `/usr/bin/python3` kalır; o da Xcode lisansı yüzünden 69 ile çıkar ve koruma sessizce düşer. Stüdyonun Python'una
