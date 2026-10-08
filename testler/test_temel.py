@@ -468,6 +468,56 @@ def test_nle_kdenlive_uyarlamasi(tmp_path):
     assert any("SON — sil" in u for u in uyarilar) and any("erime" in u for u in uyarilar)
 
 
+def test_nle_kdenlive_isaret_klibin_basinda(tmp_path):
+    """Klip notu işareti klibin ilk karesine düşmeli. OTIO'da işaret klibin kaynak saatindedir (düz .otio böyle yazar);
+    Kdenlive 26.08 kırpılmış başlangıcı yeniden ekliyor (otioimport.cpp: pos = start + işaret, kaydırma = start − TC):
+    2026-10-08 kaydedilen projede giriş 21 → işaret 42 ölçüldü. Zaman kodlu medyada TC de düşülmeli. Ölçü başı
+    kılavuzları zaman çizelgesi hızında olmalı (Kdenlive onları yeniden ölçeklemeden okuyor)."""
+    import subprocess
+    from medya.komutlar.nle import zaman_cizelgesi
+    tc = tmp_path / "tc.mov"                                            # başlangıç zaman kodu 10 sn = 300 kare
+    subprocess.run([str(KOK / "arac" / "ffmpeg"), "-nostdin", "-v", "error", "-i", str(VERI / "kesimli.mp4"),
+                    "-c", "copy", "-timecode", "00:00:10:00", str(tc)], check=True)
+    plan = {"fps": 30, "muzik": {"dosya": str(VERI / "muzik_net.wav"), "bas": 1.0}, "cekimler": [
+        {"no": 1, "kaynak": str(VERI / "kesimli.mp4"), "kaynak_bas": 2.0, "cikti_bas": 0.0, "cikti_son": 2.0,
+         "kadraj": {"olcek": 1.2}},
+        {"no": 2, "kaynak": str(VERI / "hareket60.mp4"), "kaynak_bas": 0.5, "cikti_bas": 1.8, "cikti_son": 3.5,
+         "gecis": {"tur": "erime", "sure_kare": 6}},
+        {"no": 3, "kaynak": str(tc), "kaynak_bas": 1.0, "cikti_bas": 3.5, "cikti_son": 5.0, "hareket": {"tur": "kenburns"}}]}
+    muzik = {"olcu_baslari": [1.0, 2.5, 4.0], "guven_seviye": "yuksek"}
+    tl, _ = zaman_cizelgesi(plan, tmp_path, muzik)
+    tk, _ = zaman_cizelgesi(plan, tmp_path, muzik, kdenlive=True)
+    duz = list(tl.tracks[0].find_clips())                             # düz .otio: OTIO anlamı (kaynak saati)
+    assert [len(c.markers) for c in duz] == [1, 0, 1]                  # erime orada gerçek geçiş, notu yok
+    assert all(m.marked_range.start_time == c.source_range.start_time for c in duz for m in c.markers)
+    r = tk.duration().rate
+    klipler = [c for c in tk.tracks[0].find_clips() if c.name != "SON — sil"]
+    assert round(klipler[2].source_range.start_time.value) == 330       # TC 300 + 1 sn
+    for c, tc_kare in zip(klipler, (0, 0, 300)):
+        start = round(c.source_range.start_time.rescaled_to(r).value)   # Kdenlive'ın kırpılmış başlangıcı
+        assert len(c.markers) == 1
+        assert start + round(c.markers[0].marked_range.start_time.rescaled_to(r).value) == start - tc_kare
+    assert [(m.marked_range.start_time.value, m.marked_range.start_time.rate) for m in tk.tracks.markers] == \
+        [(0, r), (45, r), (90, r)]
+
+
+def test_nle_olc_erime_rampasi():
+    """testler/nle_olc.py erimeyi ağırlık rampasından ölçer (karışık kare saymak, ilk karesinde ağırlığı 0 olan programda
+    1 kare eksik verir). Bilinen cevaplı yapay kod blokları: 12 karelik erime kare merkezinde (Resolve 21.1 böyle: orta
+    113,5) ve kare başında (MLT: 114) örneklenince uygun; 11 kare ve 1 kare geç/erken erime uygun değil."""
+    import numpy as np
+    from nle_olc import _rampa
+    a, b = {"harf": "B", "bas_n": 60, "son_n": 120}, {"harf": "C", "bas_n": 108, "son_n": 168}   # örtüşme 108–119
+    kimlik = lambda h: np.array([255.0 * (((ord(h) - 64) >> (3 - j)) & 1) for j in range(4)] + [0.0] * 12)
+    olc = lambda f: _rampa([kimlik("B") * (1 - w) + kimlik("C") * w
+                            for w in (min(1.0, max(0.0, f(n))) for n in range(170))], a, b)
+    r = olc(lambda n: (n + 0.5 - 108) / 12)
+    assert r["uygun"] and abs(r["kare"] - 12) < 0.05 and abs(r["orta"] - 113.5) < 0.05
+    assert olc(lambda n: (n - 108) / 12)["uygun"]
+    for kotu in (lambda n: (n + 0.5 - 108) / 11, lambda n: (n - 0.5 - 108) / 12, lambda n: (n + 1.5 - 108) / 12):
+        assert not olc(kotu)["uygun"]
+
+
 def test_ane_tikanikligi_teshisi():
     """2026-10-05: takılı ANECompilerService Vision/FRC'yi sessizce asmıştı — bekçi bunu tanımalı, normali değil."""
     from medya.ortak import ane_tikanikligi, _etime_sn
@@ -500,6 +550,197 @@ def test_remotion_sablonu_cizer_ve_lisanssiz(tmp_path):
         assert abs(float(probe(hedef / "out" / "o.mp4")["format"]["duration"]) - 4.0) < 0.05   # 60+50+35-15-10 kare
     finally:
         shutil.rmtree(hedef, ignore_errors=True)
+
+
+HF_FIKSTUR = KOK / "testler" / "hyperframes-baslik"
+HF_BASVURU = KOK / "testler" / "hyperframes-baslik-basvuru.json"
+
+
+def _ses_baslangici(karisim, kaynak, sr, tahmin, ara=0.25):
+    """Kaynak sesin karışımdaki başlangıcı (sn, örnek kesinliği): tahmin ± ara içinde çapraz ilinti tepesi."""
+    import numpy as np
+    bas = max(0, int((tahmin - ara) * sr))
+    parca = karisim[bas:int((tahmin + ara) * sr) + len(kaynak)]
+    n = 1 << int(np.ceil(np.log2(len(parca) + len(kaynak))))
+    ilinti = np.fft.irfft(np.fft.rfft(parca, n) * np.conj(np.fft.rfft(kaynak, n)), n)[:len(parca) - len(kaynak) + 1]
+    return (bas + int(np.argmax(ilinti))) / sr
+
+
+def _hf_ozet(yol, sesler):
+    """Çizimin özeti: akış ölçüleri, kaynak seslerin karışımdaki başlangıcı, kare başına 16x9 hücre ortalaması (gri,
+    0-255, onaltılık). Başvuru JSON'u da budur (mp4 depoya girmez)."""
+    import numpy as np
+    from medya.ortak import ffmpeg, probe
+    p = probe(yol)
+    v = next(s for s in p["streams"] if s["codec_type"] == "video")
+    a = next(s for s in p["streams"] if s["codec_type"] == "audio")
+
+    def pcm(dosya):
+        r = subprocess.run([ffmpeg(), "-nostdin", "-v", "error", "-i", str(dosya), "-vn", "-ac", "1", "-ar", "48000",
+                            "-f", "f32le", "-"], capture_output=True, check=True)
+        return np.frombuffer(r.stdout, np.float32).astype(float)
+
+    karisim, k = pcm(yol), _kareler(yol, 64, 36)
+    hucre = np.rint(k.reshape(len(k), 9, 4, 16, 4).mean(axis=(2, 4))).astype(np.uint8)
+    return {"genislik": v["width"], "yukseklik": v["height"], "fps": v["r_frame_rate"], "kare": int(v["nb_frames"]),
+            "sure": float(v["duration"]), "ses_kodek": a["codec_name"],
+            "ses_baslangic": {ad: _ses_baslangici(karisim, pcm(HF_FIKSTUR / src), 48000, t)
+                              for ad, (src, t) in sesler.items()},
+            "kareler": [h.tobytes().hex() for h in hucre]}
+
+
+def test_kompozisyon_hyperframes_cizimi_izgarada_ve_basvuruyla_ayni(tmp_path):
+    """Varsayılan motorun çizimi: fikstür lint'ten 0 hatayla geçer; taslak çizim 1920x1080, 30 fps, 150 kare, 5 sn;
+    sesler bildirilen anda ve kare ızgarasında başlar (çapraz ilinti, örnek kesinliği; ızgara dışı zamanda görüntü
+    sesten 1 kareye kadar kayar); kareler sabit sürümün başvurusuyla aynı (16x9 hücre, en çok 3 düzey fark — duyarlılık
+    2026-10-08'de ölçüldü: başlık Inter'e çevrilince 134/150, 1 kare kayma 23/149 karede yakalanır). Telemetri ve güncelleme
+    denetimi kapalı. Yükseltmede fark çıkarsa sürüm notuyla açıklanır; çizim kabul edilirse başvuru yeniden yazılır:
+    MEDYA_HF_BASVURU=yaz medya test kompozisyon."""
+    import datetime
+    import hashlib
+    import os
+    import re
+    import numpy as np
+    hf = KOK / "node_modules" / ".bin" / "hyperframes"
+    if not hf.exists():
+        pytest.skip("HyperFrames kurulu değil: medya kur hyperframes")
+    if not (HF_FIKSTUR / "vendor" / "gsap.min.js").exists():
+        pytest.skip("testler/hyperframes-baslik/vendor/gsap.min.js yok (depoda tutulmaz): zsh sistem/kur.sh kopyalar")
+    if not list((Path.home() / ".cache" / "hyperframes" / "chrome").glob("chrome-headless-shell/mac_arm-*")):
+        pytest.skip("HyperFrames'in Chrome'u yok: ilk çizim ~190 MB indirir (hyperframes browser ensure; sorarak)")
+    if not all((HF_FIKSTUR / "ses" / f).exists() for f in ("cin.wav", "hisirti.wav")):    # *.wav depoda tutulmaz
+        subprocess.run([sys.executable, str(HF_FIKSTUR / "ses" / "efekt.py")], check=True)  # sabit tohum: aynı dosya
+    ortam = {**os.environ, "HYPERFRAMES_NO_TELEMETRY": "1", "HYPERFRAMES_NO_UPDATE_CHECK": "1",
+             "HYPERFRAMES_NO_AUTO_INSTALL": "1", "HYPERFRAMES_SKIP_SKILLS": "1", "DO_NOT_TRACK": "1"}
+    surum = subprocess.run([str(hf), "--version"], capture_output=True, text=True, env=ortam).stdout.strip()
+    r = subprocess.run([str(hf), "lint", str(HF_FIKSTUR), "--json"], capture_output=True, text=True, env=ortam,
+                       timeout=120)
+    assert r.returncode == 0 and json.loads(r.stdout)["errorCount"] == 0, r.stdout[-1500:]
+    cikti = tmp_path / "baslik.mp4"
+    r = subprocess.run([str(hf), "render", str(HF_FIKSTUR), "--quality", "draft", "-o", str(cikti)],
+                       capture_output=True, text=True, env=ortam, timeout=300)
+    assert r.returncode == 0, (r.stdout + r.stderr)[-1500:]
+
+    html = (HF_FIKSTUR / "index.html").read_text()
+    sesler = {m["id"]: (m["src"], float(m["bas"])) for m in re.finditer(
+        r'<audio id="(?P<id>[\w-]+)" src="(?P<src>[^"]+)" data-start="(?P<bas>[\d.]+)"', html)}
+    assert len(sesler) == 2, sesler
+    o = _hf_ozet(cikti, sesler)
+    assert (o["genislik"], o["yukseklik"], o["fps"], o["kare"], o["ses_kodek"]) == (1920, 1080, "30/1", 150, "aac")
+    assert abs(o["sure"] - 5.0) < 1 / 30
+    for ad, (_, bas) in sesler.items():
+        t = o["ses_baslangic"][ad]
+        assert abs(t - bas) < 0.001, (ad, t, bas)                      # bildirilen anda
+        assert abs(t * 30 - round(t * 30)) < 0.03, (ad, t * 30)        # kare ızgarasında (k/30)
+
+    imza = hashlib.sha256(html.encode()).hexdigest()
+    if os.environ.get("MEDYA_HF_BASVURU") == "yaz":
+        HF_BASVURU.write_text(json.dumps({
+            "aciklama": "testler/hyperframes-baslik taslak çiziminin başvurusu (test_temel.py _hf_ozet). Yeniden yaz: "
+                        "MEDYA_HF_BASVURU=yaz medya test kompozisyon",
+            "hyperframes": surum, "tarih": datetime.date.today().isoformat(), "fikstur_sha256": imza, **o},
+            ensure_ascii=False, indent=1) + "\n")
+        pytest.skip(f"başvuru yazıldı: HyperFrames {surum}")
+    b = json.loads(HF_BASVURU.read_text())
+    assert b["fikstur_sha256"] == imza, ("fikstür (index.html) başvurudan sonra değişti: sabit sürümle yeniden yaz "
+                                          "(MEDYA_HF_BASVURU=yaz medya test kompozisyon)")
+    assert len(o["kareler"]) == len(b["kareler"])
+    fark = [int(np.abs(np.frombuffer(bytes.fromhex(x), np.uint8).astype(int) -
+                       np.frombuffer(bytes.fromhex(y), np.uint8)).max()) for x, y in zip(o["kareler"], b["kareler"])]
+    farkli = [i for i, f in enumerate(fark) if f > 3]
+    assert not farkli, (f"HyperFrames {surum} çizimi başvurudan ({b['hyperframes']}) farklı: {len(farkli)} kare "
+                        f"(ilkleri {farkli[:10]}), en büyük fark {max(fark)} düzey")
+
+
+def test_satici_bagla_eski_kopyayi_yedekleyip_baglar(tmp_path, monkeypatch):
+    """~/.claude/skills'te aynı adlı eski gerçek kopya (npx skills --copy) dururken sabit commit'ten kurulan kopya
+    sessizce devre dışı kalır (kur.sh bagla gerçek klasörü atlar). satici.py: dogrula bunu söyler; bagla --uygula olmadan
+    dokunmaz; --uygula önce yedekler ve arşivi sayar, sonra kaldırır ve bağlar; listede olmayana dokunmaz; içerik özeti
+    elle düzenlemeyi yakalar. Sahte ev klasöründe, ağsız."""
+    import importlib.util
+    import tarfile
+    spec = importlib.util.spec_from_file_location("satici", KOK / "sistem" / "claude" / "satici" / "satici.py")
+    satici = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(satici)
+    ev, bec = tmp_path / "ev", tmp_path / "beceriler"
+    monkeypatch.setenv("HOME", str(ev))
+    monkeypatch.setattr(satici, "BECERILER", bec)
+    monkeypatch.setattr(satici, "YEDEK", tmp_path / "yedek")
+    for ad in ("a", "b"):
+        (bec / ad).mkdir(parents=True)
+        (bec / ad / "SKILL.md").write_text(f"---\nname: {ad}\n---\nsabit\n")
+    s = {"ad": "deneme", "commit": "0" * 40, "yollar": ["skills/a", "skills/b"], "sil": [], "baslik": None}
+    s["ozet"] = satici._kurulu_ozet(s)
+    monkeypatch.setattr(satici, "SATICI", [s])
+    for k in (".claude/skills", ".agents/skills"):
+        (ev / k / "a").mkdir(parents=True)
+        (ev / k / "a" / "SKILL.md").write_text("eski\n")
+    (ev / ".claude" / "skills" / "kendi").mkdir()                     # satıcı listesinde yok: dokunulmaz
+    assert satici.dogrula() == 1
+    assert satici.bagla() == 0 and (ev / ".claude" / "skills" / "a" / "SKILL.md").read_text() == "eski\n"
+    assert satici.bagla(uygula=True) == 0
+    for ad in ("a", "b"):
+        assert (ev / ".claude" / "skills" / ad).is_symlink()
+        assert (ev / ".claude" / "skills" / ad / "SKILL.md").read_text().endswith("sabit\n")
+    assert not (ev / ".agents" / "skills" / "a").exists() and (ev / ".claude" / "skills" / "kendi").is_dir()
+    arsiv, = (tmp_path / "yedek").glob("satici-yedek-*.tar.gz")
+    with tarfile.open(arsiv) as t:
+        assert sorted(m.name for m in t.getmembers() if m.isfile()) == [".agents/skills/a/SKILL.md",
+                                                                        ".claude/skills/a/SKILL.md"]
+    assert satici.dogrula() == 0
+    (bec / "b" / "SKILL.md").write_text("elle düzenlendi\n")
+    assert satici.dogrula() == 1
+
+
+def test_satici_bagla_geri_alir(tmp_path, monkeypatch, capsys):
+    """bagla --uygula'nın yazdırdığı geri alma komutu çalışır. Eski ileti (`tar -xzf <arşiv> -C ~`) çalışmıyordu:
+    ~/.claude/skills/<ad> artık bağlantı; bsdtar 3.5.3 içine açmaz (çıkış 1, yalnız ~/.agents geri gelir), bağlantıyı
+    izleyen açıcı (tarfile) eski içeriği sabit kopyanın üzerine yazar, çünkü sistem/claude/skills ev klasörünün içinde
+    (2026-10-08 ölçüldü). geri: kuru çalıştırma dokunmaz; --uygula yalnız sabit kopyayı gösteren bağlantıyı kaldırır,
+    kopyaları kipleriyle geri koyar, sabit kopyaya ve yerinde kalan kayıt dosyasına dokunmaz; yerde gerçek klasör varsa
+    hiçbir şeyi değiştirmez. Sahte ev klasöründe (beceriler gerçek düzendeki gibi ev içinde), ağsız."""
+    import importlib.util
+    import os
+    import re
+    betik = KOK / "sistem" / "claude" / "satici" / "satici.py"
+    spec = importlib.util.spec_from_file_location("satici", betik)
+    satici = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(satici)
+    ev = tmp_path / "ev"
+    bec = ev / "Projects" / "video" / "sistem" / "claude" / "skills"
+    monkeypatch.setenv("HOME", str(ev))
+    monkeypatch.setattr(satici, "BECERILER", bec)
+    monkeypatch.setattr(satici, "YEDEK", tmp_path / "yedek")
+    (bec / "a").mkdir(parents=True)
+    (bec / "a" / "SKILL.md").write_text("sabit\n")
+    s = {"ad": "deneme", "commit": "0" * 40, "yollar": ["skills/a"], "sil": [], "baslik": None}
+    s["ozet"] = satici._kurulu_ozet(s)
+    monkeypatch.setattr(satici, "SATICI", [s])
+    for k in (".claude/skills", ".agents/skills"):
+        (ev / k / "a" / "scripts").mkdir(parents=True)
+        (ev / k / "a" / "SKILL.md").write_text("eski\n")
+        (ev / k / "a" / "scripts" / "x.sh").write_text("echo\n")
+        (ev / k / "a" / "scripts" / "x.sh").chmod(0o755)
+    kilit = ev / ".agents" / ".skill-lock.json"
+    kilit.write_text('{"v": 1}\n')
+    assert satici.bagla(uygula=True) == 0
+    arsiv = Path(re.search(r"geri almak: python3 \S+ bagla --geri (\S+) --uygula\)", capsys.readouterr().out)[1])
+    kilit.write_text('{"v": 2}\n')                                     # bagla'dan sonra değişen kayıt korunur
+    assert satici.geri(arsiv) == 0 and (ev / ".claude" / "skills" / "a").is_symlink()     # kuru: dokunmaz
+    assert satici.geri(arsiv, uygula=True) == 0
+    for k in (".claude/skills", ".agents/skills"):
+        assert not (ev / k / "a").is_symlink() and (ev / k / "a" / "SKILL.md").read_text() == "eski\n"
+        assert (ev / k / "a" / "scripts" / "x.sh").stat().st_mode & 0o777 == 0o755
+    assert (bec / "a" / "SKILL.md").read_text() == "sabit\n" and kilit.read_text() == '{"v": 2}\n'
+    assert satici.dogrula() == 1                                       # eski kopya yine etkin
+    (ev / ".claude" / "skills" / "a" / "SKILL.md").write_text("kullanıcı\n")
+    assert satici.geri(arsiv, uygula=True) == 1                        # yerde gerçek klasör: üzerine yazılmaz
+    assert (ev / ".claude" / "skills" / "a" / "SKILL.md").read_text() == "kullanıcı\n"
+    ev2 = tmp_path / "ev2"                                             # yazdırılan komut biçimi (CLI), boş evde
+    r = subprocess.run([sys.executable, str(betik), "bagla", "--geri", str(arsiv), "--uygula"],
+                       capture_output=True, text=True, env={**os.environ, "HOME": str(ev2)})
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert (ev2 / ".claude" / "skills" / "a" / "SKILL.md").read_text() == "eski\n"
 
 
 def test_senkron_plan_sozlesmesi_ve_cizimden_olcum(veri):

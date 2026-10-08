@@ -43,7 +43,7 @@ Her kapıya kaynak URL + tarih. Komutlar: [değerlendirme](references/degerlendi
 - İstenmeden yeni komut, kayıt alanı ya da klasör icat etme.
 - **Ücretli/bulut:** yalnız `tur = "bulut-ucretli"`, `etkin = false`, `onay` (maliyet + giden kişisel medya); uyarlayıcı yok. Açmadan önce maliyet, çıktı hakları ve giden medya gösterilir; açılsa bile stüdyo sürmez, kullanıcı kendi hesabında üretir (§7).
 - **Apple ML sağlayıcısı:** `apple_calistir` bekçisi + Neural Engine'siz yedek (derleyici sessizce asılabilir).
-- **Satıcı becerisi:** sabit commit + tarball SHA-256, `sistem/claude/satici/KAYNAKLAR.md`; `npx skills` asla (kanca engeller).
+- **Satıcı becerisi:** `satici.py` ile sabit commit (tam SHA), seyrek çekim, dosya başına git blob SHA'sı (+ değiştirilmeden kurulanda içerik özeti), kayıt `sistem/claude/satici/KAYNAKLAR.md`; devreye alma `bagla --uygula`, geri alma `bagla --geri <arşiv> --uygula` ([güncelleme](references/guncelleme-ve-disk.md) §3.6–3.7). `npx skills`, `hyperframes skills` asla (kanca engeller).
 
 ## Doğrulama — "tamam" demeden
 - Her kapıda tarihli birincil kaynak; şüpheci ikinci geçiş aynı sonuç.

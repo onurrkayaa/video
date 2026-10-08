@@ -21,8 +21,30 @@ testler/.gecici/
 *.heic
 
 # satıcı içeriği: lisansı yeniden dağıtıma izin vermiyor ya da belirsiz → kurulumda sabit sürümden üretilir
-# (sistem/kur.sh: satici.py ile remotion-best-practices; gsap.min.js node_modules'tan kopyalanır)
+# (sistem/kur.sh: satici.py ile remotion-best-practices ve HyperFrames becerileri; gsap.min.js node_modules'tan kopyalanır)
 sistem/claude/skills/remotion-best-practices/
+# HyperFrames becerileri (Apache-2.0; satici.py'deki liste, heygen-com/hyperframes sabit commit'i)
+sistem/claude/skills/embedded-captions/
+sistem/claude/skills/faceless-explainer/
+sistem/claude/skills/figma/
+sistem/claude/skills/general-video/
+sistem/claude/skills/hyperframes/
+sistem/claude/skills/hyperframes-animation/
+sistem/claude/skills/hyperframes-audio/
+sistem/claude/skills/hyperframes-cli/
+sistem/claude/skills/hyperframes-core/
+sistem/claude/skills/hyperframes-creative/
+sistem/claude/skills/hyperframes-keyframes/
+sistem/claude/skills/hyperframes-registry/
+sistem/claude/skills/hyperframes-studio/
+sistem/claude/skills/media-use/
+sistem/claude/skills/motion-graphics/
+sistem/claude/skills/music-to-video/
+sistem/claude/skills/pr-to-video/
+sistem/claude/skills/product-launch-video/
+sistem/claude/skills/remotion-to-hyperframes/
+sistem/claude/skills/slideshow/
+sistem/claude/skills/talking-head-recut/
 varliklar/js/
 testler/hyperframes-baslik/vendor/
 

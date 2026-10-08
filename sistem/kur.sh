@@ -14,7 +14,7 @@ bagla() {
   for d in "$KOK"/sistem/claude/skills/*/; do
     ad="$(basename "$d")"
     hedef="$HOME/.claude/skills/$ad"
-    if [ -e "$hedef" ] && [ ! -L "$hedef" ]; then echo "  ⚠ $hedef gerçek klasör; atlandı"; continue; fi
+    if [ -e "$hedef" ] && [ ! -L "$hedef" ]; then echo "  ⚠ $hedef gerçek klasör; atlandı (eski satıcı kopyasıysa: python3 $KOK/sistem/claude/satici/satici.py bagla)"; continue; fi
     ln -sfn "${d%/}" "$hedef" && echo "  beceri: $ad"
   done
   for f in "$KOK"/sistem/claude/agents/*.md; do
@@ -69,14 +69,11 @@ medya kur exiftool
 medya kur deepfilternet
 medya kur rife
 
-echo "== satıcı içeriği (sabit sürüm; lisansı nedeniyle depoda tutulmaz)"
+echo "== satıcı içeriği (sabit commit: remotion-best-practices, HyperFrames becerileri; depoda tutulmaz)"
 python3 "$KOK/sistem/claude/satici/satici.py" kur
 mkdir -p varliklar/js testler/hyperframes-baslik/vendor
 cp node_modules/gsap/dist/gsap.min.js varliklar/js/gsap.min.js
 cp node_modules/gsap/dist/gsap.min.js testler/hyperframes-baslik/vendor/gsap.min.js
-
-echo "== HyperFrames becerileri (motor başvurusu)"
-HYPERFRAMES_NO_TELEMETRY=1 node_modules/.bin/hyperframes skills >/dev/null 2>&1 || echo "  ⚠ hyperframes skills başarısız"
 
 bagla
 

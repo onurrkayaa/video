@@ -34,8 +34,13 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 - **D** `medya nle`: başlangıç zaman kodlu gerçek kamera medyası (TC kare alanı zaman çizelgesi fps'inden büyük, ör.
   60 fps kamera) Resolve ve Kdenlive'da sınanmadı; `-kdenlive.otio` TC'yi Kdenlive'ın hesabıyla yazıyor.
 - **D** Kdenlive OTIO içe aktarım hataları (son klibin kaydırması kayboluyor; erime isteği başarısız olup sonraki klibi
-  sıfırlıyor; proje fps'i `duration().rate`'ten) KDE'ye bildirilebilir — hesap gerekir, kullanıcının kararı. Düzelirse
-  `-kdenlive.otio` uyarlaması sadeleşir.
+  sıfırlıyor; proje fps'i `duration().rate`'ten; klip işaretine kırpılmış başlangıcı yeniden ekliyor) KDE'ye
+  bildirilebilir — hesap gerekir, kullanıcının kararı. Düzelirse `-kdenlive.otio` uyarlaması sadeleşir.
+- **O** `medya nle` devrinde ölçülmeyenler — bir sonraki içe aktarmada (kullanıcı adımı ~3 dk): Kdenlive'da 2026-10-08
+  düzeltilmiş klip işareti (`testler/nle_olc.py <proje> --kdenlive-xml <proje.kdenlive>` işareti klibin giriş karesinde
+  bulmalı), ölçü başı kılavuzları (`--muzik`; Kdenlive yeniden ölçeklemeden okuyor, `-kdenlive.otio` zaman çizelgesi
+  hızında yazıyor), görüntü izinde boşluk; Resolve'da tek sayılı erime (11 kare → 5/6), klip işaretleri, kılavuzlar.
+  Bunlar `testler/nle_sinama.py` planına eklenirse var olan çizimler (`cikti/nle/`) yeniden alınmalı.
 - **O** Plan sözleşmesine görüntüden ayrı ses kaynağı alanı (b-roll altında röportaj sesi, J/L).
 - **D** `medya denetle`: planın `hiz<1` aralıklarında yinelenen kare oranı (`yinelenen.py`).
 - **D** `medya kontak`: HDR kaynakta ton eşlemeli kareler (bugün soluk görünür).
@@ -78,6 +83,17 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
   kaçıyor), `find … -exec npx hyperframes … \;` (`-exec` sonrası komut sayılmıyor), `cat …/prepare.sh | bash -s p` (boruyla
   kabuğa), `npx zx …/transcribe.mjs` (node dışı çalıştırıcı), `env HYPERFRAMES_SKIP_SKILLS=0 hyperframes init …` (init'in
   GitHub HEAD'den beceri tazelemesini yalnız bu değişken durduruyor). Her biri için ENGELLENMELI'ye örnek + düzeltme.
+- **Y** Birleşik noktalama kaçağı (O1 düzeltme turundan sonra da çıkış 0; 2026-10-08, JSON stdin ile ölçüldü): shlex
+  (`punctuation_chars`) ardışık noktalamayı tek jeton yapıyor, `);` ya da `)>` ayırıcı sayılmıyor: `echo $(date);
+  hyperframes publish` ve `(cd x); npx hyperframes cloud render` geçiyor. Aday: yalnız noktalamadan oluşan jetonu bilinen
+  işleçlere bölmek (`);` → `)` `;`). Sınama: bu iki örnek engellenir; `;;`, `|&`, `>&`, `&>` ve heredoc örnekleri aynı kalır.
+- **O** Kalan önek ve biçim kaçakları (aynı ölçüm, özgün ve yeni kancada çıkış 0): değer bayrağı önek tablosunda olmayan
+  önekler (`sudo -u onur …`, `/usr/bin/time -o t.txt …`, `npx -p hyperframes hyperframes cloud render`); here-string ve
+  `env -S` (`bash <<< 'npx hyperframes cloud render'`, `env -S '…'`); whisperx'in ilk üç jetondan sonra gelmesi (`pip
+  install -q -U whisperx`, `uv pip install --python ortamlar/ses/bin/python whisperx`; sürümlü biçim yakalanıyor);
+  `init … --skip-transcribe --no-skip-transcribe` (citty `--no-` olumsuzlaması dökümü geri açıyor; kodda okundu);
+  heredoc işaretinden önce satır devamı (`bash \` + satır sonu + `<<'EOF'` gövdesi kabuğa gidiyor ama veri sayılıyor:
+  heredoc ayıklayıcı satır devamı silinmeden önce çalışıyor).
 - **D** `find . \( -name skills \)` / `-name heygen` / `-name whisperx` yanlış engelleniyor (özgün kancada da): shlex
   kaçışlı `\(`'yi ve `'('`'yi alt kabuk `(`'iyle aynı jetona çeviriyor, ayırıcıdan sonraki çıplak ad komut başı sanılıyor.
   Satıcı betik adları için çıplak ad artık tutulmuyor; kökten çözüm "`(` yalnız komut başında ayırır" kuralı, ama `eval \(
@@ -85,6 +101,14 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 - **D** Canlı oturumda `cd ~/.claude/skills/embedded-captions` sonrası ayrı çağrıda `bash scripts/prepare.sh p`
   için kancaya gelen `cwd`'nin yeni klasörü gösterip göstermediği ölçülmedi (alt ajan kabuğu her çağrıda sıfırlanıyor;
   yalnız sentetik `cwd` sınandı). Göreli satıcı betiği engeli buna dayanıyor.
+- **D** `hyperframes open` (projeyi HyperFrames masaüstü uygulamasına devretme) kancada serbest; v0.8.140 becerileri iş
+  sonunda bunu ve `catch-up`'ı önermeye başladı. Bugün uygulama kurulu değil, komut yalnız indirme adresini yazıyor
+  (`open-*.js`, kodda okundu 2026-10-08); uygulamanın hesap ve ağ davranışı incelenmedi. medya-studyo yönlendirmesi
+  "masaüstü uygulaması tanıtımı atlanır" diyor; uygulama kurulursa kural kararı gerekir.
+- **D** `ortam.sh` `HYPERFRAMES_NO_UPDATE_CHECK=1`'i koymuyor (yalnız `~/.claude/settings.json` env'i koyuyor): Claude Code
+  dışındaki kabukta CLI günde bir npm kayıt defterine sürüm sorar (0.8.140 `chunk-DDQ4LOML.js`:258-262 yalnız bu
+  değişkene, CI'ye ve geliştirici kipine bakıyor; kodda okundu, ölçülmedi). Yerel kurulum kendini güncellemez
+  (araştırma 2026-10-05). Çizim sınaması değişkenleri kendisi veriyor.
 
 ## Sağlayıcılar (kurulmadı — gerektiğinde, lisans/boyut söylenerek)
 | Ne | Amaç | Lisans | Boyut |
@@ -111,3 +135,7 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 - `medya gorsel-uret --referans`: düzenlemede kenar kalıntısı görüldü (mermerde ahşap dokusu izi) — maske/kompozit yolu.
 - 4K kaynakta RIFE'nin (UHD kipi) süre/disk ölçümü; şimdilik 4K'da Apple önce (`yavaslat` docstring'i).
 - Remotion'da gerçek telefon HEVC/HDR çekimi (yalnız sayısal modda, mahrem olmayan bir klip).
+- HyperFrames 0.8.140 çizim düzeltmeleri için hedefli fikstür yok: GSAP ile kırpılan clip-path/inset öğe (#5010), geç
+  başlayan `fromTo` (#5125), video üstünde hareket bulanıklığı (#5150), yavaş belge (#5168), 16 GB'ta ağır sahnede
+  otomatik işçi sayısı ve takas (#5149). `testler/hyperframes-baslik` bunlara dokunmuyor (0.8.124 ile kare kare aynı);
+  kazanımlar yalnız sürüm notu. #5033'ün (betik hatasında çizim düşer) eski proje kompozisyonlarına etkisi ölçülmedi.

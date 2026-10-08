@@ -14,12 +14,14 @@ Engeller (çıkış kodu 2; gerekçe stderr'den Claude'a döner) — yalnız kom
 - remotion lambda | cloudrun | upgrade | skills, --public-license-key/--license-key (bulut çizim, sabit sürümü
   bozan yükseltme, telemetrili kurulum; lisans anahtarı 'free-license' dahil remotion.pro'ya kullanım olayı yollar)
 - npx create-video / npx skills …  ve  @remotion/web-renderer|google-fonts|lambda|cloudrun|vercel|sfx|mcp kurulumu
-- sessiz büyük indirmeler: hyperframes remove-background (~394 MB model), whisperx (uvx/pip/uv, sürüm sabitli
-  'whisperx==3.8.6' dahil, ~2 GB) — stüdyonun indirmesiz/kurulu karşılıkları var; gerçekten gerekiyorsa önce boyutu
-  söyleyip kullanıcıya sorulur
-- hyperframes transcribe <ses/video> (yalnız .json/.srt/.vtt girdisi serbest), init --video/--audio/-v/-a ve kısa bayrak
-  grupları (-vv.mp4; --skip-transcribe yoksa), tts, models install — sormadan whisper.cpp (brew) + ggml modeli, Kokoro
-  ya da Parakeet indirir
+- sessiz büyük indirmeler: hyperframes remove-background (~394 MB model), whisperx (uvx/pip/uv, 'python3 -m pip',
+  sürüm sabitli 'whisperx==3.8.6' dahil, büyük/küçük harf duyarsız: PyPI adları öyle, ~2 GB) — stüdyonun
+  indirmesiz/kurulu karşılıkları var; gerçekten gerekiyorsa önce boyutu söyleyip kullanıcıya sorulur
+- hyperframes transcribe <ses/video> (yalnız .json/.srt/.vtt girdisi serbest; görünür girdisi olmayan çağrı da engelli:
+  'xargs … transcribe' girdiyi stdin'den alır, kanca göremez), init --video/--audio/-v/-a ve kısa bayrak grupları
+  (-vv.mp4; --skip-transcribe yoksa; citty parseArgs bu grupları video sayar, cli.js assertKnownFlags çalıştırmadan
+  reddeder, kanca temkinli engeller), tts, models install — sormadan whisper.cpp (brew) + ggml modeli, Kokoro ya da
+  Parakeet indirir
 - hyperframes upgrade (--project dahil) ve skills (check dışında) — sabit sürümü ya da satıcı beceri kaynağını bozar
 - indirme yapan satıcı betikleri: embedded-captions scripts/prepare.sh, transcribe.cjs, matte.cjs; media-use
   scripts/transcribe.mjs — bash/sh/source/node ile ya da yol vererek doğrudan çalıştırılınca. Adlar genel olduğundan
@@ -27,9 +29,12 @@ Engeller (çıkış kodu 2; gerekçe stderr'den Claude'a döner) — yalnız kom
   'node --check' / 'bash -n' sözdizimi denetimi serbest
 Bu iki hyperframes kuralında --help/-h serbesttir (CLI o zaman komutu çalıştırmaz, yalnız kullanımı yazar).
 Ayrıştırma kabuk kurallarına uyar: tek tırnak içi ve tırnaklı heredoc gövdesi VERİDİR (engellenmez); satır sonları,
-; && || | & komut ayırır; $(…) ve `…` (tek tırnak dışında) ile kabuğa giden heredoc gövdeleri ayrıca denetlenir;
-npx/bunx/pnpm dlx/npm exec, yol önekli ikili, `node …/hyperframes.mjs`, env/time/nohup/exec/sudo önekleri,
-ortam atamaları, `sh|bash|zsh -c "…"` ve eval yakalanır.
+; && || | & komut ayırır; ters bölü + satır sonu (satır devamı) kabuktaki gibi silinir; yönlendirmeler (2>&1,
+>/dev/null, > x.json, < x; işleç, hedefi ve önündeki fd rakamı) argüman sayılmaz, 'bash < betik' girdisi betik olarak
+denetlenir; $(…) ve `…` (tek tırnak dışında) ile kabuğa giden heredoc gövdeleri ayrıca denetlenir; npx/bunx/pnpm
+dlx/npm exec, yol önekli ikili, `node …/hyperframes.mjs`, env/time/nohup/exec/sudo/xargs/timeout/caffeinate/nice
+önekleri (yol önekli /usr/bin/env dahil; değer alan bayraklarının değeriyle, timeout'un süresiyle), ortam atamaları,
+`sh|bash|zsh -c "…"` ve eval yakalanır.
 """
 from __future__ import annotations
 
@@ -41,8 +46,15 @@ import sys
 YASAK = {"cloud", "lambda", "cloudrun", "auth", "publish", "usage", "feedback"}
 SESSIZ_INDIRME = {"remove-background": "arka plan için 'medya arkaplan-sil' (Apple Vision, indirme yok)"}
 AYRAC = {";", "&&", "||", "|", "&", "(", ")", "|&", ";;"}
-ONEK = {"npx", "bunx", "exec", "time", "nohup", "env", "command", "sudo", "builtin", "xargs", "then", "do", "else",
-        "if", "while", "until", "!", "{", "}"}
+# shlex'in (punctuation_chars) verdiği yönlendirme işleçleri; hedefleri (ve önlerindeki fd rakamı: 2>&1) argüman değildir
+YONLENDIRME = {">", ">>", "<", "<<", "<<<", "<>", ">|", ">&", "<&", "&>", "&>>"}
+# Önekler (ad ya da yolun son parçası: /usr/bin/env) → ayrık değer alan bayrakları; değer de atlanır (xargs -n 1,
+# nice -n 10). Bayraklar bu Mac'in man sayfalarından; timeout GNU/FreeBSD'den (bu Mac'te yok) ve süresi de atlanır.
+ONEK = {"npx": (), "bunx": (), "exec": (), "time": (), "nohup": (), "command": (), "sudo": (), "builtin": (),
+        "then": (), "do": (), "else": (), "if": (), "while": (), "until": (), "!": (), "{": (), "}": (),
+        "env": ("-u", "-C", "-P", "-S"), "xargs": ("-E", "-I", "-J", "-L", "-n", "-P", "-R", "-S", "-s"),
+        "timeout": ("-s", "--signal", "-k", "--kill-after"), "caffeinate": ("-t", "-w"), "nice": ("-n",)}
+PIP = ("uvx", "pip", "pip3", "uv", "pipx")
 KABUK = {"sh", "bash", "zsh", "dash", "ksh"}
 CALISTIRICI = {"node", "bun", "deno"}
 HF = re.compile(r"^(?:.*/)?hyperframes(?:@[\w.\-]+)?(?:\.m?js)?$")
@@ -58,10 +70,12 @@ YARDIM = {"--help", "-h"}                    # cli.js: argv'de varsa komut çal�
 DOKUM = (".json", ".srt", ".vtt")            # transcribe bunları içe/dışa aktarır (indirmesiz)
 DOKUM_DEGERLI = {"-d", "--dir", "-e", "--engine", "-m", "--model", "-l", "--language", "--to", "-o", "--output",
                  "--timeout"}                # transcribe'ın değer alan bayrakları: değerleri girdi sayılmaz
-# init'in medya girdisi: --video/--audio, -v/-a ve kısa bayrak grupları (-vv.mp4, -yv x.mp4). CLI'nin util.parseArgs'ı
-# (strict:false) gruptaki bilinmeyen harfi boolean sayıp geçer; değer alan e/t/V kalanı kendi değeri olarak yutar.
+# init'in medya girdisi: --video/--audio, -v/-a ve kısa bayrak grupları (-vv.mp4, -yv x.mp4). citty parseArgs
+# (util.parseArgs, strict:false) gruptaki bilinmeyen harfi boolean sayıp geçer, değer alan e/t/V kalanı kendi değeri
+# olarak yutar; gerçek CLI (cli.js assertKnownFlags) bu grupları çalıştırmadan reddeder ('Unknown flag: -.'/'-y',
+# ölçüldü 2026-10-08). Kanca temkinli engeller: o denetim bir sürümde gevşerse indirme yeniden açılır.
 INIT_MEDYA = re.compile(r"^--(?:video|audio)(?:=|$)|^-(?!-)[^etVva]*[va]")
-WHISPERX_SURUM = re.compile(r"^whisperx[=<>!~@\[]")    # sürüm/ek belirteçli paket (whisperx==3.8.6): her konumda
+WHISPERX_SURUM = re.compile(r"^whisperx[=<>!~@\[]", re.I)  # sürüm/ek belirteçli paket (whisperX==3.8.6): her konumda
 STUDYO_DOKUM = ("Stüdyo yolu: döküm/alt yazı 'medya yaziya-dok <dosya> --dil tr --srt' (Whisper large-v3-turbo, MLX, "
                 "kurulu); HyperFrames'e indirmesiz içe aktarım 'hyperframes transcribe <x>.srt -d <proje>' (işaret "
                 "düzeyinde; kelime zamanı için yaziya-dok JSON'undaki 'kelimeler'i [{text,start,end}] dizisine çevirip "
@@ -121,9 +135,15 @@ def indirme_denetle(alt: str, kalan: list[str]) -> None:
                 deger = True
             elif not a.startswith("-"):
                 girdiler.append(a)
-        if any(not g.lower().endswith(DOKUM) for g in girdiler):
-            engelle("'hyperframes transcribe' ses/video girdisinde sormadan whisper.cpp kurmaya ('brew install "
-                    "whisper-cpp') ve ggml modeli indirmeye çalışır (small.en/small ~488 MB, large-v3 3,1 GB). "
+        if not girdiler:                             # xargs/stdin'den gelen girdi görünmez; girdisiz CLI zaten düşer
+            engelle("'hyperframes transcribe' görünür girdisi yok: girdi xargs ya da stdin'den geliyor, kanca "
+                    "denetleyemez (ses/video girdisinde sormadan whisper.cpp kurar ve ggml modeli indirir). Döküm "
+                    f"dosyasını adıyla ver. {STUDYO_DOKUM}")
+        yabanci = [g for g in girdiler if not g.lower().endswith(DOKUM)]
+        if yabanci:
+            engelle(f"'hyperframes transcribe' girdisi {', '.join(repr(g) for g in yabanci)} döküm dosyası "
+                    "(.json/.srt/.vtt) değil: ses/video ya da değişkenli girdide sormadan whisper.cpp kurmaya ('brew "
+                    "install whisper-cpp') ve ggml modeli indirmeye çalışır (small.en/small ~488 MB, large-v3 3,1 GB). "
                     f"{STUDYO_DOKUM} Gerçekten gerekiyorsa boyutu söyleyip kullanıcıya sor.")
     elif alt == "init":
         if any(INIT_MEDYA.match(a) for a in kalan) and not {"--skip-transcribe", "--skip-transcribe=true"} & set(kalan):
@@ -170,6 +190,18 @@ def yalniz_sozdizimi(ad: str, arg: list[str]) -> bool:
     return False
 
 
+def python_modulu(arg: list[str]) -> tuple[str, list[str]]:
+    """'python3 [-I] -m pip install x' ya da '-mpip install x' → ('pip', ['install', 'x']); modül yoksa ('', [])."""
+    for k, a in enumerate(arg):
+        if a == "-m":
+            return (arg[k + 1], arg[k + 2:]) if k + 1 < len(arg) else ("", [])
+        if a.startswith("-m"):
+            return a[2:], arg[k + 1:]
+        if not a.startswith("-"):
+            break
+    return "", []
+
+
 def remotion_denetle(arg: list[str]) -> None:
     """arg: remotion'dan sonraki argümanlar."""
     if LISANS.search(" ".join(arg)):
@@ -209,7 +241,9 @@ def heredoc_ayikla(komut: str) -> tuple[str, list[str], list[str]]:
 
 def tara(komut: str) -> tuple[str, list[str]]:
     """Tırnak durumunu izleyerek: (1) tırnak dışı satır sonlarını ';' yapar (komut ayırıcı),
-    (2) tek tırnak dışındaki $(…) ve `…` ikamelerini toplar."""
+    (2) tek tırnak dışındaki $(…) ve `…` ikamelerini toplar, (3) tek tırnak dışındaki satır devamını (ters bölü + satır
+    sonu) siler: kabuk da siler, kalırsa shlex '\\n' jetonu verir (ikili adından sonra alt komut, girdiden sonra girdi
+    sanılır)."""
     cikti, ikameler = [], []
     i, n = 0, len(komut)
     tek = cift = False
@@ -220,7 +254,9 @@ def tara(komut: str) -> tuple[str, list[str]]:
                 tek = False
             cikti.append(c); i += 1; continue
         if c == "\\" and i + 1 < n:
-            cikti.append(komut[i:i + 2]); i += 2; continue
+            if komut[i + 1] != "\n":                         # satır devamı: ikisi de düşer
+                cikti.append(komut[i:i + 2])
+            i += 2; continue
         if c == "'" and not cift:
             tek = True; cikti.append(c); i += 1; continue
         if c == '"':
@@ -233,15 +269,34 @@ def tara(komut: str) -> tuple[str, list[str]]:
                 elif komut[j] == ")":
                     derinlik -= 1
                 j += 1
-            ikameler.append(komut[i + 2:j - 1]); cikti.append(komut[i:j]); i = j; continue
+            ikameler.append(komut[i + 2:j - 1])
+            cikti.append(komut[i:j].replace("\\\n", "")); i = j; continue
         if c == "`":
             j = komut.find("`", i + 1)
             j = n if j < 0 else j
-            ikameler.append(komut[i + 1:j]); cikti.append(komut[i:j + 1]); i = j + 1; continue
+            ikameler.append(komut[i + 1:j])
+            cikti.append(komut[i:j + 1].replace("\\\n", "")); i = j + 1; continue
         if c == "\n" and not cift:
             cikti.append(" ; "); i += 1; continue
         cikti.append(c); i += 1
     return "".join(cikti), ikameler
+
+
+def yonlendirme_ayikla(b: list[str]) -> tuple[list[str], list[str]]:
+    """Bölümden yönlendirmeleri çıkarır: işleç, hedefi ve işleçten hemen önceki fd rakamı (2>&1 → '2' '>&' '1').
+    Döner: (kalan jetonlar, '<'/'<>' ile okunan dosyalar — 'bash < betik.sh' betiği çalıştırır)."""
+    kalan, okunan = [], []
+    i = 0
+    while i < len(b):
+        if b[i].isdigit() and i + 1 < len(b) and b[i + 1] in YONLENDIRME:
+            i += 1
+        elif b[i] in YONLENDIRME:
+            if b[i] in ("<", "<>") and i + 1 < len(b):
+                okunan.append(b[i + 1])
+            i += 2
+        else:
+            kalan.append(b[i]); i += 1
+    return kalan, okunan
 
 
 def bolumleri_denetle(komut: str, derinlik: int) -> None:
@@ -266,11 +321,21 @@ def bolumleri_denetle(komut: str, derinlik: int) -> None:
             bolum.append(j)
     bolumler.append(bolum)
     for b in bolumler:
-        i = 0
+        b, okunan = yonlendirme_ayikla(b)
+        i, degerli = 0, ()
         while i < len(b):
             j = b[i]
-            if re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", j) or j in ONEK or j.startswith("-"):
-                i += 1                                       # atamalar, önekler ve bayrakları
+            onek = j.rsplit("/", 1)[-1]                      # /usr/bin/env → env
+            if j.startswith("-"):                            # önekin bayrağı; ayrık değeri de (xargs -n 1, nice -n 10)
+                i += 2 if j in degerli else 1
+            elif re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", j):
+                i += 1                                       # ortam atamaları
+            elif onek in ONEK:
+                degerli, i = ONEK[onek], i + 1
+                if onek == "timeout":                        # timeout [bayrak…] SÜRE komut: süre de atlanır
+                    while i < len(b) and b[i].startswith("-"):
+                        i += 2 if b[i] in degerli else 1
+                    i += 1
             elif j in ("pnpm", "yarn") and i + 1 < len(b) and b[i + 1] in ("dlx", "exec"):
                 i += 2
             elif j == "npm" and i + 1 < len(b) and b[i + 1] in ("exec", "x"):
@@ -286,9 +351,9 @@ def bolumleri_denetle(komut: str, derinlik: int) -> None:
         if ad == "heygen" or ad.startswith("heygen@") or re.match(r"^(?:@heygen/)?heygen(?:@[\w.\-]+)?$", ad):
             engelle("'heygen' bulut CLI'si kullanılmaz (hesap/OAuth/kredi gerektirir). Kullanıcının kuralı: ücretli "
                     "hizmet ve hesap yok; her şey yerelde.")
-        if ad in BETIK_CALISTIRAN:                           # bash …/prepare.sh, node …/transcribe.cjs
+        if ad in BETIK_CALISTIRAN:                           # bash …/prepare.sh, node …/transcribe.cjs, bash < …
             if not yalniz_sozdizimi(ad, b[i + 1:]):
-                satici_betik_denetle(b[i + 1:])
+                satici_betik_denetle(b[i + 1:] + okunan)
         elif "/" in bas:                                     # yol vererek doğrudan çalıştırma. Çıplak ad PATH'ten
             satici_betik_denetle([bas])                      # aranır; find \( -name x \)'te de shlex '('yi ayırır
         if ad in KABUK:                                      # sh -c "…" / bash -lc '…'
@@ -311,8 +376,12 @@ def bolumleri_denetle(komut: str, derinlik: int) -> None:
             engelle("Bu Remotion paketi kurulmaz: web-renderer/lambda/cloudrun/vercel bulut ya da telemetri, "
                     "google-fonts dış yazı tipi, sfx lisansı belirsiz uzak ses. Yerel karşılıklar: @remotion/fonts + "
                     "public/fonts, kodla/CC0 ses.")
-        if ad == "whisperx" or ad.startswith("whisperx@") or (ad in ("uvx", "pip", "pip3", "uv", "pipx") and (
-                "whisperx" in b[i + 1:i + 4] or any(WHISPERX_SURUM.match(x) for x in b[i + 1:]))):
+        paket, parg = ad.lower(), b[i + 1:]                 # PyPI adı büyük/küçük harf duyarsız (whisperX)
+        if re.match(r"^python[\d.]*$", paket):              # python3 -m pip install whisperx → pip install whisperx
+            paket, parg = python_modulu(parg)
+            paket = paket.lower()
+        if paket == "whisperx" or paket.startswith("whisperx@") or (paket in PIP and (
+                "whisperx" in [x.lower() for x in parg[:3]] or any(WHISPERX_SURUM.match(x) for x in parg))):
             engelle("whisperx ~2 GB indirir (satıcı altyazı becerisi sormadan kurar). Stüdyoda kurulu karşılığı: "
                     "'medya yaziya-dok --dil tr --srt' (Whisper large-v3-turbo, MLX, kelime zamanlı).")
         if RM.match(bas):
@@ -326,7 +395,8 @@ def bolumleri_denetle(komut: str, derinlik: int) -> None:
 
 
 def denetle(komut: str, derinlik: int = 0) -> None:
-    if derinlik > 6 or not any(a in komut for a in ANAHTAR):
+    kucuk = komut.lower()                                    # 'pip install whisperX' de ön süzgeçten geçmeli
+    if derinlik > 6 or not any(a in kucuk for a in ANAHTAR):
         return
     govdesiz, kabuga, ikameli = heredoc_ayikla(komut)
     for g in kabuga:

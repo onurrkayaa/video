@@ -86,7 +86,8 @@ ENGELLENMELI = [
     "hyperframes init p --non-interactive --video v.mp4",
     "hyperframes init p --non-interactive --video=v.mp4 --skill=embedded-captions",
     "hyperframes init p -a ses.m4a",
-    # kısa bayrak grupları: CLI'nin kendi parseArgs'ı video=v.mp4 / audio=a.m4a okuyor (ölçüldü)
+    # kısa bayrak grupları: citty parseArgs video=v.mp4 / audio=a.m4a okur, cli.js assertKnownFlags bunları çalıştırmadan
+    # reddeder ('Unknown flag: -.' / '-y'; ölçüldü 2026-10-08); kanca temkinli engeller
     "hyperframes init p --non-interactive -vv.mp4",
     "hyperframes init p --non-interactive -aa.m4a",
     "hyperframes init p -yv v.mp4",
@@ -106,6 +107,34 @@ ENGELLENMELI = [
     "node ~/.claude/skills/media-use/scripts/transcribe.mjs --input ses.wav",
     'sh -c "node ~/.claude/skills/embedded-captions/scripts/transcribe.cjs ."',
     "node ~/.claude/skills/embedded-captions/scripts/transcribe.cjs --check",
+    # girdisi görünmeyen transcribe: xargs girdiyi stdin'den verir (girdisiz doğrudan çağrıyı CLI zaten reddeder)
+    "ls *.wav | xargs -n1 npx hyperframes transcribe",
+    "find . -name '*.wav' -print0 | xargs -0 -n1 npx hyperframes transcribe",
+    "ls *.wav | xargs -n 1 npx hyperframes transcribe",
+    "npx hyperframes transcribe",
+    # sarmalayıcı önekler, bayrak değerleri ve süreyle (eski yasaklar da: cloud render)
+    "timeout 600 npx hyperframes cloud render",
+    "timeout 900 npx hyperframes transcribe ses.wav",
+    "timeout -s KILL 600 npx hyperframes transcribe ses.wav",
+    "caffeinate -i npx hyperframes transcribe ses.wav --model large-v3",
+    "caffeinate -i -t 3600 npx hyperframes cloud render",
+    "nice -n 10 npx hyperframes tts merhaba",
+    "/usr/bin/env HYPERFRAMES_NO_TELEMETRY=1 npx hyperframes cloud render",
+    "/usr/bin/env -u GEMINI_API_KEY npx hyperframes transcribe ses.wav",
+    "timeout 900 bash ~/.claude/skills/embedded-captions/scripts/prepare.sh p",
+    "caffeinate -i node ~/.claude/skills/embedded-captions/scripts/transcribe.cjs p",
+    "/usr/bin/env bash ~/.claude/skills/embedded-captions/scripts/prepare.sh p",
+    # satır devamı ikili adından hemen sonra (shlex '\n' jetonu alt komut sanılıyordu)
+    "npx hyperframes \\\n transcribe ses.wav",
+    "npx hyperframes \\\n  cloud render",
+    # yönlendirme argüman sayılmaz: komut başında ya da alt komuttan önce de; 'bash < betik' betiği çalıştırır
+    "2>/dev/null npx hyperframes cloud render",
+    "hyperframes 2>/dev/null transcribe ses.wav",
+    "bash < ~/.claude/skills/embedded-captions/scripts/prepare.sh",
+    # whisperx: PyPI adı büyük/küçük harf duyarsız; python -m pip
+    "pip install whisperX",
+    "python3 -m pip install whisperx",
+    ".venv/bin/python -m pip install -U whisperX",
 ]
 GECMELI = [
     "medya arkaplan-sil foto.png --cikti kesik.png",
@@ -158,6 +187,22 @@ GECMELI = [
     "medya yaziya-dok ses.wav --dil tr --srt",
     "bash scripts/prepare.sh",
     "node /Users/x/baska-proje/transcribe.mjs",
+    # içe/dışa aktarımda yönlendirme ve satır devamı girdi sayılmaz (bu biçimler 2026-10-08 kapanış ölçümünde yanlış
+    # engelleniyordu; ilk satır yönlendirmesiz karşılaştırma)
+    "npx hyperframes transcribe a.srt -d komp",
+    "npx hyperframes transcribe analiz/yazi/a.srt -d calisma/kompozisyon 2>&1 | tail -5",
+    "npx hyperframes transcribe a.srt -d proj >/dev/null 2>&1",
+    "npx hyperframes transcribe a-kelime.json -d komp 2>/dev/null",
+    "hyperframes transcribe t.json --to srt --json > sonuc.json",
+    "npx hyperframes transcribe a.srt \\\n -d komp",
+    "cd calisma/kompozisyon && npx hyperframes transcribe ../../analiz/yazi/a.srt 2>&1 | tail -3",
+    "hyperframes skills check --json 2>&1",
+    "hyperframes init p --non-interactive --video v.mp4 --skip-transcribe 2>&1 | tail",
+    # sarmalayıcıyla zararsız komutlar; python -m pip başka paket
+    "timeout 60 npx hyperframes lint komp",
+    "caffeinate -i medya test",
+    "nice -n 5 medya yaziya-dok ses.wav --dil tr --srt",
+    "python3 -m pip install rich",
 ]
 # Göreli satıcı betiği: çalışma klasörü (kancanın JSON girdisindeki cwd) beceriyi gösteriyorsa engellenir; dört ad da
 # genel olduğundan başka projenin kendi betiği serbest.
@@ -179,6 +224,12 @@ ILETI = [
     ('npx hyperframes tts "merhaba"', "medya seslendir"),
     ('npx hyperframes tts "merhaba"', "kokoro-onnx ve soundfile kuruluysa"),
     ("node ~/.claude/skills/embedded-captions/scripts/transcribe.cjs .", "hyperframes transcribe <x>.srt"),
+    ("ls *.wav | xargs -n1 npx hyperframes transcribe", "görünür girdisi yok"),
+    ('hyperframes transcribe a.srt "$X"', "girdisi '$X' döküm dosyası"),
+]
+# İleti döküm dosyasını ses/video girdisi diye anmamalı (yalnız döküm dışı girdiyi adıyla söyler).
+ILETI_DEGIL = [
+    ('hyperframes transcribe a.srt "$X"', "'a.srt'"),
 ]
 
 
@@ -201,3 +252,9 @@ def test_calisma_klasoru(komut, cwd, beklenen):
 def test_engel_iletisi_studyo_yolu(komut, beklenen):
     r = _kanca(komut)
     assert r.returncode == 2 and beklenen in r.stderr, r.stderr
+
+
+@pytest.mark.parametrize("komut,olmayan", ILETI_DEGIL)
+def test_engel_iletisi_dokum_girdisini_anmaz(komut, olmayan):
+    r = _kanca(komut)
+    assert r.returncode == 2 and olmayan not in r.stderr, r.stderr

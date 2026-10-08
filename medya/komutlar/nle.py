@@ -2,14 +2,17 @@
 profesyonel kurgu programına aktarır: kullanıcı kurguyu orada elle sürdürsün (ince ayar, renk, ses).
 
   .otio           DaVinci Resolve (File > Import > Timeline…) — çok iz, erime, işaretler. Sınandı (Resolve 21.1,
-                  2026-10-08, kare kodlu medya, testler/nle_olc.py): kesimler 0 kare, 12 karelik erime yerinde, 60 fps
-                  kaynak kare-kesin, 24 fps kaynakta ±1 kare (Resolve giriş noktasını zaman çizelgesi ızgarasına
-                  aşağı yuvarlıyor), ses ≤ 1 ms.
-  -kdenlive.otio  Kdenlive (File > OpenTimelineIO Import…) için uyarlanmış .otio. Kdenlive 26.08 içe aktarımının iki
+                  2026-10-08, kare kodlu medya, testler/nle_olc.py): kesimler 0 kare, 12 karelik erime yerinde
+                  (ağırlık rampasından 11,85 kare, ortası kesimde), 60 fps kaynak kare-kesin, 24 fps kaynakta ±1 kare
+                  (Resolve giriş noktasını zaman çizelgesi ızgarasına aşağı yuvarlıyor), ses ≤ 2 ms (müzik çapraz
+                  ilintiyle 0 ms). Resolve'da klip işaretleri ve kılavuzlar ölçülmedi.
+  -kdenlive.otio  Kdenlive (File > OpenTimelineIO Import…) için uyarlanmış .otio. Kdenlive 26.08 içe aktarımının üç
                   hatası ölçüldü: (1) her izin SON klibi giriş noktasını kaybediyor (0'dan başlıyor) → her izin sonuna
                   1 karelik "SON — sil" klibi eklenir, içe aktardıktan sonra silinir; (2) erime uygulanamıyor ve
                   sonraki klibin giriş noktasını sıfırlıyor → erime yazılmaz: örtüşmenin ortasında kesim + işaret
-                  (Kdenlive'da klibi seç, U). Ayrıca zaman çizelgesi hızı `duration().rate`'ten okunduğu için bütün
+                  (Kdenlive'da klibi seç, U); (3) klip işaretine kırpılmış başlangıcı yeniden ekliyor (kaydedilen
+                  projede giriş 21 → işaret 42) → işaret klibin başına göreli yazılır (düzeltilmiş dosya Kdenlive'da
+                  yeniden içe aktarılmadı). Ayrıca zaman çizelgesi hızı `duration().rate`'ten okunduğu için bütün
                   aralıklar zaman çizelgesi hızında yazılır (yoksa proje en yüksek kaynak hızında, ör. 60 fps açılıyor).
   .edl            CMX 3600 — yalnız görüntü izi (kesim + erime); bütün programlar açar
   (FCPXML yok: otio-fcpx-xml-adapter 1.0.0 geri okumada erimeyi düşürüp araya boşluk koydu, süre 10 → 12 sn — sınandı)
@@ -233,8 +236,11 @@ def zaman_cizelgesi(plan: dict, kok: Path, muzik: dict | None = None, bas_tc: st
         klip.metadata["cmx_3600"] = {"reel": reller.setdefault(m.yol, f"A{len(reller) + 1:03d}")}   # makara = kaynak
         if x["notlar"]:
             notu = " · ".join(x["notlar"])
-            klip.markers.append(otio.schema.Marker(name=notu, comment=notu,
-                                                   marked_range=TR(kaynak.start_time, RT(0, h)),
+            # klibin ilk karesine. OTIO'da işaret klibin kaynak saatindedir; Kdenlive 26.08 kırpılmış başlangıcı yeniden
+            # ekliyor (otioimport.cpp: pos = start + işaret; kaydedilen projede giriş 21 → işaret 42, ölçüldü 2026-10-08)
+            # → Kdenlive kipinde göreli yazılır, Kdenlive'ın kaydırmada düştüğü medya zaman kodu da düşülür.
+            bas_i = RT(0, h) - an(m, 0) if kdenlive else kaynak.start_time
+            klip.markers.append(otio.schema.Marker(name=notu, comment=notu, marked_range=TR(bas_i, RT(0, h)),
                                                    color=otio.schema.MarkerColor.RED))
         V.append(klip)
         imlec = x["son"]

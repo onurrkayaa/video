@@ -222,10 +222,10 @@ ad = "hyperframes"
 tur = "node"
 lisans = "Apache-2.0"
 ticari = "evet"
-kurulum = "npm install -D hyperframes gsap"
+kurulum = "npm install --save-dev --save-exact --no-audit --no-fund hyperframes@0.8.140"
 kontrol = "node_modules/.bin/hyperframes --version"
 boyut_mb = 150
-not = "HeyGen. cloud/lambda/cloudrun/auth/publish/usage komutları yasak (kanca engeller); snapshot --describe false"
+not = "HeyGen. 0.8.140 (2026-10-07, etiket commit'i 5c7f631; package.json tam sürüm); becerileri aynı commit'ten satici.py kurar. cloud/lambda/cloudrun/auth/publish/usage/upgrade/skills komutları yasak (kanca engeller); snapshot --describe false. Sınama: medya test kompozisyon (çizim başvurusu; 0.8.124 → 0.8.140 150/150 kare piksel piksel, ses örnek örnek aynı, 2026-10-08)"
 
 [[saglayici]]
 ad = "ses-ortami"
@@ -276,7 +276,7 @@ ticari = "evet"
 kurulum = "arac/uv sync --all-extras"
 kontrol = ".venv/bin/python -c 'import opentimelineio, otio_cmx3600_adapter'"
 boyut_mb = 8
-not = "ASWF zaman çizelgesi değiş tokuşu. Medya yolu düz mutlak yol (Resolve file:// reddetti). FCPXML uyarlayıcısı bilerek yok (erimeyi düşürdü, 29,97'de çöktü). İçe aktarım ölçüldü (2026-10-08, testler/nle_sinama.py + nle_olc.py): Resolve 21.1 ← .otio kare-kesin (24 fps kaynak ±1 kare), ses ≤ 2 ms; Kdenlive 26.08 ← -kdenlive.otio geçti (erime kesim + işaret olur), düz .otio Kdenlive'da bozuluyor (son klip ve erime sonrası klip 0'dan başlıyor, proje 60 fps)."
+not = "ASWF zaman çizelgesi değiş tokuşu. Medya yolu düz mutlak yol (Resolve file:// reddetti). FCPXML uyarlayıcısı bilerek yok (erimeyi düşürdü, 29,97'de çöktü). İçe aktarım ölçüldü (2026-10-08, testler/nle_sinama.py + nle_olc.py): Resolve 21.1 ← .otio kare-kesin (24 fps kaynak ±1 kare), 12 karelik erime ağırlık rampasından 11,85 kare ve ortası kesimde, ses ≤ 2 ms (müzik medya senkron ses hizasıyla 0 ms); Kdenlive 26.08 ← -kdenlive.otio geçti (erime kesim + işaret olur), düz .otio Kdenlive'da bozuluyor (son klip ve erime sonrası klip 0'dan başlıyor, proje 60 fps). Klip işaretleri ve kılavuzlar Resolve'da ölçülmedi."
 
 [[saglayici]]
 ad = "rife"
@@ -311,7 +311,7 @@ kontrol = "ls /Applications/kdenlive.app"
 boyut_mb = 620
 etkin = true
 onay = "kullanıcı onayladı ve kuruldu (2026-10-07)"
-not = "26.08.1, KDE noterli. File > OpenTimelineIO Import… — medya nle'nin -kdenlive.otio dosyasıyla (ölçüldü 2026-10-08: giriş noktaları, kesimler, ses doğru). Düz .otio'da içe aktarım hataları: proje fps'i duration().rate'ten (karışık hızda 60), her izin son klibinin ve erimeden sonraki klibin giriş noktası 0 (otioimport.cpp), erime düşüyor. İçe aktardıktan sonra 'SON — sil' kliplerini sil, erimeleri işaretlerde U ile ekle. Pencere açmadan çizim: Contents/MacOS/melt <proje>.kdenlive -consumer avformat:… (MLT en yakın kareyi alır; son kare kapsayıcı, +1 kare). Telemetri kitaplığı bulunmadı (ölçüldü). Hız/efekt/kadraj/ses düzeyi aktarılmaz."
+not = "26.08.1, KDE noterli. File > OpenTimelineIO Import… — medya nle'nin -kdenlive.otio dosyasıyla (ölçüldü 2026-10-08: giriş noktaları, kesimler, ses doğru; kaydedilen proje XML'i testler/nle_olc.py --kdenlive-xml: profil standart 'HD 720p 30 fps', 6 klibin konum/giriş/uzunluğu 0 kare sapmayla). Düz .otio'da içe aktarım hataları: proje fps'i duration().rate'ten (karışık hızda 60), her izin son klibinin ve erimeden sonraki klibin giriş noktası 0 (otioimport.cpp), erime düşüyor. Klip işaretine kırpılmış başlangıcı yeniden ekliyor (otioimport.cpp: pos = start + işaret; projede giriş 21 → işaret 42): -kdenlive.otio işareti göreli yazar (2026-10-08 düzeltmesi, Kdenlive'da yeniden içe aktarılarak doğrulanmadı). İşaret kutudaki klibe yazılır: aynı medyanın öteki örneğinde de görünür. Kılavuzlar (ölçü başı) zaman çizelgesi hızında okunuyor, -kdenlive.otio o hızda yazar; Kdenlive'da ölçülmedi. İçe aktardıktan sonra 'SON — sil' kliplerini sil, erimeleri işaretlerde U ile ekle. Pencere açmadan çizim: Contents/MacOS/melt <proje>.kdenlive -consumer avformat:… (MLT en yakın kareyi alır; son kare kapsayıcı, +1 kare). Telemetri kitaplığı bulunmadı (ölçüldü). Hız/efekt/kadraj/ses düzeyi aktarılmaz."
 
 [[saglayici]]
 ad = "resolve-ucretsiz"

@@ -39,18 +39,19 @@ html,body{margin:0;background:#07080C}
     <div id="cizgi"></div>
     <div id="alt">HyperFrames · deneme</div>
   </section>
-  <audio id="hisirti" src="ses/hisirti.wav" data-start="0.25" data-duration="0.7" data-track-index="1" data-volume="0.35"></audio>
-  <audio id="cin" src="ses/cin.wav" data-start="1.55" data-duration="1.6" data-track-index="2" data-volume="0.5"></audio>
+  <!-- bütün zamanlar 30 fps kare ızgarasında (k/30): ses 9. ve 45. karede başlar; çizim sınaması bunu ölçer -->
+  <audio id="hisirti" src="ses/hisirti.wav" data-start="0.3" data-duration="0.7" data-track-index="1" data-volume="0.35"></audio>
+  <audio id="cin" src="ses/cin.wav" data-start="1.5" data-duration="1.6" data-track-index="2" data-volume="0.5"></audio>
 </div>
 <script>
   const tl = gsap.timeline({ paused: true });
-  // kelime kelime giriş: 0,4 sn'den başlayıp 0,22 sn arayla
-  tl.fromTo("#baslik .ki", { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: "power3.out", stagger: 0.22 }, 0.4);
-  // son kelime yerine oturunca çizgi açılır, çan çalar (1,55 sn)
-  tl.to("#cizgi", { width: 420, duration: 0.8, ease: "power2.inOut" }, 1.55);
+  // kelime kelime giriş: 0,4 sn'den başlayıp 0,2 sn arayla
+  tl.fromTo("#baslik .ki", { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: "power3.out", stagger: 0.2 }, 0.4);
+  // son kelime yerine oturunca çizgi açılır, çan çalar (1,5 sn)
+  tl.to("#cizgi", { width: 420, duration: 0.8, ease: "power2.inOut" }, 1.5);
   tl.fromTo("#alt", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 1.9);
-  // kapanış: her şey yumuşakça kararır
-  tl.to("#sahne", { opacity: 0, duration: 0.6, ease: "power1.in" }, 4.35);
+  // kapanış: her şey yumuşakça kararır (4,9 sn'de tam karanlık)
+  tl.to("#sahne", { opacity: 0, duration: 0.6, ease: "power1.in" }, 4.3);
   window.__timelines["deneme"] = tl;
 </script>
 </body>

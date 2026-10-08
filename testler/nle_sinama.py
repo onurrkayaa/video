@@ -13,7 +13,8 @@
   plan/kurgu.json                  kesim, 12 karelik erime, karışık fps, çekim sesi (B) ve müzik (bas 0,5)
   analiz/beklenen.json             zaman çizelgesi karesi → (klip, kaynak karesi) beklentisi ve doğrulama kuralları
 Sonra: medya nle plan/kurgu.json --bicim hepsi → cikti/nle/kurgu.otio + kurgu.edl
-Çizimden kod okuma: kod_oku(rgb_kare) → (klip_harfi, kare) ya da None (erime gibi karışık kare).
+Çizimden kod okuma: kod_oku(rgb_kare) → (klip_harfi, kare) ya da None (erime gibi karışık kare); bloklar(rgb_kare) →
+16 blok parlaklığı (erimede karışım ağırlığı buradan ölçülür: nle_olc.py).
 """
 from __future__ import annotations
 
@@ -54,18 +55,20 @@ def kare(harf: str, i: int, renk, yazi) -> np.ndarray:
     return np.asarray(im)
 
 
-def kod_oku(rgb: np.ndarray) -> tuple[str, int] | None:
-    """Kod şeridini çözer; blok ortalaması belirsizse (erime, bozulma) None."""
+def bloklar(rgb: np.ndarray) -> np.ndarray:
+    """Kod şeridinin 16 bloğunun ortalama parlaklığı (0–255). Erimede iki klibin kodu karışır: blok değeri ağırlığı taşır."""
     h, w = rgb.shape[:2]
     sy = slice(int(h * (H - SERIT * 0.75) / H), int(h * (H - SERIT * 0.25) / H))
-    bitler = []
-    for b in range(16):
-        x0, x1 = int(w * (b * BLOK + BLOK * 0.25) / W), int(w * (b * BLOK + BLOK * 0.75) / W)
-        y = float(rgb[sy, x0:x1].mean())
-        if 60 < y < 195:
-            return None
-        bitler.append(1 if y >= 195 else 0)
-    kod = int("".join(map(str, bitler)), 2)
+    return np.array([float(rgb[sy, int(w * (b * BLOK + BLOK * 0.25) / W):int(w * (b * BLOK + BLOK * 0.75) / W)].mean())
+                     for b in range(16)])
+
+
+def kod_oku(rgb: np.ndarray) -> tuple[str, int] | None:
+    """Kod şeridini çözer; blok ortalaması belirsizse (erime, bozulma) None."""
+    y = bloklar(rgb)
+    if ((y > 60) & (y < 195)).any():
+        return None
+    kod = int("".join("1" if v >= 195 else "0" for v in y), 2)
     klip, i = kod >> 12, kod & 0xFFF
     return (chr(64 + klip), i) if 1 <= klip <= 4 else None
 

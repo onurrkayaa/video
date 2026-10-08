@@ -40,8 +40,9 @@ Yönetim: `medya-yonetim` iş akışı (`{radar: true}` = yeni araç taraması) 
 
 ## Alt yazı istenirse
 Yalnız kullanıcı isterse. Döküm stüdyonun kurulu, Türkçe sınanmış yolundan; satıcı akışları sormadan model indirdiği için
-kancada engelli: ses/video girdili `hyperframes transcribe`, `init --video|--audio` (`--skip-transcribe` ile serbest), `tts`,
-`models install`, embedded-captions `prepare.sh`/`transcribe.cjs`/`matte.cjs`, media-use `transcribe.mjs`.
+kancada engelli: ses/video girdili ya da girdisi adıyla görünmeyen (`"$f"`, `xargs`) `hyperframes transcribe`,
+`init --video|--audio` (`--skip-transcribe` ile serbest), `tts`, `models install`, embedded-captions
+`prepare.sh`/`transcribe.cjs`/`matte.cjs`, media-use `transcribe.mjs`. Döküm dosyasını adıyla ver.
 1. `medya yaziya-dok <klip> --dil tr --srt --cikti analiz/yazi/<ad>.json` → kelime zamanlı `.json` + `.srt`.
 2. HyperFrames'e indirmesiz: `hyperframes transcribe analiz/yazi/<ad>.srt -d <kompozisyon>` işaret düzeyinde kalır (7 kelime
    → 2 öğe, ölçüldü 2026-10-08). Kelime zamanı için `kelimeler`i `[{text,start,end}]` dizisine çevir (stüdyo JSON'u

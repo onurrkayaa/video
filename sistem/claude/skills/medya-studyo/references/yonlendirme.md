@@ -34,6 +34,7 @@ Ajan listesi boşsa ajanlar alt ajan türü olarak kayıtlı değildir. Ne yapac
 - **`medya-uretim` ile çalışıyorsan:** sorun yok. İş akışı rol dosyalarını kendi yolundan okur.
 - **Tek ajan gerekiyorsa:** genel bir alt ajana "önce `/Users/onurkaya/Projects/video/sistem/claude/agents/<ad>.md` dosyasını oku" de.
 - **Kalıcı çözüm:** `zsh /Users/onurkaya/Projects/video/sistem/kur.sh --bagla` beceri ve ajan bağlantılarını kurar. Bu komut `~/.claude` altına yazar, bu yüzden önce kullanıcıya söyle.
+- **Satıcı becerisi (HyperFrames, Remotion):** `python3 /Users/onurkaya/Projects/video/sistem/claude/satici/satici.py dogrula` sabit kopyanın kurulu ve devrede olduğunu söyler. `kur.sh` "gerçek klasör; atlandı" diyorsa eski kopya etkindir: `satici.py bagla` planı yazar, `--uygula` eski kopyaları yedekleyip kaldırır ve bağlar (kullanıcının dosyası: önce sor).
 
 ## Satıcı becerileri: önce stüdyo kuralları
 HyperFrames kompozisyon motorudur. Becerileri sözdizimi başvurusu olarak kullanılır:

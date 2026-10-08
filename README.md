@@ -52,6 +52,9 @@ gerektiğini söyler.
 
 ## Bakım
 - `medya test` — bütün yeteneklerin doğruluk sınamaları.
+- `python3 sistem/claude/satici/satici.py dogrula` — satıcı becerileri (HyperFrames, Remotion) sabit commit'le aynı mı ve
+  Claude'da devrede mi; değilse ne yapılacağını yazar (`bagla` önce planı gösterir, `--uygula` eski kopyaları yedekleyip bağlar;
+  geri almak: `bagla --geri <arşiv> --uygula`).
 - `zsh sistem/kur.sh` — yeni bilgisayarda ya da bozulunca yeniden kurulum.
 - Stüdyonun Python ortamları (görsel üretimi, ses analizi, dış ses) kendi Python'unu kullanır (`.uv/python`);
   bilgisayardaki Python'un güncellenmesi onları etkilemez. Kancalar ve `kur.sh`'nin ilk adımı ise PATH'teki `python3`'ü

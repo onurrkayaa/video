@@ -9,7 +9,9 @@
   (örnek, yeniden çalıştır: ses ortamında dolaylı bağımlılık mpmath).
 - İkililer: `arac/ffmpeg -version | head -1` (6.0, 2023), `arac/ffprobe -version | head -1` (4.4.1, 2021). npm
   sarmalayıcısı güncel görünse de içindeki ikili eski olabilir.
-- Satıcı becerileri: `hyperframes skills check` (salt okunur: `git ls-remote` + manifest; kancada serbest). Güncelleme §3.6.
+- Satıcı becerileri: `python3 sistem/claude/satici/satici.py dogrula` (ağsız: kurulu içerik sabit commit'in özetiyle aynı
+  mı, `~/.claude/skills`'te devrede mi). HyperFrames becerileri CLI'nin etiketinden alınır: yeni sürüm = `npm view
+  hyperframes version`. Güncelleme §3.6.
 - Son radar: `ls sistem/radar/ 2>/dev/null` — yoksa ya da en yenisi 30 günden eskiyse radar öner.
 Bulguyu liste olarak sun; her yükseltme ayrı onayla.
 
@@ -26,28 +28,44 @@ Bulguyu liste olarak sun; her yükseltme ayrı onayla.
 1. Önce: `hyperframes --version`; `hyperframes --help > "$G/yardim-once.txt"`; sürüm notlarını oku
    (github.com/heygen-com/hyperframes/releases): varsayılan değişikliği, telemetri, yeni ağ ya da hesap komutu.
 2. Deneme projesi: `hyperframes lint testler/hyperframes-baslik`, `hyperframes check testler/hyperframes-baslik`,
-   `hyperframes render testler/hyperframes-baslik --quality draft -o "$G/once.mp4"`.
-3. `npm install -D --save-exact hyperframes@<sürüm>`
+   `hyperframes render testler/hyperframes-baslik --quality draft -o "$G/once.mp4"`. Kalıcı sınaması `medya test
+   kompozisyon` (~9 sn): lint 0 hata, 1920x1080/30 fps/150 kare, sesler bildirilen anda ve kare ızgarasında (çapraz
+   ilinti), kareler `testler/hyperframes-baslik-basvuru.json` ile (16x9 hücre, ≤ 3 düzey). Fikstürün zamanları k/30.
+3. `npm install -D --save-exact hyperframes@<sürüm>`; `yetenekler.toml` kurulum satırındaki sürüm de.
 4. Sonra: `hyperframes doctor`; aynı lint, check ve render → `"$G/sonra.mp4"`; ikisinde `medya incele` (süre, fps,
-   boyut) ve `medya denetle`; kare karşılaştırması kareler doğrudan çözülerek (`testler/test_temel.py` `_kareler`),
-   ffmpeg `psnr` süzgeciyle değil.
+   boyut) ve `medya denetle`; kare karşılaştırması kareler doğrudan çözülerek (`testler/test_temel.py` `_kareler`)
+   ya da `ffmpeg -map 0:v -f framemd5`, ffmpeg `psnr` süzgeciyle değil. Bu fikstürde bir dosyanın kendisiyle VMAF'ı
+   97,6 (100 değil; 2026-10-08): VMAF eşitlik ölçüsü değildir. `medya test kompozisyon` başvurudan sapınca fark sürüm notuyla
+   açıklanır; çizim değişikliği kabul edilirse başvuru yeni sürümle yazılır (`MEDYA_HF_BASVURU=yaz medya test
+   kompozisyon`) ve nedeni `sistem/dersler.md`'ye.
 5. `hyperframes --help | diff "$G/yardim-once.txt" -` → sunucuya ya da hesaba giden yeni alt komut varsa
    `sistem/claude/hooks/medya-koruma.py` içindeki `YASAK` kümesine ekle, `testler/test_koruma.py` `ENGELLENMELI`
    listesine örnek koy, `medya test koruma` (öncesi ve sonrası sınama sayısını o an `medya test koruma` çıktısından al).
    Sormadan indiren alt komut (ör. `transcribe`, `tts`, `models install`) `INDIRME` kurallarına girer. Not: `upgrade`
    2026-10-08'den beri engelli (`--project` dahil); `events` hâlâ `YASAK` içinde değil (araştırma engellenmesini önerdi).
-6. Satıcı becerileri: `hyperframes skills` / `skills update` kancada engelli (2026-10-08): kaynak sabit commit değil
-   GitHub HEAD, `npx skills add … --yes` (telemetri) çalıştırır, `update` yayından kalkan becerileri `npx skills remove …
-   --yes` ile siler. Yenileme 7. adımın yöntemiyle (sabit commit + tarball SHA-256, `satici.py`); HyperFrames becerileri
-   için bu yol henüz kurulmadı, o zamana dek kurulu kopyalar kalır ve `skills check` yalnız farkı gösterir. Ardından
-   [değerlendirme](degerlendirme.md) §4 taraması (`~/.claude/skills/hyperframes*`, `media-use`, `music-to-video`…) ve
-   `sistem/claude/satici/KAYNAKLAR.md` satırı. Satıcı dosyalarını düzenleme (güncelleme ezer); çelişkiyi kanca ve
-   `medya-studyo` yönlendirmesi karşılar.
-7. Diğer satıcı becerileri (ör. `remotion-best-practices`): sabit commit'in tarball'ı
-   (`https://codeload.github.com/<kurum>/<depo>/tar.gz/<commit>`) → `shasum -a 256` → commit ve SHA-256
-   `KAYNAKLAR.md`'ye; stüdyo kuralları bloğunu koru; metni yasaklara karşı tara (Google Fonts, Studio açma,
-   lisans anahtarı, uzak varlık, `@latest`). `npx skills` asla: telemetri ve sabitsiz sürüm (kanca engeller).
-Geri dönüş: `npm install -D --save-exact hyperframes@<eski>`, sonra 2. adımı yinele.
+   0.8.140'ın tek yeni alt komutu `catch-up` (#5114): masaüstü uygulamasının proje geçmişini yerel dosyadan okur, ağ
+   çağrısı yok (kodda okundu, 2026-10-08).
+6. Satıcı becerileri (HyperFrames): CLI ile aynı etiketten, `satici.py` ile. `git ls-remote
+   https://github.com/heygen-com/hyperframes refs/tags/v<sürüm>` → tam SHA (npm `gitHead` ile aynı olmalı); `satici.py`'de
+   commit'i değiştir, `ozet`'i boşalt, eski kopyaları sakla (`cp -R sistem/claude/skills/<ad> "$G"/`), `python3
+   sistem/claude/satici/satici.py kur --zorla` (seyrek çekim, blob SHA denetimi; özeti yazdırır),
+   [değerlendirme](degerlendirme.md) §4 taraması yalnız eklenen satırlarda (`diff -ruN "$G"/<ad>
+   sistem/claude/skills/<ad>`), özeti kayda geçir, `dogrula`, `KAYNAKLAR.md` satırı. `hyperframes skills` /
+   `skills update` ve `npx skills` kancada engelli: sabitsiz GitHub HEAD, `--yes` (telemetri), `update` yayından kalkanı
+   siler. `~/.claude/skills`'te aynı adlı eski gerçek kopya varsa sabit kopya devre dışı kalır (`kur.sh` bagla gerçek
+   klasörü atlar): `satici.py bagla` planı yazar, `--uygula` yedekleyip bağlar (kullanıcının dosyası: önce sor). Geri
+   alma `satici.py bagla --geri <arşiv> [--uygula]`: önce bağlantıyı kaldırır, sonra arşivi açar. `tar -xzf` işe yaramaz:
+   bsdtar bağlantının içine açmaz, bağlantıyı izleyen açıcı da sabit kopyanın üzerine yazar.
+   Satıcı dosyalarını düzenleme (özet tutmaz, `kur --zorla` ezer); çelişkiyi kanca ve `medya-studyo` yönlendirmesi
+   karşılar.
+7. Diğer satıcı becerileri (ör. `remotion-best-practices`): aynı yol, `satici.py`'de tam commit SHA'sı → `kur --zorla`
+   (HEAD = commit, dosya başına blob SHA'sı commit ağacıyla). İçerik özeti yalnız değiştirilmeden kurulanda: Remotion'a
+   stüdyo başlığı eklenir ve `agents/` silinir; `dogrula` orada kurulu mu, başlık var mı diye bakar. `KAYNAKLAR.md`'deki
+   codeload tarball SHA-256'sı (`1eb509ec…`, 2026-10-05) yalnız kayıttır, `satici.py` denetlemez. Commit `KAYNAKLAR.md`'ye;
+   stüdyo kuralları bloğunu koru; metni yasaklara karşı tara (Google Fonts, Studio açma, lisans anahtarı, uzak varlık,
+   `@latest`). `npx skills` asla: telemetri ve sabitsiz sürüm (kanca engeller).
+Geri dönüş: `npm install -D --save-exact hyperframes@<eski>`, sonra 2. adımı yinele; becerilerde `satici.py`'de eski
+commit + özet, `kur --zorla`.
 
 ### 3b. Remotion (sabit ikinci motor)
 - `remotion` ve bütün `@remotion/*` paketleri (package.json'da hepsi aynı tam sürüm) tek seferde, aynı sürüme:

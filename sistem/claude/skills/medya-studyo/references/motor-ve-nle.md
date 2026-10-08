@@ -1,7 +1,7 @@
 # Motor seçimi ve kurgu programına devir
 
 ## Kompozisyon motoru
-- **HyperFrames 0.8.124:** varsayılan motor, Apache-2.0, iş için de serbest. Ayrıntısı hareket-tasarimi'nde.
+- **HyperFrames 0.8.140:** varsayılan motor, Apache-2.0, iş için de serbest. Becerileri aynı etiketin commit'inden (`satici.py`); `~/.claude/skills`'e bağlanana dek eski v0.8.124 kopyaları etkin (durum: `satici.py dogrula`). Ayrıntısı hareket-tasarimi'nde.
 - **Remotion 4.0.533:** yalnız lisans kapısı geçerse kullanılır. Kapı, BRIEF.md'deki "Lisans bağlamı" satırına bakar.
 
 | Lisans bağlamı | Motor |
@@ -27,16 +27,16 @@ HyperFrames'te `data-playback-rate` 1'in altına inerse kareler tekrarlanır. Bu
 
 ## Kurgu programına devir (NLE)
 - **Komut:** proje klasöründe `medya nle plan/kurgu.json --bicim otio|kdenlive|edl|hepsi`. Çıktı `cikti/nle/`: `kurgu.otio` (Resolve), `kurgu-kdenlive.otio` (Kdenlive), `kurgu.edl` (CMX 3600). `medya-uretim` bu adımı zaten yapar.
-- **Ölçüldü (2026-10-08):** kare kodlu sınama medyası (`testler/nle_sinama.py`: karışık 30/60/24 fps, 12 karelik erime, çekim sesi, numaralı müzik tonları) programda çizildi, `testler/nle_olc.py` her kareyi ve sesi plana karşı ölçtü.
+- **Ölçüldü (2026-10-08):** kare kodlu sınama medyası (`testler/nle_sinama.py`: karışık 30/60/24 fps, 12 karelik erime, çekim sesi, numaralı müzik tonları) programda çizildi, `testler/nle_olc.py` her kareyi ve sesi plana karşı ölçtü. Kdenlive'da kaydedilen proje XML'i de denetlendi (`nle_olc.py <proje> --kdenlive-xml <proje.kdenlive>`): çizim işaretleri göstermez.
 
 | Program ← dosya | Sonuç |
 |---|---|
-| DaVinci Resolve 21.1 ← `kurgu.otio` | GEÇTİ: kesimler 0 kare, erime yerinde, 60 fps kaynak kare-kesin, 24 fps ±1 kare (giriş noktası zaman çizelgesi ızgarasına aşağı yuvarlanıyor), müzik ve çekim sesi ≤ 2 ms |
-| Kdenlive 26.08.1 ← `kurgu-kdenlive.otio` | GEÇTİ, erime yerine kesim + işaret: proje 30 fps, bütün giriş noktaları doğru, ses ≤ 1,5 ms |
+| DaVinci Resolve 21.1 ← `kurgu.otio` | GEÇTİ: kesimler 0 kare, 12 karelik erime yerinde (ağırlık rampasından 11,85 kare, ortası kesimde), 60 fps kaynak kare-kesin, 24 fps ±1 kare (giriş noktası zaman çizelgesi ızgarasına aşağı yuvarlanıyor), müzik ve çekim sesi ≤ 2 ms (müzik `medya senkron` ses hizasıyla 0 ms). Klip işareti ve kılavuz ölçülmedi |
+| Kdenlive 26.08.1 ← `kurgu-kdenlive.otio` | GEÇTİ, erime yerine kesim + işaret: proje standart "HD 720p 30 fps", bütün giriş noktaları doğru, ses ≤ 1,5 ms. XML'de klip işareti girişin iki katındaydı (giriş 21 → işaret 42, zaman çizelgesinde 0,7 sn geç): `nle` 2026-10-08'de düzeltildi, Kdenlive'da yeniden ölçülmedi |
 | Kdenlive 26.08.1 ← `kurgu.otio` | KALDI: proje 60 fps, her izin son klibi ve erimeden sonraki klip 0'dan başladı (müzik 0,5 sn, çekim sesi 1 sn erken), erime düştü (src/otio/otioimport.cpp) |
 
 - **Resolve'da:** File > Import > Timeline… → `kurgu.otio` → "Set timeline resolution" plan boyutu (OTIO çözünürlük taşımaz); kare hızı ve "Automatically set project settings" OTIO'dan doğru gelir → Ok. App Store sürümü kum havuzlu: `projeler/` Tercihler > System > Media Storage'a eklendi (2026-10-08), proje medyası doğrudan açılır. Medya başka bir klasördeyse o klasörü de ekle.
-- **Kdenlive'da:** File > OpenTimelineIO Import… → `kurgu-kdenlive.otio` (çözünürlük ilk klipten gelir). Sonra her izin sonundaki 1 karelik "SON — sil" kliplerini sil. Kırmızı "erime N kare" işaretlerinde klibi seç → U ya da birleşime çift tıkla; süreyi N kare yap.
+- **Kdenlive'da:** File > OpenTimelineIO Import… → `kurgu-kdenlive.otio` (çözünürlük ilk klipten gelir). Sonra her izin sonundaki 1 karelik "SON — sil" kliplerini sil. Kırmızı "erime N kare" işaretlerinde klibi seç → U ya da birleşime çift tıkla; süreyi N kare yap. `nle` kırmızı işaretleri klibin ilk karesine yazar (düzeltmeden sonra Kdenlive'da doğrulanmadı: işaret klibin başında değilse not yine o klibindir). Kdenlive işareti kutudaki klibe koyduğu için aynı medyadan kesilmiş öteki klipte de görünebilir.
 - **Aktarılmayanlar:** hız (ağır çekim önce `medya yavaslat` ile klibe gömülür), kadraj ve zoom, renk, ses düzeyi. Bunlar işaret olarak gelir ya da ara klibe gömülür.
 - **Zaman kodlu kamera medyası:** `-kdenlive.otio` başlangıç TC'sini Kdenlive'ın hesabıyla (zaman çizelgesi hızında) yazar. TC'li gerçek kamera medyası sınanmadı.
 

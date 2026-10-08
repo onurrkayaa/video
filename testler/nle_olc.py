@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 """Kurgu programına devir ölçümü: kare kodlu sınama projesinin (testler/nle_sinama.py) bir NLE'deki çizimini plana karşı ölçer.
 
-  .venv/bin/python testler/nle_olc.py <proje_klasoru> <cizim.mov|mp4> [--json sonuc.json] [--erime-kesim] [--son-tolerans N]
+  .venv/bin/python testler/nle_olc.py <proje_klasoru> [<cizim.mov|mp4>] [--kdenlive-xml proje.kdenlive] [--json sonuc.json]
+                                      [--erime-kesim] [--son-tolerans N]
 
 Görüntü: her çıktı karesinin kod şeridi okunur (nle_sinama.kod_oku). Beklenti plandan hesaplanır: çıktı karesi n (çizim
 fps'i F) → çekim kaynağı karesi floor((kaynak_bas + (n − bas_n)/F) × kaynak_fps); en yakın kare de kabul (MLT/Kdenlive
 yuvarlıyor, Resolve alt sınır alıyor). Kesim: çekimin ilk göründüğü kare = bas_n (0 kare). Erime: iki çekimin örtüştüğü
-aralıkta karışık (okunamayan) kareler olmalı. Kaynak fps'i çizim fps'ine tam bölünmüyorsa (24 → 30) ±1 kaynak karesi kabul.
+aralıkta karışık (okunamayan) kareler olmalı; uzunluk ve yer ağırlık rampasından ölçülür (karışık kare saymak, ilk
+karesinde ağırlığı 0 olan programda 1 karelik sahte sapma verir): ±0,5 kare. Kaynak fps'i çizim fps'ine tam bölünmüyorsa
+(24 → 30) ±1 kaynak karesi kabul.
 Ses (mutlak konum, periyot belirsizliği yok): müzikte k. tonun frekansı k'yı, çekim sesinde bip sayısı kaynak saniyesini
-verir; ikisi de beklenen ana göre ms cinsinden ölçülür (eşik yarım zaman çizelgesi karesi). Sesi alınmayan kliplerin
-frekansı duyulmamalı.
+verir; ikisi de beklenen ana göre ms cinsinden ölçülür (eşik yarım zaman çizelgesi karesi). Ayrıca müzik, stüdyonun
+`medya senkron` ses hizasıyla (çapraz ilinti) ölçülür: |gecikme| ≤ 5 ms. Sesi alınmayan kliplerin frekansı duyulmamalı.
+--kdenlive-xml: kaydedilen .kdenlive projesi (birincil denetim; çizimin göremediklerini de görür): profil, her klibin
+konumu/giriş noktası/uzunluğu, klip işaretlerinin klibin ilk karesinde olması, beklenmeyen klip.
 --erime-kesim: erimesiz devir (Kdenlive OTIO'su): örtüşmenin ortasında kesim beklenir. --son-tolerans N: plan sonundan
 sonraki N kare/ses olayı bulgu sayılmaz (Kdenlive 'SON — sil' klibi, melt'in kapsayan son karesi).
 Çıkış kodu: 0 geçti, 1 bulgu var.
@@ -27,7 +32,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from nle_sinama import (BIP_ARA, BIP_SURE, FF, KLIPLER, SR, TIK_ADIM, TIK_ARALIK, TIK_HZ0, TIK_SURE,  # noqa: E402
-                        kod_oku)
+                        bloklar, kod_oku)
 
 FFPROBE = str(Path(FF).with_name("ffprobe"))
 
@@ -79,12 +84,38 @@ def _kesimler(plan: dict, cek: list[dict], F: float) -> dict[int, int]:
     return out
 
 
+def _rampa(Y: list, a: dict, b: dict) -> dict | None:
+    """Erimede gelen çekimin ağırlığı w(n): iki klibin 4 bitlik kimliğinde farklı olan bloklar, erimeden önceki ve
+    sonraki saf karelere göre ölçeklenir (kare numarası bitleri gerekmez). Doğrusal kısma oturtulan doğrudan uzunluk
+    (1/eğim) ve orta (w = 0,5, kare dizini). Uygun: uzunluk plandan ±0,5 kare; orta kesimden −0,75…+0,25 kare (kare
+    merkezinde örnekleyen program −0,5 verir — Resolve; kare başında örnekleyen 0 — MLT)."""
+    ka, kb = ord(a["harf"]) - 64, ord(b["harf"]) - 64
+    fark = [j for j in range(4) if ((ka >> (3 - j)) & 1) != ((kb >> (3 - j)) & 1)]
+    na, nb = max(a["bas_n"], b["bas_n"] - 3), min(b["son_n"] - 1, a["son_n"] + 2, len(Y) - 1)
+    ya, yb = Y[na][fark], Y[nb][fark]
+    if np.abs(yb - ya).min() < 100:                  # saf kareler beklenen klipleri göstermiyor
+        return None
+    w = [(n, float(np.median((Y[n][fark] - ya) / (yb - ya)))) for n in range(na, nb + 1)]
+    ic = [(n, v) for n, v in w if 0.03 < v < 0.97]
+    if len(ic) < 3:
+        return None
+    egim, kesisim = np.polyfit([n for n, _ in ic], [v for _, v in ic], 1)
+    kare, orta = 1 / egim, (0.5 - kesisim) / egim
+    L, kesim = a["son_n"] - b["bas_n"], (a["son_n"] + b["bas_n"]) / 2
+    return {"kare": round(kare, 2), "orta": round(orta, 2), "bas": round(-kesisim / egim, 2), "plan_kare": L,
+            "kesim": kesim, "uygun": bool(abs(kare - L) <= 0.5 and -0.75 <= orta - kesim <= 0.25),
+            "agirlik": [[n, round(v, 3)] for n, v in w]}
+
+
 def goruntu_olc(proje: Path, cizim: Path, erime_kesim: bool = False, son_tolerans: int = 0) -> dict:
     plan = json.loads((proje / "plan" / "kurgu.json").read_text())
     w, h, F = _akis(cizim)
     cek = _cekimler(plan, F)
     kesim = _kesimler(plan, cek, F) if erime_kesim else {}
-    okunan = [kod_oku(k) for k in _kareler(cizim, w, h)]
+    okunan, Y = [], []
+    for k in _kareler(cizim, w, h):
+        okunan.append(kod_oku(k))
+        Y.append(bloklar(k))
     beklenen_n = max(c["son_n"] for c in cek)
     sonuc = {"fps": F, "boyut": [w, h], "kare": len(okunan), "beklenen_kare": beklenen_n, "hatalar": [],
              "cekimler": {}, "erimeler": [], "son_fazla": []}
@@ -128,11 +159,19 @@ def goruntu_olc(proje: Path, cizim: Path, erime_kesim: bool = False, son_toleran
         if b["bas_n"] < a["son_n"]:
             aralik = list(range(b["bas_n"], a["son_n"]))
             karisik = [n for n in aralik if n < len(okunan) and okunan[n] is None]
-            sonuc["erimeler"].append({"cekimler": f"{a['harf']}→{b['harf']}", "aralik": [aralik[0], aralik[-1]],
-                                      "kare": len(aralik), "karisik_kare": len(karisik), "kesim": kesim.get(i),
-                                      "karisik_ilk_son": [karisik[0], karisik[-1]] if karisik else None})
+            e = {"cekimler": f"{a['harf']}→{b['harf']}", "aralik": [aralik[0], aralik[-1]],
+                 "kare": len(aralik), "karisik_kare": len(karisik), "kesim": kesim.get(i),
+                 "karisik_ilk_son": [karisik[0], karisik[-1]] if karisik else None}
+            sonuc["erimeler"].append(e)
             if not karisik and not erime_kesim:
                 hatalar.append(f"erime {a['harf']}→{b['harf']}: karışık kare yok — erime kesime dönmüş")
+            elif not erime_kesim:                    # uzunluk ve yer ağırlık rampasından (_rampa)
+                r = e["rampa"] = _rampa(Y, a, b)
+                if r is None:
+                    hatalar.append(f"erime {e['cekimler']}: ağırlık rampası ölçülemedi")
+                elif not r["uygun"]:
+                    hatalar.append(f"erime {e['cekimler']}: rampadan {r['kare']:g} kare, orta {r['orta']:g} "
+                                   f"(plan {r['plan_kare']} kare, kesim {r['kesim']:g})")
     for i, c in enumerate(cek):                      # kesim: erimeyle başlamayan çekim tam bas_n'de görünmeli
         bas = kesim.get(i, c["bas_n"])
         if i and c["bas_n"] < cek[i - 1]["son_n"] and i not in kesim:
@@ -224,6 +263,11 @@ def ses_olc(proje: Path, cizim: Path, son_tolerans: int = 0) -> dict:
         eksik = sorted(set(beklenen_k) - gorulen)
         if eksik:
             hatalar.append(f"müzik: beklenen tonlar yok: k={eksik}")
+        from medya.komutlar.senkron import ses_hizasi     # stüdyonun ölçütü (medya senkron): |gecikme| ≤ 5 ms
+        hiza = sonuc["ses_hizasi"] = ses_hizasi(str(cizim), {"ana_wav": str(proje / m["dosya"])}, plan)
+        if hiza and not hiza.get("olculemedi") and hiza["ilinti"] >= 0.5 and abs(hiza["gecikme_ms"]) > 5:
+            hatalar.append(f"müzik: medya senkron ses hizası {hiza['gecikme_ms']:+.1f} ms "
+                           f"(ilinti {hiza['ilinti']:.2f}; eşik ±5 ms)")
     for c in plan["cekimler"]:
         harf = Path(c["kaynak"]).stem
         hz = KLIPLER[harf][3]
@@ -266,17 +310,122 @@ def ses_olc(proje: Path, cizim: Path, son_tolerans: int = 0) -> dict:
     return sonuc
 
 
+def _mlt_kare(s: str | None, fps: float) -> int:
+    """MLT zaman değeri → kare: tamsayı ya da saat 'SS:DD:SS.mmm' (Kdenlive 26.08 böyle yazıyor)."""
+    if not s or ":" not in s:
+        return int(s or 0)
+    sa, dk, sn = s.split(":")
+    return round((int(sa) * 3600 + int(dk) * 60 + float(sn)) * fps)
+
+
+def kdenlive_xml_olc(proje: Path, xml: Path) -> dict:
+    """Kaydedilen .kdenlive projesi (içe aktarılmış -kdenlive.otio) plana karşı — birincil denetim: profil (fps, boyut),
+    her izdeki klibin konumu, giriş noktası ve uzunluğu (erime yerine örtüşmenin ortasında kesim), notlu çekimin işareti
+    klibin ilk karesinde mi (Kdenlive işareti kutudaki klibe yazar: işaretin kaynak karesi = giriş noktası), beklenmeyen
+    klip (ör. görüntü izinde klibin sesi). İz sonlarındaki 1 karelik 'SON — sil' klipleri kabul."""
+    import xml.etree.ElementTree as ET
+    plan = json.loads((proje / "plan" / "kurgu.json").read_text())
+    kok = ET.parse(xml).getroot()
+    pr = kok.find("profile")
+    F = int(pr.get("frame_rate_num")) / int(pr.get("frame_rate_den"))
+    fps = float(plan["fps"])
+    sonuc = {"dosya": str(xml), "profil": {"ad": pr.get("description"), "fps": F,
+                                           "boyut": [int(pr.get("width")), int(pr.get("height"))]},
+             "klipler": [], "isaretler": [], "son_sil": 0, "hatalar": []}
+    hatalar = sonuc["hatalar"]
+    if abs(F - fps) > 1e-6:
+        hatalar.append(f"profil {F:g} fps, plan {fps:g}")
+    if plan.get("boyut") and sonuc["profil"]["boyut"] != list(plan["boyut"]):
+        hatalar.append(f"profil boyutu {sonuc['profil']['boyut']}, plan {plan['boyut']}")
+    cek = _cekimler(plan, fps)                       # beklenen: medya nle Kdenlive kipi (plan fps'inde, erime → kesim)
+    kesim = _kesimler(plan, cek, fps)
+    goruntu, ses = [], []                            # (medya, konum, giriş, uzunluk, etiket)
+    for i, (c, pc) in enumerate(zip(cek, plan["cekimler"])):
+        ad, bas, son = Path(pc["kaynak"]).name, kesim.get(i, c["bas_n"]), kesim.get(i + 1, c["son_n"])
+        goruntu.append((ad, bas, round((c["kaynak_bas"] + (bas - c["bas_n"]) / fps) * fps), son - bas,
+                        f"{c['harf']} görüntü"))
+        if c["ses"] == "kendi":
+            ses.append((ad, c["bas_n"], round(c["kaynak_bas"] * fps), c["son_n"] - c["bas_n"], f"{c['harf']} sesi"))
+    toplam = max(x[1] + x[3] for x in goruntu)
+    if plan.get("muzik"):
+        ses.append((Path(plan["muzik"]["dosya"]).name, 0, round(plan["muzik"]["bas"] * fps), toplam, "müzik"))
+    kaynaklar, isaretler = {}, {}                    # üretici → medya adı; medya adı → işaretlerin kaynak kareleri
+    for el in kok.iter():
+        if el.tag in ("producer", "chain"):
+            oz = {p.get("name"): p.text or "" for p in el.findall("property")}
+            ad = kaynaklar[el.get("id")] = Path(oz.get("resource", "")).name
+            for mk in json.loads(oz.get("kdenlive:markers") or "[]"):
+                isaretler.setdefault(ad, set()).add(mk["pos"])
+    girisler = []                                    # projedeki her iz öğesi: (medya, konum, giriş, uzunluk)
+    for pl in kok.iter("playlist"):
+        if pl.get("id") == "main_bin":
+            continue
+        konum = 0
+        for e in pl:
+            if e.tag == "blank":
+                konum += _mlt_kare(e.get("length"), F)
+            elif e.tag == "entry":
+                g, c = _mlt_kare(e.get("in"), F), _mlt_kare(e.get("out"), F)
+                girisler.append((kaynaklar.get(e.get("producer"), e.get("producer")), konum, g, c - g + 1))
+                konum += c - g + 1
+    kalan = list(girisler)
+    for ad, konum, giris, uzunluk, etiket in goruntu + ses:
+        if (ad, konum, giris, uzunluk) in kalan:
+            kalan.remove((ad, konum, giris, uzunluk))
+            sonuc["klipler"].append(etiket)
+        else:
+            benzer = [f"{x[1]}/{x[2]}/{x[3]}" for x in kalan if x[0] == ad]
+            hatalar.append(f"{etiket}: beklenen konum/giriş/uzunluk {konum}/{giris}/{uzunluk}, projede {benzer or 'yok'}")
+    for x in kalan:
+        if x[3] == 1 and x[1] >= toplam:
+            sonuc["son_sil"] += 1
+        else:
+            hatalar.append(f"beklenmeyen klip: {x[0]} konum/giriş/uzunluk {x[1]}/{x[2]}/{x[3]}")
+    for i, (pc, (ad, konum, giris, uzunluk, _)) in enumerate(zip(plan["cekimler"], goruntu)):
+        if not (i in kesim or pc.get("kadraj") or pc.get("hareket") or abs(float(pc.get("hiz", 1)) - 1) > 1e-9):
+            continue                                 # medya nle yalnız notlu çekime işaret koyar
+        bulunan = sorted(isaretler.get(ad, ()))
+        icinde = [konum + p - giris for p in bulunan if giris <= p < giris + uzunluk]
+        sonuc["isaretler"].append({"cekim": pc["no"], "giris": giris, "kaynak_kareleri": bulunan,
+                                   "zaman_cizelgesi": icinde, "beklenen": konum})
+        if giris not in bulunan:
+            hatalar.append(f"çekim {pc['no']} işareti klibin ilk karesinde değil: giriş {giris}, işaret kaynak karesi "
+                           f"{bulunan or 'yok'} → zaman çizelgesinde {icinde or 'görünmüyor'}, beklenen {konum}")
+    return sonuc
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("proje", type=Path)
-    ap.add_argument("cizim", type=Path)
+    ap.add_argument("cizim", type=Path, nargs="?")
+    ap.add_argument("--kdenlive-xml", type=Path, help="kaydedilen .kdenlive projesi (profil, konumlar, işaretler)")
     ap.add_argument("--json", type=Path)
     ap.add_argument("--erime-kesim", action="store_true", help="erimeler örtüşmenin ortasında kesim olarak beklenir")
     ap.add_argument("--son-tolerans", type=int, default=0, help="plan sonundan sonra bulgu sayılmayan kare sayısı")
     a = ap.parse_args()
+    if not a.cizim and not a.kdenlive_xml:
+        ap.error("çizim ya da --kdenlive-xml gerekli")
+    sonuc, hata = {"cizim": str(a.cizim) if a.cizim else None}, []
+    if a.kdenlive_xml:
+        x = sonuc["kdenlive_xml"] = kdenlive_xml_olc(a.proje, a.kdenlive_xml)
+        p = x["profil"]
+        print(f"kdenlive projesi: profil '{p['ad']}' {p['fps']:g} fps {p['boyut'][0]}x{p['boyut'][1]}; "
+              f"{len(x['klipler'])} klip yerinde ({', '.join(x['klipler'])}), {x['son_sil']} 'SON — sil'")
+        for o in x["isaretler"]:
+            print(f"  işaret çekim {o['cekim']}: giriş {o['giris']}, kaynak kareleri {o['kaynak_kareleri']} → zaman "
+                  f"çizelgesinde {o['zaman_cizelgesi']} (beklenen {o['beklenen']})")
+        for hat in x["hatalar"]:
+            print("  BULGU:", hat)
+        hata += x["hatalar"]
+    if not a.cizim:
+        sonuc["gecti"] = not hata
+        if a.json:
+            a.json.write_text(json.dumps(sonuc, ensure_ascii=False, indent=1))
+        print("GEÇTİ" if sonuc["gecti"] else "BULGU VAR")
+        return 0 if sonuc["gecti"] else 1
     g = goruntu_olc(a.proje, a.cizim, a.erime_kesim, a.son_tolerans)
     s = ses_olc(a.proje, a.cizim, a.son_tolerans)
-    sonuc = {"cizim": str(a.cizim), "goruntu": g, "ses": s, "gecti": not g["hatalar"] and not s["hatalar"]}
+    sonuc.update(goruntu=g, ses=s, gecti=not hata and not g["hatalar"] and not s["hatalar"])
     if a.json:
         a.json.write_text(json.dumps(sonuc, ensure_ascii=False, indent=1))
     print(f"görüntü: {g['kare']} kare @ {g['fps']:g} fps {g['boyut'][0]}x{g['boyut'][1]} (beklenen {g['beklenen_kare']})")
@@ -284,12 +433,15 @@ def main() -> int:
         print(f"  {harf}: ilk kare {c['ilk_kare']} (plan {c['bas_n']}), kaynak sapması {c['sapma']}")
     for e in g["erimeler"]:
         print(f"  erime {e['cekimler']}: {e['kare']} kare aralık {e['aralik']}, karışık {e['karisik_kare']} "
-              f"{e['karisik_ilk_son']}" + (f", kesim {e['kesim']}" if e["kesim"] is not None else ""))
+              f"{e['karisik_ilk_son']}" + (f", kesim {e['kesim']}" if e["kesim"] is not None else "")
+              + (f", rampadan {e['rampa']['kare']:g} kare, orta {e['rampa']['orta']:g}" if e.get("rampa") else ""))
     if g["son_fazla"]:
         print(f"  plan sonrası (kabul): {g['son_fazla']}")
     mz = s["muzik"]
     if mz:
         print(f"  müzik: {len(mz)} ton, k {[o['k'] for o in mz]}, sapma ms {[o['sapma_ms'] for o in mz]}")
+    if s.get("ses_hizasi"):
+        print(f"  müzik, medya senkron ses hizası: {s['ses_hizasi']}")
     for o in s["cekim_sesi"]:
         print(f"  çekim sesi {o['harf']}: t={o['t']} kaynak {o['kaynak_sn']}. sn, sapma {o['sapma_ms']} ms")
     for z in s["sizinti"]:

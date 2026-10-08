@@ -1,4 +1,4 @@
-# HyperFrames — ajan için özler (0.8.124)
+# HyperFrames — ajan için özler (0.8.140)
 
 Motor sözleşmesinin tamamı satıcı becerilerindedir: `hyperframes-core` (yapı, `data-*`), `hyperframes-animation`
 (kurallar, blueprint'ler, adaptörler), `hyperframes-keyframes` (punch-in, kamera, maske, SVG), `hyperframes-registry`.
@@ -16,7 +16,8 @@ cp $MEDYA/varliklar/yazitipleri/inter-latin{,-ext}-{400,600}-normal.woff2 $MEDYA
 ```
 - `HYPERFRAMES_SKIP_SKILLS=1` olmadan `init` her çalıştırmada becerileri GitHub HEAD'e karşı tazeler (`keepSkillsCurrent` →
   `updateSkills`). `ortam.sh` ve `~/.claude/settings.json` (env) bunu 1 yapar; kanca bu alt süreci görmez, tek koruma bu
-  değişkendir. Ortamı yüklenmemiş bir kabuktan da çağrılabileceği için komutta yine açık yaz.
+  değişkendir. Ortamı yüklenmemiş bir kabuktan da çağrılabileceği için komutta yine açık yaz. Kaçarsa sabit kopyanın
+  bozulduğunu `python3 $MEDYA/sistem/claude/satici/satici.py dogrula` gösterir (onarım: `kur --zorla`, `bagla`).
 - `--resolution` seçenekleri: `landscape`, `portrait`, `square`, `*-4k`. App Store gibi başka bir boyut gerekirse kökteki `data-width` ve `data-height` elle yazılır.
 - **Boş şablonda düzeltilecekler** (`init` çıktısı okunarak doğrulandı):
   - `<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/…">` satırı `vendor/gsap.min.js` ile değiştirilir.
@@ -27,6 +28,7 @@ cp $MEDYA/varliklar/yazitipleri/inter-latin{,-ext}-{400,600}-normal.woff2 $MEDYA
   - `package.json`'dan `publish` ve `dev` betikleri silinir. `npm run …` kullanılmaz; doğrudan `hyperframes <komut> kompozisyon` çalıştırılır.
   - `hyperframes.json` içindeki `$schema` ve registry adresi beklenir, dokunulmaz. URL denetimi yalnız çalışan dosyalarda yapılır: `grep -rnoE "https?://[^\"' )]+" kompozisyon --include='*.html' --include='*.js' --include='*.mjs' --include='*.css' | grep -v w3.org` boş olmalı.
 - **Ölçülmüş tuzaklar (0.8.124):** GIF fps'i 10, 20, 25 ya da 50 olmalı; 15 fps'te gecikmeler 60/70 ms karışık çıktı. Türkçe yazı varsa `<html lang="tr">`.
+- **0.8.140'ın çizim düzeltmeleri** (#5010 GSAP ile kırpılan öğenin kenarı, #5014 paketli çizimde betik sırası, #5125 `fromTo` başlangıç değerleri, #5149 otomatik işçi sayısı bellek bütçesine göre, #5150 video üstünde hareket bulanıklığı, #5168 yavaş belgelerde kare temposu): sürüm notu iddiası, stüdyoda doğrulanmadı; sınama fikstürü 0.8.124 ile kare kare aynı çiziliyor (2026-10-08). Sürüm notuna göre #5033 (0.8.135'ten beri): kompozisyonun betiği zaman çizelgesi bağlanmadan hata atarsa çizim düşer. Eski bir kompozisyon artık çizilmiyorsa betik hatasını `hyperframes check <kompozisyon>` ile bul.
 - **Yalnız CSS ya da WAAPI ile animasyonlanan kök** (ör. yükleniyor animasyonu) GSAP zaman çizelgesi kaydetmez. Bu durumda köke `data-no-timeline` konur; konmazsa lint `missing_timeline_registry` hatası verir ve her çizime 45 sn bekleme eklenir.
 - **GSAP eklentileri:** `gsap.registerPlugin(DrawSVGPlugin)` ile kaydedilir. Kullanım: `drawSVG: "0%" → "100%"`, `morphSVG`, `motionPath`. Kapalı bir SVG yolunda DrawSVG başlangıç köşesinde çentik bıraktı. `stroke-linejoin: round` ile dene, sonra snapshot'la doğrula.
 - **GSAP lisansı:** Standard "no charge" lisansı; ticari kullanım serbest. Tek yasak, Webflow'un görsel animasyon aracıyla rekabet eden bir araç yapmak. Ürün içinde OSI lisansı gerekiyorsa anime.js (MIT) kullanılır.
