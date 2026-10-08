@@ -1,7 +1,8 @@
 # Stüdyo durumu — kaldığımız yer
 
 **2026-10-08 — ÖNERİLER UYGULANIYOR: dalga 1 (O1, O2, O7), dalga 2 (O1 düzeltme turu, O4, O5) ve dalga 3 (O1 ek turu,
-O3, O6) bitti, yerel commit'lendi (push yok). Yönetici raporunun yedi önerisi (O1–O7) uygulandı; sırada dalga 4 (E1–E3).**
+O3, O6) bitti. Dalga 1–2 GitHub'da (16:29'da gönderildi, 0bfe46c); dalga 3 yalnız yerel commit (cf4b556, push yok).
+Yönetici raporunun yedi önerisi (O1–O7) uygulandı; sırada dalga 4 (E1–E3).**
 Kullanıcı: "hepsini sırayla uygula", Resolve kur (en iyisi), GitHub'a gönder, Z-Image-Turbo + VoxCPM2 8-bit + Remotion
 3B/Lottie kur ("Z-Image-Turbo'dan sonra FLUX.2'ye gerek kalmıyorsa sil, gerek varsa dursun"). Kullanıcı adımları bitti
 (Mac yeniden başlatıldı, Resolve App Store'dan kuruldu, Kdenlive içe aktarımı yapıldı, VS Code'a erişilebilirlik izni verildi).
@@ -13,7 +14,7 @@ Dalga 4'ten önce: yeniden başlatma önerilir (takas 4 GiB'a büyüdü, 2,8 GiB
 engel değil: 48,8 GB boş (13,2 GB'tan; yeri O3 sırasında başka bir süreç açtı, ne olduğu ölçülmedi).
 (Uzun bir iş yarıda kalırsa bu dosyaya "DURAKLATILDI" + devam sırası yazılır; kurallar CLAUDE.md "Uzun işler".)
 
-## Dalga 3 sonucu (2026-10-08, iş akışı wf_c2ff20de-72e)
+## Dalga 3 sonucu (2026-10-08, iş akışı wf_c2ff20de-72e; commit cf4b556)
 - O1 ek turu (koruma kancası: gizlilik ve sabit sürüm): tamam, bağımsız doğrulama GEÇTİ. `hyperframes snapshot`'ta
   `--`'dan önceki her `--describe` değeri birebir `false` olmalı: 0.8.140 açıklamayı yalnız onunla kapatıyor
   (`snapshot-SD5R3NWX.js`:729); citty ölçümünde `0`, `no`, `False` ve boş değer açık bırakıyor, tekrar edende son değer
