@@ -17,7 +17,8 @@ if (chrome && existsSync(chrome)) {
 }
 
 Config.setRspack(true); // hızlı paketleme
-Config.setChromiumOpenGlRenderer('angle'); // WebGL/3B sahnelerde ~3,6x hızlı (ölçüldü)
+Config.setChromiumOpenGlRenderer('angle'); // WebGL GPU'da: ayarsıza göre ×1,6 (R3F, 2026-10-09)–×2,6 (ağır shader,
+// bağımsız doğrulama, 2026-10-05); araştırmacının ağır WebGL sahnesindeki ×3,6'sı doğrulanmadı
 Config.setColorSpace('bt709'); // etiketli bt709 tv çıktı; etiketsiz bt601 renk kayması yapar
 Config.setConcurrency(4); // fansız M2: 4 sekme
 // Son çizimde: --image-format=png --color-space=bt709 (bağımsız ölçüm VMAF 96,97 → 98,80, en kötü kare 93 → 95;

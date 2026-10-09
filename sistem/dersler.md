@@ -55,7 +55,7 @@ Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders il
 - **FLUX.2 kaldı (kullanıcı kuralı "gerek varsa dursun"):** referanslı düzenleme yalnız FLUX.2'de. Tongyi-MAI'nin HF'deki
   modelleri 2026-10-08'de Z-Image-Turbo, Z-Image (taban), MAI-UI; Z-Image-Edit kartta "To be released". mflux 0.21.0'da
   Z-Image için yalnız `--image` (görselden görsele) var, talimatlı düzenleme yok.
-- **Isıl kısılma:** 44 dk sürekli GPU yükünde süre ilk koşudan sonuncuya FLUX.2'de %28,6, Z-Image'da %39,5 uzadı
+- **Sürekli yükte süre uzaması (nedeni ölçülmedi; ısı/saat hızı olası):** 44 dk sürekli GPU yükünde süre ilk koşudan sonuncuya FLUX.2'de %28,6, Z-Image'da %39,5 uzadı
   (fansız M2). Seri üretimin süresini ilk görselden tahmin etme.
 - **Bellek ölçümü:** `/usr/bin/time -l medya …` `peak memory footprint` olarak yalnız doğrudan alt süreci verir (20 MB);
   MLX'in Metal belleği RSS'ye girmiyor (RSS FLUX.2 2,5, Z-Image 3,0–4,1 GB; ayak izi 9,0–10,8 / 6,3 GB). Üreteci doğrudan
@@ -91,8 +91,9 @@ Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders il
   %5,3. Kalan hatalar cümle başında: aynı tohumda (3006) iki modelin dökümünde de fazladan hece ("Nes öğretmenimiz",
   "Daç da ödetmenimiz") — "devam" kipinde başlangıç kararsızlığı olabilir, dinlenmedi. → ses-tasarimi, gelistirme.md.
 - **Bellek tepesinin yarısı MLX önbelleği:** 10 cümlede işçi 13–14 GB (MLX etkin tepesi 5,0–6,5 GB); aynı koşul
-  `mx.set_cache_limit(0)` ile 6,1 GB, çıktı bit düzeyinde aynı, üretim %20 yavaş. A/B boyunca takas 2,5 → 4,7 GB, boş
-  disk en az 43,3 GB. CLAUDE.md'deki "VoxCPM2 ~7 GB" kısa işler içindi. → CLAUDE.md, gelistirme.md (O).
+  `mx.set_cache_limit(0)` ile 6,1 GB, çıktı bit düzeyinde aynı, üretim %20 yavaş (kanıt
+  `sistem/devam/ham/ses-ab/onbellek0/`). A/B boyunca takas 2,5 → 4,65 GB (kayıtlı en yüksek 4654,56 MiB), boş disk en az 43,3 GB. CLAUDE.md'deki
+  "VoxCPM2 ~7 GB" kısa işler içindi. → CLAUDE.md, gelistirme.md (O).
 - **Paylaşılan blob deposu (huggingface_hub 1.x):** model klasörünü silmek yer açmaz; ağırlık
   `modeller/hf/hub/blobs/<2 hane>/<xet>` altında, model klasöründe yalnız bağ var. `scan_cache_dir().delete_revisions(
   <commit>)` önce kuru (`expected_freed_size`, blobun `.refs` manifesti), sonra `.execute()`: başvurusu kalmayan blobu
@@ -350,7 +351,12 @@ Her projeden sonra kısa, ölçülmüş dersler. Tekrar eden ya da genel ders il
   göreli okuyor. Gerçek planda (deniz-kenari) asıl medyadan kesilen 3 notlu klibin biri 8 kare geç, ikisi hiçbir
   klibin aralığına düşmüyordu (biri medyanın dışında; formülle hesaplandı). `-kdenlive.otio` işareti göreli yazar (TC
   düşülerek); yeni sınama eski kodda 60 + 60 ≠ 60 ile düştü.
-  Düzeltme Kdenlive'da yeniden içe aktarılarak doğrulanmadı. → testler/nle_olc.py --kdenlive-xml, medya nle.
+  Düzeltme 2026-10-08 22:13'te gerçek içe aktarmayla doğrulandı (ana ajan): kaydedilen .kdenlive'da işaret kaynak 21 →
+  zaman çizelgesi 114, beklenen 114 (düzeltmeden önceki içe aktarmada 42 → 135); melt çizimi `--erime-kesim
+  --son-tolerans 2` ile geçti ve öncekiyle bayt düzeyinde aynı (işaret görüntüyü değiştirmez). `cikti/nle/
+  kurgu-kdenlive.otio`'da işaret klibe göreli 0 (klip kaynak başı 21). Kanıt: `projeler/2026-10-08-nle-sinama/analiz/
+  olcum-kdenlive-isaret-xml.json`, `olcum-kdenlive-isaret.json`. Kılavuzlar hâlâ denetlenmiyor. → testler/nle_olc.py
+  --kdenlive-xml, medya nle.
 - **Erime uzunluğu karışık kare sayısı değildir.** Resolve'un 12 karelik erimesinde kodu okunamayan kare 6'ydı; iki
   klibin farklı kimlik bitinden ağırlık rampası ölçülünce 11,85 kare, ortası 113,5 (kesim 114; kare merkezinde
   örnekliyor). Rampa doğrusal (artık ≤ 0,002) ama ideal 12 kareden %1,3 dik; nedeni ayrılmadı. MLT ilk karede ağırlığı

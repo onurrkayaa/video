@@ -19,7 +19,7 @@ her biçim aynı ustadan (`disa_aktar.py`). Her kabukta:
 - **Gizlilik:** kişisel fotoğrafta kare açmadan sor; istemezse yalnız sayısal mod (`olc.py`, `medya analiz`; kullanıcı bakar).
 - İş mi kişisel mi (lisans); yazı hangi görselde ve metni ne (uydurma); hedef boyutlar.
 - Herkese açık mı → görüntüdeki kişilerin rızasını hatırlat. Konum silmede: tarih/kamera da gider, asıllar GPS'i tutar (§13).
-- Üretim: `medya gorsel-uret "<istem>" --cikti x.png [--referans ürün.png]` (FLUX.2 klein varsayılan; görselde İngilizce yazı ya da dar bellek → `--model z-image`, ~3,5 kat yavaş; ikisi de Apache-2.0; aynı model + tohum = aynı görsel). Afiş metnini kullanıcı verir.
+- Üretim: `medya gorsel-uret "<istem>" --cikti x.png [--referans ürün.png]` (FLUX.2 klein varsayılan; görselde İngilizce yazı (A/B'de tek afiş istemi × 2 tohumda 2/2'ye 0/2 doğru) ya da dar bellek → `--model z-image`, ~3,5 kat yavaş; ikisi de Apache-2.0; aynı model + tohum = aynı görsel). Afiş metnini kullanıcı verir.
 
 ## Hızlı başvuru
 | İş | Yol | Kanıt |

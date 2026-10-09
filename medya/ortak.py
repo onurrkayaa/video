@@ -76,8 +76,10 @@ def ane_tikanikligi(ps_ciktisi: str | None = None) -> str | None:
 
 
 def disk_bekcisi(gerekli_gb: float, is_adi: str) -> None:
-    """Ağır ML işinden önce boş disk denetimi. 16 GB'lık Mac'te 7–9 GB bellek tepesi macOS takasını GB'larca büyütür;
-    takas dosyaları diskten yer alır (2026-10-07: 6 GB takas, boş disk 6,9 → 1,4 GB). Disk dolarsa sistem kararsızlaşır."""
+    """Ağır ML işinden önce boş disk denetimi. 16 GB'lık Mac'te üretici modellerin bellek tepesi (ölçülen: FLUX.2
+    9,0–10,8 GB, Z-Image 6,3 GB, VoxCPM2 8-bit kimlik üretimi ~8,6 GB, 10 cümlede 13–14 GB, yarısından fazlası MLX
+    önbelleği) macOS takasını GB'larca büyütür; takas dosyaları diskten yer alır (2026-10-07: 6 GB takas, boş disk
+    6,9 → 1,4 GB). Disk dolarsa sistem kararsızlaşır."""
     bos = shutil.disk_usage(KOK).free / 1e9
     cozum = ("Çözüm: Mac'i yeniden başlat (takas dosyaları silinir), `medya temizle --uygula`, büyük gereksiz dosyaları "
              "sil; açık ağır uygulamaları kapat.")

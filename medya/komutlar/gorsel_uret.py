@@ -11,7 +11,8 @@ Yerel görsel üretimi ve referanslı düzenleme. İki model; ikisinin de ağır
   İngilizce afiş yazısını harfi harfine doğru yazdı (2/2; FLUX.2 0/2); fotogerçekçilik farkı ölçülmedi (görseller:
   sistem/devam/ham/gorsel-ab/, kullanıcı bakar). Görselde İngilizce yazı gerekiyorsa ya da bellek darsa seç.
 --model verilmezse kayıttaki sıra (yetenekler.toml → gorsel-uret: birincil, sonra yedek); birincil kurulu değilse ya
-da üretimi başarısız olursa sıradakine uyarıyla düşer. Çalışırken başka ağır iş (çizim, ML) açma: 16 GB RAM'de pay az.
+da üretimi başarısız olursa sıradakine uyarıyla düşer (açık --adim birincilindir; yedek kendi varsayılan adımıyla
+koşar). Çalışırken başka ağır iş (çizim, ML) açma: 16 GB RAM'de pay az.
 
 --referans: verilen görsel(ler)den düzenleme/çoklu referans (ürünü yeni sahneye koy, arka planı değiştir, ışık).
 Her zaman FLUX.2: Z-Image'ın düzenleme modeli yok (Z-Image-Edit yayımlanmadı; HF Tongyi-MAI, 2026-10-08).
@@ -85,6 +86,14 @@ def _uret(ad: str, istem: str, c: Path, g: int, y: int, adim: int | None, tohum:
     return sonuc
 
 
+def _yedek_notu(ad: str, birincil: str, adim: int | None) -> str:
+    """Açık --adim birincilindir (--model'siz çağrıda kayıttaki ilk model); yedek damıtıldığı kendi adım sayısıyla
+    koşar (Z-Image 9; FLUX.2'nin 4'üyle değil). Uyarıya eklenecek not; adım verilmediyse ya da ad birincilse boş."""
+    if adim is None or ad == birincil:
+        return ""
+    return f"; --adim {adim} {birincil} içindi, {ad} kendi varsayılanı {MODELLER[ad]['adim']} adımla koşuyor"
+
+
 def gorsel_uret(istem: str, cikti: str, *, model: str | None = None, boyut: str = "1024x1024",
                 adim: int | None = None, tohum: int = 7, adet: int = 1,
                 referans: list[str] | None = None) -> list[dict]:
@@ -94,7 +103,8 @@ def gorsel_uret(istem: str, cikti: str, *, model: str | None = None, boyut: str 
     if not kurulu:
         raise MedyaHatasi(f"{sira[0]} ya da mflux kurulu değil: medya kur {sira[0]}")
     if kurulu[0] != sira[0]:
-        uyar(f"{sira[0]} kurulu değil; {kurulu[0]} kullanılıyor (kurmak için: medya kur {sira[0]})")
+        uyar(f"{sira[0]} kurulu değil; {kurulu[0]} kullanılıyor (kurmak için: medya kur {sira[0]})"
+             f"{_yedek_notu(kurulu[0], sira[0], adim)}")
     disk_bekcisi(3.0, "görsel üretimi (6–11 GB bellek)")
     try:
         g, y = (int(v) for v in boyut.lower().split("x"))
@@ -107,12 +117,14 @@ def gorsel_uret(istem: str, cikti: str, *, model: str | None = None, boyut: str 
             raise MedyaHatasi(f"referans yok: {r}")
     c = Path(cikti)
     c.parent.mkdir(parents=True, exist_ok=True)
+    adimi = {ad: adim if ad == sira[0] else None for ad in kurulu}     # yedek: kendi varsayılan adımı (_yedek_notu)
     for ad, sonraki in zip(kurulu, kurulu[1:]):
         try:
-            return _uret(ad, istem, c, g, y, adim, tohum, adet, referans)
+            return _uret(ad, istem, c, g, y, adimi[ad], tohum, adet, referans)
         except MedyaHatasi as e:
-            uyar(f"{ad} başarısız ({str(e).strip()[-300:]}); {sonraki} ile yeniden deneniyor")
-    return _uret(kurulu[-1], istem, c, g, y, adim, tohum, adet, referans)
+            uyar(f"{ad} başarısız ({str(e).strip()[-300:]}); {sonraki} ile yeniden deneniyor"
+                 f"{_yedek_notu(sonraki, sira[0], adim)}")
+    return _uret(kurulu[-1], istem, c, g, y, adimi[kurulu[-1]], tohum, adet, referans)
 
 
 def calistir_(args) -> int:
@@ -130,10 +142,11 @@ def kaydet(alt, ad):
     p.add_argument("istem", help="görsel tarifi (İngilizce en iyi)")
     p.add_argument("--cikti", required=True, help="PNG yolu (yanına .json üretim kaydı)")
     p.add_argument("--model", choices=sorted(KISA), help="varsayılan: kayıttaki birincil (flux2, 1024² 83–107 sn); "
-                   "z-image: görselde İngilizce yazıda daha iyi, bellek 6,3 GB, 1024² 275–383 sn; "
-                   "--referans her zaman flux2")
+                   "z-image: İngilizce yazıda tek afiş istemi × 2 tohumda 2/2'ye 0/2 doğru, bellek 6,3 GB, "
+                   "1024² 275–383 sn; --referans her zaman flux2")
     p.add_argument("--boyut", default="1024x1024", help="GxY, 16'nın katları (ör. 1080x1920 değil 1088x1920)")
-    p.add_argument("--adim", type=int, help="çıkarım adımı (varsayılan: z-image 9, flux2 4 — damıtıldıkları sayı)")
+    p.add_argument("--adim", type=int, help="çıkarım adımı (varsayılan: z-image 9, flux2 4 — damıtıldıkları sayı; "
+                   "--model'siz verilirse birincilin, yedeğe düşülünce yedek kendi adımıyla koşar)")
     p.add_argument("--tohum", type=int, default=7, help="aynı model + tohum + istem = aynı görsel")
     p.add_argument("--adet", type=int, default=1, help="farklı tohumlarla kaç seçenek")
     p.add_argument("--referans", nargs="+", help="düzenleme/çoklu referans: kaynak görsel(ler) (yalnız flux2)")

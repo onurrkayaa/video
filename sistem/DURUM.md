@@ -39,7 +39,7 @@ Remotion örnekleri. (3) "Öneriler". Disk engel değil: 41,2 GB boş. Takas 278
   `--model flux2|z-image` bayrağı geldi; `--referans` her zaman FLUX.2'ye gider (`--model z-image --referans` hata verir).
   FLUX.2 KALDI, çünkü referanslı düzenlemeyi yalnız o yapıyor: Z-Image-Edit 2026-10-09'da HF'de yayımlanmamıştı. İki
   model diskte 10,5 GB tutuyor. `medya test --agir gorsel` 6/6 geçti, ağ kapalıyken de; iki modelde aynı tohum piksel
-  piksel aynı görseli verdi. 3 yeni hafif sınama var; 8 mutasyonun hepsi en az birini kırdı. Isıl kısılma: 44 dk
+  piksel aynı görseli verdi. 3 yeni hafif sınama var; 8 mutasyonun hepsi en az birini kırdı. Sürekli yükte süre uzaması (nedeni ölçülmedi): 44 dk
   yükte süre FLUX.2'de %28,6, Z-Image'da %39,5 uzadı. Görseller git dışında: `sistem/devam/ham/gorsel-ab/`.
 - E3 Remotion 3B/Lottie: tamam, doğrulama GEÇTİ. Kurulanlar: @remotion/three ve @remotion/lottie 4.0.533, three
   0.178.0, R3F 9.2.0, lottie-web 5.13.0. Bunlar Remotion 4.0.533'ün kendi sınadığı sürümler. Toplam 20 paket, +62 MiB;
@@ -111,43 +111,21 @@ dalga 3 ile birlikte 2026-10-08 21:27'de GitHub'a gönderildi.
 Dalga 3'te kapananlar (eski listeden): `--describe 0|no`, önek değerinden sonra yönlendirme (`timeout 600 >x`), ön
 süzgeçte satır devamı, O4'ün iki sabit sürüm yolu (`npm i -D hyperframes@latest`, `npx hyperframes@latest …`), `npx -p`
 kaçağı, 4K RIFE ölçüm borcu. Dalga 4'te kapananlar: voxcpm2 kontrolü artık `ls -L` (E1); gorsel-uretim ve
-arac-radari belgelerindeki eski FLUX.2 "Üretici" ifadeleri düzeltildi (E2). Satır numaraları bu commit'teki dosyalara
-göredir.
+arac-radari belgelerindeki eski FLUX.2 "Üretici" ifadeleri düzeltildi (E2). 2026-10-08 22:13'te kapanan: O5'in
+Kdenlive işareti (ana ajan, gerçek içe aktarma: kaynak 21 → zaman çizelgesi 114, beklenen 114; melt çizimi de geçti;
+`cikti/nle/kurgu-kdenlive.otio`'da işaret klibe göreli 0, yani yeniden üretim gerekmedi; kanıt
+`projeler/2026-10-08-nle-sinama/analiz/olcum-kdenlive-isaret*.json`, ders dersler.md). Satır numaraları bu commit'teki
+dosyalara göredir.
+2026-10-09 düzeltme turunda kapananlar (iş akışı wf_b6abd9e9-e74 + ana ajan; bağımsız doğrulandı): eski "7–9 GB" bellek ifadeleri (ölçülen: FLUX.2 9,0–10,8 GB, Z-Image 6,3 GB, VoxCPM2 8-bit 8,6–14 GB); CLAUDE.md Disk satırı ve Ortam gerçekleri tarihi; gelistirme.md eski satır başvurusu; "3,6 kat" tabanı (ayarsıza göre ×1,6–3,6, swangle'a göre ×3,9); Z-Image iddiaları nitelendi (tek afiş istemi × 2 tohum; soğukta ~29,5, ısınınca ~41,6 sn/adım; süre uzamasının nedeni ölçülmedi); `gorsel-uret` yedeği kendi adımıyla koşuyor (+ sınama); remotion kontrolü şablonun 7 paketini denetliyor (+ sınama); kanca `remotion add`'i 29 biçimde engelliyor (+ sınama); E1 kanıtları arşivlendi (`sistem/devam/ham/ses-ab/onbellek0/`, `agsiz/vo.json` ağsız 2 cümlelik deneme dökümü, `indirme.log` 57,09 sn); takas tepesi 4,65 GB (kayıtlı en yüksek); motor-ve-nle'deki eski "Kdenlive'da doğrulanmadı" cümlesi.
 - Dalga 4 (doğrulayıcıların bulguları; uygulanmadı):
   - E2 · KARAR SAPMASI: Önerinin ölçütü "metinden görselde Z-Image daha iyiyse varsayılan Z-Image" idi. Uygulayıcı
     karar kuralına öneride olmayan bir "1024² ≤ 4 dk" hız eşiği ekledi; varsayılan bu yüzden FLUX.2 kaldı. Karar
     kullanıcıda (aşağıda).
-  - E3 · DÜŞÜK-ORTA: remotion `kontrol`'ü (`remotion versions`) 3B/Lottie paketlerine bakmıyor. @remotion/three'siz
-    bir kopyada çıkış 0 verdi ve "All packages have the correct version" dedi. Aynı durumda 2B `Ornek` de çizilmedi
-    ("Module not found"), çünkü `Kok.tsx` örnekleri koşulsuz içe aktarıyor. Yani paket eksilirse `medya yetenekler`
-    "kurulu" der, ama şablondan açılan her Remotion projesi kırılır. Bugün bunu `test_remotion_sablonu_cizer_ve_lisanssiz`
-    yakalar; iki yeni sınama ise "kurulu değil" diye atlanır.
-  - E3 · Kanca `remotion add`'i engellemiyor: `npx remotion add @remotion/three` ve `node_modules/.bin/remotion add …`
-    çıkış 0 ile geçiyor (RM_YASAK yalnız lambda, cloudrun, upgrade ve skills'i engelliyor). Satıcı metni
-    (remotion-markup/3d.md, lottie.md) `npx remotion add` öneriyor; Lottie örneğinde lottiefiles.com adresi var. Yasak
-    yalnız stüdyo başlığında yazılı.
   - E3 · Sınama gücü: `test_remotion_3b_ornegi_gpu_da_cizer` ışığı tam ölçmüyor. meshStandardMaterial'ı ışıksız
     meshBasicMaterial yapan mutasyon sınamayı geçiyor.
-  - E2 · Kod (küçük): `--model` verilmeden açık `--adim` verilirse ve FLUX.2 başarısız olup Z-Image'a düşülürse, Z-Image
-    aynı adım sayısıyla (ör. 4) koşar, damıtıldığı 9 adımla değil. Uyarı bunu söylemiyor.
-  - E1 · Kanıt eksik: `mx.set_cache_limit(0)` deneyinin sınırlı koşu sonuçları (6,11 GB, 152,8 sn, "takas büyümedi")
-    diskte yok, ama gelistirme.md (O) ve dersler.md bunları ölçüm diye yazıyor. "A/B'de takas 4,70 GB" için kayıtlı en
-    yüksek değer 4,65. Ağsız 2 cümlelik `medya seslendir` denemesinin dökümü de kayıtlı değil; ses-tasarimi SKILL.md'deki
-    "kapalıyken → kapalı iken" ve harf adı notu bu denemeye dayanıyor. 57 sn'lik indirme süresi doğrulanamadı.
   - E1 · Gözlem (önceden var): doğrulama işçisi Whisper'ı depo adıyla ve sürümsüz yüklüyor (seslendir.py:41). Ağ
     açıkken her doğrulamada HF API'ye bir sürüm sorgusu gidiyor; belirteç ve kişisel bilgi yok. Depo güncellenirse yeni
     sürüm sessizce iner. Ağ kapalıyken önbellekten çalışıyor.
-  - Belge (eski bellek ifadeleri): "7–9 GB" şu üç yerde kaldı: `sistem/claude/agents/medya-yonetici.md:37` (baş ajan
-    disk ve takas planını buna göre yapıyor), `medya/ortak.py:79` ve `medya/komutlar/sistem.py:74` (aynı dosyanın 93.
-    satırı güncel). Ölçülen değerler: FLUX.2 9,0–10,8 GB, Z-Image 6,3 GB, VoxCPM2 kimlik 8,6 GB, 10 cümlede 13–14 GB.
-  - Belge (eski satır ve tarih): `gelistirme.md:35` `gorsel_uret.py:32` diyor, çağrı artık :98'de. CLAUDE.md:151
-    "Disk" satırı eski ("~3–7 GB boş"; bugün 41,2 GB). CLAUDE.md:158 "Ortam gerçekleri (2026-10-08)" başlığı E3'ten
-    sonra güncellenmedi.
-  - Belge (taban ve niteleme): `hareket-tasarimi/references/araclar.md:39` ve `sablonlar/remotion/remotion.config.ts:20`
-    "3,6 kat hızlı" diyor; bu 2026-10-05'te ağır bir WebGL sahnesinde, ayarsıza göre ölçülmüştü. E3 bu örnekte ayarsıza
-    göre ×1,6, swangle'a göre ×3,9 ölçtü; tabanı yazılmalı. Z-Image'ın "adım başına ~29,5 sn"si yalnız soğuk ilk koşu
-    için doğru (ısınınca 41,6 s/it). "Görselde İngilizce yazıda daha iyi" tek afiş istemi × 2 tohuma dayanıyor; README
-    ve araclar.md bunu niteliyor, CLAUDE.md, yetenekler.toml `aciklama` satırı ve `--help` nitelemiyor.
   - Ölçülmedi: VoxCPM2 8-bit'in doğallığı (kulakla), "klon" kipi, ≥ 30 cümlelik tek metinde kimlik kayması, ara MLX
     önbellek sınırı. Z-Image ile FLUX.2 arasındaki fotogerçekçilik farkı, `--low-ram`'sız süre ve bellek, Türkçe harfli
     yazı (kural gereği denenmedi), 44 dk'dan uzun seride ısıl kısılma. Remotion 3B'de Chrome'un bellek tepesi, doku ya
@@ -201,8 +179,6 @@ göredir.
     #5033'ün eski proje kompozisyonlarına etkisi; bağlandıktan sonra Claude Code'un sabit kopyaları yüklediği.
 - O5:
   - `nle_olc.py --kdenlive-xml` kılavuzları denetlemiyor; sınama planında `--muzik` için ölçü başı JSON'u yok.
-  - `projeler/2026-10-08-nle-sinama/cikti/nle/kurgu-kdenlive.otio` eski kodla üretilmiş (işaret 21). Sonraki içe
-    aktarmadan önce `medya nle … --bicim kdenlive` ile yeniden üretilmeli; gelistirme.md'deki O maddesi bunu yazmıyor.
   - Erime ortasındaki 6 kare (111–116) okunamıyor; yalnız uçlardaki 3+3 kare ±1 toleransla denetleniyor. Bu eksik
     ölçülmeyenler listesinde yok. `test_nle_olc_erime_rampasi` belge dizisi MLT varsayımını ölçülmüş gibi taşıyor.
   - Duman sınaması kopyasında müzik yolu da değişmişti (silinmiş `calisma/ses/miks.wav` → `kaynak/sakin-ritim.wav`).
@@ -210,8 +186,7 @@ göredir.
 - O2 belge: "takas iş bitince bırakmaz" kesin kural gibi yazılmış (dersler.md, guncelleme-ve-disk §6). Ölçülen:
   takas ≥ 19 dk yerinde kaldı; yeniden başlatmadan geri alınıp alınmadığı ölçülmedi. "Yeniden başlatma `$TMPDIR`
   artıklarını götürdü": olası mekanizma dirhelper, o da yalnız 3 günden eski dosyaları siler. §6'da birimler karışık
-  (`df -h` / `df -k`); `arac/uv cache clean` için de "önce source ortam.sh" uyarısı gerek. CLAUDE.md "Disk" satırı eskidi
-  ("~3–7 GB boş"; 8 GB ağır ML kuralı yok). CLAUDE.md, README ve `medya/ortak.py` disk iletisi hâlâ `medya temizle
+  (`df -h` / `df -k`); `arac/uv cache clean` için de "önce source ortam.sh" uyarısı gerek. CLAUDE.md, README ve `medya/ortak.py` disk iletisi hâlâ `medya temizle
   --uygula`yı çare gösteriyor; ölçülen kazanç ~0,25 GB ve geçici.
 - O7 belge (araclar.md, teknikler.md §10 ve bilinen-kararlar.md'deki eski "Üretici" ifadeleri E2'de, voxcpm2'nin `ls`
   kontrolü E1'de düzeldi): dersler.md'de `UV_MANAGED_PYTHON=1` neden-sonucu yanlış. `uv python find 3.13` değişkensiz
@@ -251,8 +226,7 @@ Hiçbiri kurulum istemiyor.
    - Kullanım: görselde İngilizce yazı ya da dar bellek → `--model z-image`; uzun seride süreyi ilk görselden tahmin etme.
 5. `medya ciz` ve NLE: erime eğrisi ve ses geçişi sınaması; bilinmeyen alan ya da ses değeri için uyarı; negatif `bas`;
    `kisma.py --bas` işaret düzeltmesi ve sınaması. O5'in Kdenlive turu da bekliyor: `nle_olc.py`'ye kılavuz denetimi,
-   `--muzik` ölçü başı, eski `kurgu-kdenlive.otio`'nun yeniden üretimi. Sonra kullanıcı içe aktarıp kaydeder (~3 dk);
-   işaret 21. karede çıkmalı.
+   `--muzik` ölçü başı. Sonra kullanıcı içe aktarıp kaydeder (~3 dk). (Klip işareti 2026-10-08 22:13'te doğrulandı.)
 
 ## Son durum (sınandı)
 - Kuruldu ve ölçüldü:

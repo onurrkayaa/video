@@ -36,7 +36,9 @@ Kanıtlar: `sistem/arastirma/2026-10-05/animation-motion.md` (Şüpheci doğrula
   - Varsayılan renk uzayı BT.601'i etiketsiz yazar ve HD oynatıcıda renk kayar. Bu yüzden bt709 açıkça verilir.
   - png+bt709 VMAF 98,80, jpeg 96,97 (en kötü kare 92,98 → 95,06); süre ×1,24.
   - Çekim kareleri birebir çıktı (108/108); `<Audio>` örnek doğruluğunda; iki çizim aynı (150/150).
-  - `--gl=angle` WebGL'de 3,6 kat hızlı.
+  - `--gl=angle` WebGL'de ayarsıza göre ×1,6 (R3F örneği, 2026-10-09) ile ×2,6 (ağır shader sahnesi, bağımsız
+    doğrulama, 2026-10-05) arası hızlı; araştırmacının ağır WebGL sahnesinde ölçtüğü ×3,6 doğrulanmadı. swangle'a
+    göre ×3,9 (R3F örneği). Oran sahneye bağlı.
   - `angle` WebGL'i Apple GPU'sunda çalıştırır (ANGLE Metal, 2026-10-09). Ayarsız 4.0.533 CPU'ya (SwiftShader) düşer.
     `swiftshader`, `egl`, `vulkan` ve `angle-egl`'de WebGL hiç yok. R3F sahnesi, 90 kare 1080x1920: angle 3,9 sn,
     ayarsız 6,3 sn, swangle 15,2 sn. angle'ın iki koşusu 90/90 kare bit düzeyinde aynı.

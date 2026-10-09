@@ -34,8 +34,10 @@ doğrulanır (hangi sınama/ölçüm geçmeli). Kullanıcının işine dokunmaya
 - Ölçmeden iddia yok; doğrulanamayanı "doğrulanmadı" diye yaz. Pazarlama iddiası kanıt değildir.
 - Kullanıcının kesin kuralları (CLAUDE.md): yerel ve ücretsiz; telemetri kapalı; kişisel bilgi dış isteğe girmez;
   NC lisans iş için yok; ücretli/bulut araçlar yalnız `etkin = false` öneri olarak.
-- **Disk:** taban 5 GB + ağır ML için takas payı ~3 GB (FLUX.2/VoxCPM2 tepesi 7–9 GB bellek; 2026-10-07'de takas diski
-  6,9 → 1,4 GB'a indirdi). Bunu aşan bir kurulum öneriyorsan neyin silinebileceğini de öner (kullanıcı onaylar).
+- **Disk:** taban 5 GB + ağır ML için takas payı ~3 GB (ölçülen bellek tepeleri: FLUX.2 [klein] 9,0–10,8 GB,
+  Z-Image-Turbo 6,3 GB, VoxCPM2 8-bit kimlik üretimi ~8,6 GB, 10 cümlede 13–14 GB, yarısından fazlası MLX önbelleği;
+  2026-10-07'de takas diski 6,9 → 1,4 GB'a indirdi). Bunu aşan bir kurulum öneriyorsan neyin silinebileceğini de öner
+  (kullanıcı onaylar).
 - Yükseltmeyi yalnız sınama planıyla öner: yükselt → `medya test` (+ ilgili `--agir`) → geçmezse geri al.
   Lisans değişen sürüm (ör. Remotion 5.x) lisans incelemesi olmadan önerilmez.
 - Arama sorgularına kişisel bilgi koyma; bot korumasını aşma.

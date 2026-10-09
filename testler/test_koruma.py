@@ -177,6 +177,38 @@ ENGELLENMELI = [
     # -p/--package değeri komut sanılmaz: Remotion kuralı da aynı yoldan kaçıyordu
     "npx -p @remotion/cli remotion lambda render x",
     "npx --package @remotion/cli remotion upgrade",
+    # remotion add: sabit kurulum yolunu (yetenekler.toml) atlar, eş bağımlılıkları (three, R3F, lottie-web) sabitlemez
+    # (4.0.533 add.js); özgün kancada hepsi çıkış 0'dı (2026-10-09, JSON stdin)
+    "npx remotion add @remotion/three",
+    "npx remotion@4.0.533 add @remotion/lottie",
+    "npx --yes remotion add @remotion/three",
+    "npx -p @remotion/cli remotion add @remotion/three",
+    "node_modules/.bin/remotion add @remotion/three",
+    "cd sablonlar/remotion && $MEDYA/node_modules/.bin/remotion add @remotion/gif",
+    "/Users/x/Projects/video/node_modules/.bin/remotion add @remotion/three --log=verbose",
+    "npm exec remotion add @remotion/three",
+    "npm exec -- remotion add @remotion/three",
+    "npm x remotion add @remotion/three",
+    "pnpm dlx remotion add @remotion/three",
+    "pnpm exec remotion add @remotion/lottie",
+    "yarn dlx remotion add @remotion/three",
+    "yarn exec remotion add @remotion/three",
+    "bunx remotion add @remotion/three",
+    "bash -lc 'npx remotion add @remotion/three'",
+    "echo @remotion/three | xargs npx remotion add",
+    # bayrak araya girse de alt komut add: bunu kilitleyen sınama yoktu (sozcukler[:1] → arg[:1] mutasyonu geçiyordu)
+    "npx remotion --log=verbose add @remotion/three",
+    # yarn|pnpm|bun [run] <ikili>: paket yöneticisi node_modules/.bin'deki ikiliyi çalıştırır; satıcı becerisi
+    # 'yarn remotion add …' öğretiyor (remotion-captions, remotion-markup/3d.md). Özgün kancada hepsi çıkış 0
+    # (2026-10-09, JSON stdin); aynı açık lambda/upgrade ve hyperframes için de vardı
+    "yarn remotion add @remotion/captions",
+    "pnpm remotion add @remotion/three",
+    "yarn run remotion add @remotion/three",
+    "bun run remotion add @remotion/three",
+    "cd p && yarn remotion add @remotion/media",
+    "yarn remotion lambda render x",
+    "pnpm remotion upgrade",
+    "yarn hyperframes cloud render",
     "npm install --save-dev --no-fund --no-audit hyperframes ffmpeg-static 2>&1 | tail -5",
     # fd yalnız işlece bitişik rakamdır: boşluklu '600 >x'te 600 önekin değeridir (süre), komut ondan sonra gelir
     "timeout 600 >/dev/null hyperframes cloud render",
@@ -267,6 +299,20 @@ GECMELI = [
     "npx hyperframes@0.8.140 lint p",
     "npx -p hyperframes@0.8.140 hyperframes lint p",
     "npx -p @remotion/cli remotion render src/index.ts A out.mp4",
+    # remotion: sürüm denetimi, stüdyonun kurulum yolu, yardım ve 'add'i yalnız metin olarak anan komutlar
+    "npx remotion versions",
+    "medya kur remotion --yeniden",
+    "npx remotion help add",
+    "grep -rn 'npx remotion add' ~/.claude/skills/remotion-best-practices",
+    "echo 'npx remotion add @remotion/three'",
+    'git commit -m "remotion add engeli"',
+    "git add sablonlar/remotion yetenekler.toml",
+    # yarn|pnpm|bun [run] remotion: yasak dışı alt komutlar ve paket yöneticisinin kendi add'i geçer
+    "yarn remotion render src/index.ts A out.mp4",
+    "pnpm remotion versions",
+    "bun run remotion still src/index.ts A a.png --frame=10",
+    "yarn add -D -E @remotion/three@4.0.533",
+    "yarn hyperframes lint p",
     "npm view hyperframes version time.modified",
     "npm view hyperframes@latest version",
     "npm outdated hyperframes",
@@ -305,6 +351,7 @@ ILETI = [
     ("hyperframes snapshot p --describe 0", "birebir 'false'"),
     ("npx hyperframes@latest render .", "tam sürümle"),
     ("npm i -D hyperframes@latest", "güncelleme-ve-disk §3"),
+    ("npx remotion add @remotion/three", "medya kur remotion --yeniden"),
 ]
 # İleti döküm dosyasını ses/video girdisi diye anmamalı (yalnız döküm dışı girdiyi adıyla söyler).
 ILETI_DEGIL = [

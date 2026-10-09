@@ -71,7 +71,7 @@ def test_(args) -> int:
     if args.yetenek:
         komut += ["-k", args.yetenek]
     ortam = dict(os.environ)
-    if args.agir:                       # 7–9 GB bellek isteyen üretici modeller (FLUX.2, VoxCPM2): yalnız istenince
+    if args.agir:                       # bellek tepesi 6,3–14 GB üretici modeller (--agir yardımında): yalnız istenince
         ortam["MEDYA_AGIR_TEST"] = "1"
     return subprocess.run(komut, cwd=KOK, env=ortam).returncode
 
@@ -91,5 +91,5 @@ def kaydet(alt, ad):
         p.add_argument("yetenek", nargs="?")
         p.add_argument("--agir", action="store_true",
                        help="ağır üretici model sınamalarını da koş (FLUX.2 9–11 GB, Z-Image 6,3 GB, VoxCPM2 "
-                            "7–14 GB bellek; takas büyütür)")
+                            "8,6–14 GB bellek; takas büyütür)")
         p.set_defaults(islev=test_)

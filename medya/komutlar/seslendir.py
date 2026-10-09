@@ -129,7 +129,7 @@ def seslendir(metin: str, cikti: str, *, kimlik: str | None = None, tarif: str |
                           "onaylıyorsan --rizali ekle (gerçek bir kişiyi taklit etmek yasak)")
     if not MODEL.exists():
         raise MedyaHatasi("VoxCPM2 modeli yok: medya kur voxcpm2")
-    disk_bekcisi(2.5, "seslendirme (VoxCPM2 bellek tepesi 7–14 GB)")
+    disk_bekcisi(2.5, "seslendirme (VoxCPM2 bellek tepesi 8,6–14 GB)")
     cumleler = cumlelere_bol(metin)
     if not cumleler:
         raise MedyaHatasi("metin boş")

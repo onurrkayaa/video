@@ -46,7 +46,7 @@ medya gorsel-uret "<istem>" --cikti calisma/gorsel/sahne.png --referans calisma/
 - Aynı model + istem + tohum = piksel piksel aynı görsel (iki model; `medya test gorsel --agir`). Varsayılan adım
   sayıları damıtıldıkları sayı (`--adim` verilmezse flux2 4, z-image 9). Olumsuz istem yok (klein'da bayrak yok,
   yönlendirmesiz Z-Image `--negative-prompt`'u yok sayar) → istemi olumlu yaz.
-- Sürekli üretimde ısıl kısılma (fansız M2): 44 dk'lık A/B'de süre ilk koşudan sonuncuya %28,6 (flux2) ve %39,5 (z-image) uzadı.
+- Sürekli üretimde süre uzaması (fansız M2; nedeni — ısı, saat hızı — ölçülmedi): 44 dk'lık A/B'de süre ilk koşudan sonuncuya %28,6 (flux2) ve %39,5 (z-image) uzadı.
 - mflux'ı doğrudan çağırma: `--model` verilmezse upstream depo iner (FLUX.2 23,7 GB, Z-Image ~33 GB); `medya
   gorsel-uret` sabit sürümlü yerel kopyayı kullanır, yanına istem/tohum/sağlayıcı/lisans kaydı (`.json`) yazar.
 - Ortam paketleri kısıt dosyasına sabit (2026-10-08): taşımadan önce/sonra aynı tohum piksel piksel aynı çıktı.

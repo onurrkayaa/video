@@ -26,7 +26,7 @@ def veri():
 
 @pytest.fixture
 def agir():
-    """Üretici modeller (FLUX.2 9–11 GB, Z-Image 6,3 GB, VoxCPM2 7–14 GB bellek): 16 GB'lık Mac'te takası GB'larca
+    """Üretici modeller (FLUX.2 9–11 GB, Z-Image 6,3 GB, VoxCPM2 8,6–14 GB bellek): 16 GB'lık Mac'te takası GB'larca
     büyütür (2026-10-07'de 6 GB takas dosyası diski 1,4 GB'a düşürdü). Yalnız istenince: medya test --agir
     (MEDYA_AGIR_TEST=1)."""
     import os
@@ -862,6 +862,49 @@ def test_remotion_lottie_ornegi_yerel_ve_olcusu_dogru():
         shutil.rmtree(hedef, ignore_errors=True)
 
 
+def test_remotion_kontrolu_sablon_paketlerini_denetler(tmp_path, monkeypatch):
+    """`remotion versions` kurulu olmayan paketi listeden sessizce eliyor: @remotion/three'siz kopyada çıkış 0, "All
+    packages have the correct version" (dalga 4 doğrulaması). Oysa şablonun Kok.tsx'i örneklerini (geçişler, 3B, Lottie)
+    koşulsuz içe aktarıyor: paket eksilince her Remotion projesi "Module not found" ile kırılıyor, `medya yetenekler`
+    yine "kurulu" diyordu; fontlar.ts (yazı yolu) da @remotion/fonts'u koşulsuz alıyor. Sahte kök = stüdyo
+    node_modules'unun bağlantılı aynası (+ package.json: `remotion versions` en yakın package.json'un klasörünü
+    denetler): şablonun yedi paketinden biri eksikse kurulu değil; eksiksiz aynada kurulu (ayna sağlam); bir @remotion
+    paketi başka sürümdeyse yine kurulu değil (uyuşmazlık denetimi korunuyor)."""
+    import shutil
+    import medya.kayit as kayit
+    s = kayit.yukle()[1]["remotion"]
+    nm = KOK / "node_modules"
+    if not (nm / ".bin" / "remotion").exists():
+        pytest.skip("Remotion kurulu değil: medya kur remotion")
+
+    def aynada_kurulu(ad, eksik=None, surum=None):
+        kok = tmp_path / ad / "node_modules"
+        kok.mkdir(parents=True)
+        shutil.copy(KOK / "package.json", kok.parent)
+        for g in nm.iterdir():
+            if g.name.startswith("@") and g.is_dir():
+                (kok / g.name).mkdir()
+                for a in g.iterdir():
+                    if f"{g.name}/{a.name}" != eksik:
+                        (kok / g.name / a.name).symlink_to(a)
+            elif g.name != eksik:
+                (kok / g.name).symlink_to(g)
+        if surum:                                       # (paket, sürüm): bağlantı yerine sahte package.json
+            (kok / surum[0]).unlink()
+            (kok / surum[0]).mkdir()
+            (kok / surum[0] / "package.json").write_text(json.dumps({"name": surum[0], "version": surum[1]}))
+        monkeypatch.setattr(kayit, "KOK", kok.parent)
+        return s.kurulu_mu()
+
+    assert aynada_kurulu("tam"), s.kontrol
+    assert not aynada_kurulu("uyumsuz", surum=("@remotion/noise", "4.0.1")), f"sürüm uyuşmazlığında 'kurulu': {s.kontrol}"
+    for paket in ("@remotion/transitions", "@remotion/fonts", "@remotion/three", "@remotion/lottie", "three",
+                  "@react-three/fiber", "lottie-web"):
+        assert f" {paket}@" in s.kurulum, paket
+        assert (nm / paket / "package.json").exists() and not aynada_kurulu(paket.replace("/", "-"), paket), \
+            f"{paket} eksikken 'kurulu' dedi: {s.kontrol}"
+
+
 HF_FIKSTUR = KOK / "testler" / "hyperframes-baslik"
 HF_BASVURU = KOK / "testler" / "hyperframes-baslik-basvuru.json"
 
@@ -1289,6 +1332,41 @@ def test_gorsel_uret_birincil_basarisizsa_yedege_duser(tmp_path, monkeypatch, ca
     with pytest.raises(MedyaHatasi):
         G.gorsel_uret("x", str(tmp_path / "b.png"), model={v: k for k, v in G.KISA.items()}[y.saglayici])
     assert denenen == [y.saglayici]
+
+
+def test_gorsel_uret_yedek_kendi_adimiyla_kosar(tmp_path, monkeypatch, capsys):
+    """--model'siz açık --adim birincilindir: birincil başarısız olup yedeğe düşülünce (ya da birincil kurulu değilse)
+    yedek damıtıldığı kendi adım sayısıyla koşar (Z-Image 9; FLUX.2'nin 4'üyle değil, dalga 4 doğrulaması) ve uyarı
+    bunu söyler. --model verilince --adim o modelindir. Model çalıştırılmaz: mflux komutu yakalanır (ağsız)."""
+    import medya.komutlar.gorsel_uret as G
+    from medya.kayit import Saglayici, yukle
+    from medya.ortak import MedyaHatasi
+    y = yukle()[0]["gorsel-uret"]
+    birincil, yedek = y.saglayici, y.yedek[0]
+    tabandan = {m["taban"]: ad for ad, m in G.MODELLER.items()}
+    kosan = []
+
+    def sahte_calistir(komut, **k):
+        ad = tabandan[komut[komut.index("--base-model") + 1]]
+        kosan.append((ad, int(komut[komut.index("--steps") + 1])))
+        if ad == birincil:
+            raise MedyaHatasi(k["hata_mesaji"])
+
+    monkeypatch.setattr(G, "calistir", sahte_calistir)
+    monkeypatch.setattr(G, "disk_bekcisi", lambda *a: None)
+    monkeypatch.setattr(Saglayici, "kurulu_mu", lambda self: True)
+    kendi = G.MODELLER[yedek]["adim"]
+    assert kendi != 2
+    k = G.gorsel_uret("x", str(tmp_path / "a.png"), adim=2)[0]
+    assert kosan == [(birincil, 2), (yedek, kendi)] and k["adim"] == kendi and k["saglayici"] == yedek
+    assert f"--adim 2 {birincil} içindi" in capsys.readouterr().err
+    kosan.clear()
+    monkeypatch.setattr(Saglayici, "kurulu_mu", lambda self: self.ad != birincil)
+    G.gorsel_uret("x", str(tmp_path / "b.png"), adim=2)
+    assert kosan == [(yedek, kendi)] and f"{kendi} adım" in capsys.readouterr().err
+    kosan.clear()
+    G.gorsel_uret("x", str(tmp_path / "c.png"), model={v: k for k, v in G.KISA.items()}[yedek], adim=2)
+    assert kosan == [(yedek, 2)] and "içindi" not in capsys.readouterr().err
 
 
 @pytest.mark.parametrize("model", ["flux2", "z-image"])

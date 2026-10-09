@@ -12,8 +12,9 @@ Engeller (çıkış kodu 2; gerekçe stderr'den Claude'a döner) — yalnız kom
   Google'a gider; CLI yalnız "false"u kapatma sayar: 0, no, False, boş değer soru olur; tekrar edende son değer geçer)
 - hyperframes media-use resolve|doctor|adopt|from (grade/lut dışı)           (HeyGen hesabı/katalogu, ücretli avatar video)
 - heygen …                                                                   (HeyGen bulut CLI'si: hesap/OAuth/kredi)
-- remotion lambda | cloudrun | upgrade | skills, --public-license-key/--license-key (bulut çizim, sabit sürümü
-  bozan yükseltme, telemetrili kurulum; lisans anahtarı 'free-license' dahil remotion.pro'ya kullanım olayı yollar)
+- remotion lambda | cloudrun | upgrade | skills | add, --public-license-key/--license-key (bulut çizim, sabit sürümü
+  bozan yükseltme, telemetrili kurulum, sabit kurulum yolunu atlayan paket ekleme; lisans anahtarı 'free-license'
+  dahil remotion.pro'ya kullanım olayı yollar)
 - npx create-video / npx skills …  ve  @remotion/web-renderer|google-fonts|lambda|cloudrun|vercel|sfx|mcp kurulumu
 - sessiz büyük indirmeler: hyperframes remove-background (~394 MB model), whisperx (uvx/pip/uv, 'python3 -m pip',
   sürüm sabitli 'whisperx==3.8.6' dahil, büyük/küçük harf duyarsız: PyPI adları öyle, ~2 GB) — stüdyonun
@@ -37,9 +38,9 @@ Ayrıştırma kabuk kurallarına uyar: tek tırnak içi ve tırnaklı heredoc g�
 yönlendirmeler (2>&1, >/dev/null, > x.json, < x; işleç, hedefi ve işlece bitişik fd rakamı — 'timeout 600 >x'te 600
 argümandır) argüman sayılmaz, 'bash < betik' girdisi betik olarak denetlenir; $(…) ve `…` (tek tırnak dışında) ile
 kabuğa giden heredoc gövdeleri ayrıca denetlenir; npx/bunx/pnpm dlx/npm exec (-p/--package değeriyle), yol önekli
-ikili, `node …/hyperframes.mjs`, env/time/nohup/exec/sudo/xargs/timeout/caffeinate/nice önekleri (yol önekli
-/usr/bin/env dahil; değer alan bayraklarının değeriyle, timeout'un süresiyle), ortam atamaları, `sh|bash|zsh -c "…"`
-ve eval yakalanır.
+ikili, `node …/hyperframes.mjs`, `yarn|pnpm|bun [run] remotion|hyperframes …` (arada bayrak yoksa), env/time/nohup/
+exec/sudo/xargs/timeout/caffeinate/nice önekleri (yol önekli /usr/bin/env dahil; değer alan bayraklarının değeriyle,
+timeout'un süresiyle), ortam atamaları, `sh|bash|zsh -c "…"` ve eval yakalanır.
 """
 from __future__ import annotations
 
@@ -241,6 +242,15 @@ def python_modulu(arg: list[str]) -> tuple[str, list[str]]:
     return "", []
 
 
+def yerel_ikili(arg: list[str]) -> bool:
+    """'yarn|pnpm|bun [run] remotion|hyperframes …': paket yöneticisi node_modules/.bin'deki ikiliyi çalıştırır
+    (satıcı becerisi 'yarn remotion add …' öğretiyor). arg: yöneticiden sonraki argümanlar; arada bayrak varsa
+    ('pnpm -C p remotion …') tanınmaz."""
+    if arg[:1] == ["run"]:
+        arg = arg[1:]
+    return bool(arg) and bool(RM.match(arg[0]) or HF.match(arg[0]))
+
+
 def remotion_denetle(arg: list[str]) -> None:
     """arg: remotion'dan sonraki argümanlar."""
     if LISANS.search(" ".join(arg)):
@@ -250,6 +260,12 @@ def remotion_denetle(arg: list[str]) -> None:
     if sozcukler and sozcukler[0] in RM_YASAK:
         engelle(f"'remotion {sozcukler[0]}' kullanılmaz — bulut çizim, sabit sürümü (4.0.533) bozan yükseltme ya da "
                 "telemetrili beceri kurulumu. Beceri: sistem/claude/skills/remotion-best-practices (sabit commit).")
+    if sozcukler[:1] == ["add"]:                         # 4.0.533 add.js: yalnız adı verilen paket, npm i <paket>@<sürüm>
+        engelle("'remotion add' kullanılmaz: stüdyonun sabit kurulum yolunu (yetenekler.toml → remotion 'kurulum' "
+                "satırı) atlar; yalnız adı verilen @remotion paketini kurar, eş bağımlılıklarını (three, "
+                "@react-three/fiber, lottie-web) sabit sürümle kurmaz. Stüdyo yolu: 'medya kur remotion --yeniden' "
+                "(sabit sürümlü kurulum satırı, 3B/Lottie paketleri dahil); yeni bir Remotion paketi gerekiyorsa önce "
+                "o satıra tam sürümle eklenir, boyutu söylenip kullanıcıya sorulur.")
 
 
 # ------------------------------------------------------------------ kabuk ayrıştırma
@@ -405,6 +421,8 @@ def bolumleri_denetle(komut: str, derinlik: int) -> None:
                     i += 1
             elif j in ("pnpm", "yarn") and i + 1 < len(b) and b[i + 1] in ("dlx", "exec"):
                 degerli, i = (PAKET_BAYRAK if b[i + 1] == "dlx" else ()), i + 2
+            elif j in ("pnpm", "yarn", "bun") and yerel_ikili(b[i + 1:]):  # yarn remotion add …, bun run …
+                degerli, i = (), i + (2 if b[i + 1] == "run" else 1)
             elif j == "npm" and i + 1 < len(b) and b[i + 1] in ("exec", "x"):
                 degerli, i = PAKET_BAYRAK, i + 2
             elif j == "--":

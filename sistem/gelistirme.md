@@ -32,13 +32,13 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
   geliyor; ortam yüklenmeden çalışırsa stüdyo dışı `~/.cache/uv`'yi siler, yol bekçisi yalnız `.uv/cache`'i denetliyor
   (`env -u UV_CACHE_DIR arac/uv cache dir` → `~/.cache/uv`, 2026-10-08; o gün 16 KB). Sınama: alt süreç argümanı.
 - **O** Ağır ML disk koşulu (5 + 3 = 8 GB) kodda yok: `disk_bekcisi` görsel üretimini 3,0, seslendirmeyi 2,5 GB altında
-  durduruyor (`medya/ortak.py:78`, `gorsel_uret.py:32`, `seslendir.py:132`). Tek VoxCPM2 sınaması 2 × 1 GiB takas açtı
-  (2026-10-08, dersler.md).
+  durduruyor (`medya/ortak.py:78`, `gorsel_uret.py` `gorsel_uret()` içinde, `seslendir.py:132`). Tek VoxCPM2 sınaması
+  2 × 1 GiB takas açtı (2026-10-08, dersler.md).
 - **O** `medya seslendir` bellek tepesi: MLX önbelleği 10 cümlelik koşuda işçinin tepesini 13–14 GB'a çıkarıyor (MLX
-  etkin tepe 5,0–6,5 GB; 4-bit'te de aynıydı), takas koşularda 2,5 → 4,7 GB büyüdü. Aynı koşul
+  etkin tepe 5,0–6,5 GB; 4-bit'te de aynıydı), takas koşularda 2,5 → 4,65 GB büyüdü (kayıtlı en yüksek 4654,56 MiB). Aynı koşul
   `mx.set_cache_limit(0)` ile: 6,1 GB, takas büyümedi, çıktı bit düzeyinde aynı, üretim %20 yavaş (127 → 153 sn /
-  51,8 sn ses; 2026-10-08). Ara sınır (1–2 GB) ölçülmedi. Öneri: `ses_uret_isci.py`'ye sınır, `/usr/bin/time -l` ile
-  tepe ve hız ölçümü.
+  51,8 sn ses; 2026-10-08; kanıt `sistem/devam/ham/ses-ab/onbellek0/`, taban `ses-ab/olcumler.json`). Ara sınır
+  (1–2 GB) ölçülmedi. Öneri: `ses_uret_isci.py`'ye sınır, `/usr/bin/time -l` ile tepe ve hız ölçümü.
 - **D** Türkçe normalleştirici (`medya/turkce.py`): sıra sayısı "3." "üç" okunuyor ("üçüncü" geçen cümlede her koşuda
   %5,3 yalancı CER), "-yken" ile "iken" ayrı sayılıyor. Ayrıca `medya seslendir` kapısı, toplam CER > %3 olup hiçbir
   cümle %8'i aşmayınca yeniden üretmeden kalıyor (2026-10-08 ağsız denemede 2 cümle, %4,6, çıkış 1).
@@ -78,11 +78,10 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
 - **D** Kdenlive OTIO içe aktarım hataları (son klibin kaydırması kayboluyor; erime isteği başarısız olup sonraki klibi
   sıfırlıyor; proje fps'i `duration().rate`'ten; klip işaretine kırpılmış başlangıcı yeniden ekliyor) KDE'ye
   bildirilebilir — hesap gerekir, kullanıcının kararı. Düzelirse `-kdenlive.otio` uyarlaması sadeleşir.
-- **O** `medya nle` devrinde ölçülmeyenler — bir sonraki içe aktarmada (kullanıcı adımı ~3 dk): Kdenlive'da 2026-10-08
-  düzeltilmiş klip işareti (`testler/nle_olc.py <proje> --kdenlive-xml <proje.kdenlive>` işareti klibin giriş karesinde
-  bulmalı), ölçü başı kılavuzları (`--muzik`; Kdenlive yeniden ölçeklemeden okuyor, `-kdenlive.otio` zaman çizelgesi
-  hızında yazıyor), görüntü izinde boşluk; Resolve'da tek sayılı erime (11 kare → 5/6), klip işaretleri, kılavuzlar.
-  Bunlar `testler/nle_sinama.py` planına eklenirse var olan çizimler (`cikti/nle/`) yeniden alınmalı.
+- **O** `medya nle` devrinde ölçülmeyenler — bir sonraki içe aktarmada (kullanıcı adımı ~3 dk): Kdenlive'da ölçü başı
+  kılavuzları (`--muzik`; Kdenlive yeniden ölçeklemeden okuyor, `-kdenlive.otio` zaman çizelgesi hızında yazıyor),
+  görüntü izinde boşluk; Resolve'da tek sayılı erime (11 kare → 5/6), klip işaretleri, kılavuzlar. Bunlar
+  `testler/nle_sinama.py` planına eklenirse var olan çizimler (`cikti/nle/`) yeniden alınmalı.
 - **O** Plan sözleşmesine görüntüden ayrı ses kaynağı alanı (b-roll altında röportaj sesi, J/L).
 - **D** `medya denetle`: planın `hiz<1` aralıklarında yinelenen kare oranı (`yinelenen.py`).
 - **D** `medya kontak`: HDR kaynakta ton eşlemeli kareler (bugün soluk görünür).
@@ -128,6 +127,11 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
   `init … --skip-transcribe --no-skip-transcribe` (citty `--no-` olumsuzlaması dökümü geri açıyor; kodda okundu);
   heredoc işaretinden önce satır devamı (`bash \` + satır sonu + `<<'EOF'` gövdesi kabuğa gidiyor ama veri sayılıyor:
   heredoc ayıklayıcı satır devamı silinmeden önce çalışıyor).
+- **O** `remotion add` kuralında kalan kaçaklar (2026-10-09, JSON stdin; yeni kancada çıkış 0): ayrık değerli bayrak
+  (`npx remotion --log verbose add …`: `verbose` alt komut sanılıyor), `node node_modules/@remotion/cli/remotion-cli.js
+  add …` (RM düzenli ifadesi bin dosyasının adını tanımıyor), yönetici ile ikili arasında bayrak (`pnpm -C p remotion
+  add …`, `yarn --cwd p remotion add …`), `bun x remotion add …`, `corepack yarn|pnpm …` (önek tablosunda yok; corepack
+  kurulu, denenmedi). yarn, pnpm ve bun bu Mac'te kurulu değil.
 - **D** `find . \( -name skills \)` / `-name heygen` / `-name whisperx` yanlış engelleniyor (özgün kancada da): shlex
   kaçışlı `\(`'yi ve `'('`'yi alt kabuk `(`'iyle aynı jetona çeviriyor, ayırıcıdan sonraki çıplak ad komut başı sanılıyor.
   Satıcı betik adları için çıplak ad artık tutulmuyor; kökten çözüm "`(` yalnız komut başında ayırır" kuralı, ama `eval \(
@@ -174,8 +178,9 @@ Kurulum gerektirenlerde boyut ve lisans `yetenekler.toml`'a girer; 2 GB üstü v
   isteğe bağlı MOS tahmincisi (UTMOS) değerlendir.
 - `medya gorsel-uret --referans`: düzenlemede kenar kalıntısı görüldü (mermerde ahşap dokusu izi) — maske/kompozit yolu.
 - `medya gorsel-uret --model z-image`: fotogerçekçilik farkı FLUX.2'ye karşı ölçülmedi (A/B görselleri
-  `sistem/devam/ham/gorsel-ab/`, kullanıcı bakar); `--low-ram`'sız süre ve bellek ölçülmedi (GPU %100, adım başı
-  ~29,5 sn: hesap sınırlı görünüyor); Türkçe harfli yazı denenmedi (kural gereği çizdirilmiyor).
+  `sistem/devam/ham/gorsel-ab/`, kullanıcı bakar); `--low-ram`'sız süre ve bellek ölçülmedi (GPU %100; adım süresi 6
+  koşu boyunca 29,7'den 41,6 sn'ye düzenli arttı, nedeni — ısı, saat hızı — ölçülmedi: hesap sınırlı görünüyor);
+  Türkçe harfli yazı denenmedi (kural gereği çizdirilmiyor).
 - Remotion'da gerçek telefon HEVC/HDR çekimi (yalnız sayısal modda, mahrem olmayan bir klip).
 - Remotion 3B/Lottie (2026-10-09): yalnız basit sahne ölçüldü (ışıklı tek düğüm, şekil katmanlı Lottie).
   Ölçülmeyenler: doku ya da GLTF modelli ağır 3B sahne; Lottie'de görsel, yazı katmanı ve ifade (expression);

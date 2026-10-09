@@ -12,7 +12,8 @@ profesyonel kurgu programına aktarır: kullanıcı kurguyu orada elle sürdürs
                   sonraki klibin giriş noktasını sıfırlıyor → erime yazılmaz: örtüşmenin ortasında kesim + işaret
                   (Kdenlive'da klibi seç, U); (3) klip işaretine kırpılmış başlangıcı yeniden ekliyor (kaydedilen
                   projede giriş 21 → işaret 42) → işaret klibin başına göreli yazılır (düzeltilmiş dosya Kdenlive'da
-                  yeniden içe aktarılmadı). Ayrıca zaman çizelgesi hızı `duration().rate`'ten okunduğu için bütün
+                  yeniden içe aktarılıp ölçüldü, 2026-10-08: işaret kaynak 21 → zaman çizelgesi 114, beklenen 114;
+                  kılavuzlar ölçülmedi). Ayrıca zaman çizelgesi hızı `duration().rate`'ten okunduğu için bütün
                   aralıklar zaman çizelgesi hızında yazılır (yoksa proje en yüksek kaynak hızında, ör. 60 fps açılıyor).
   .edl            CMX 3600 — yalnız görüntü izi (kesim + erime); bütün programlar açar
   (FCPXML yok: otio-fcpx-xml-adapter 1.0.0 geri okumada erimeyi düşürüp araya boşluk koydu, süre 10 → 12 sn — sınandı)

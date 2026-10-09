@@ -144,5 +144,6 @@ hayalet var mı şeride bak. Apple zamansal gürültü süzgeci bu Mac'te destek
   olur. OTIO'da müzik tam seviyede (ducking/seviye taşınmaz), b-roll altı konuşma ve J/L taşması yok: ducking, ses
   temizliği, ustalık Resolve'da yeniden yapılır; HyperFrames çıktısı ayrı bir teslimdir. İçe aktarım kare kodlu sınamayla
   ölçüldü (2026-10-08): Resolve kare-kesin (24 fps kaynakta ±1 kare), Kdenlive -kdenlive.otio ile doğru. Klip notu
-  işaretinin yeri ölçülmedi (Resolve) / düzeltildi ama yeniden ölçülmedi (Kdenlive): kullanıcıya "not o klibin" de,
-  "o karede" deme. Medya yolları mutlak; dosyalar taşınırsa yeniden bağla.
+  işaretinin yeri Kdenlive'da ölçüldü (tek işaretli sınamada doğru karede: kaynak 21 → zaman çizelgesi 114), Resolve'da
+  ölçülmedi: Resolve'da kullanıcıya "not o klibin" de, "o karede" deme. Medya yolları mutlak; dosyalar taşınırsa
+  yeniden bağla.

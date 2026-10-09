@@ -17,7 +17,8 @@ Claude Code'u açıp (bu klasörde ya da herhangi bir yerde) isteğini yazman ye
 - "Bu metni sakin bir erkek sesiyle Türkçe seslendir." — yerel dış ses (VoxCPM2); aynı projede hep aynı ses.
   Kendi sesinle istersen 10 sn'lik temiz bir kayıt ver.
 - "Ürün fotoğrafımı mermer bir masaya koy" / "şu konseptte üç görsel üret" — yerel görsel üretimi (FLUX.2 klein;
-  görselde İngilizce yazı gerekiyorsa daha yavaş ama yazıda daha doğru Z-Image-Turbo).
+  görselde İngilizce yazı gerekiyorsa daha yavaş Z-Image-Turbo: tek afiş istemi × 2 tohumluk denemede yazıyı 2/2
+  doğru yazdı, FLUX.2 0/2).
 - "Ne önerirsin?" / "Yeni çıkanları araştır, sistemi güncelleyelim." — baş ajan (yönetici) inceler, önerileri
   maliyetiyle sunar; onaylarsan uygular ve sınar.
 
